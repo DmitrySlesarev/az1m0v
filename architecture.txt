@@ -1,0 +1,39 @@
+ev-project/
+├── README.md
+├── main.py
+├── requirements.txt
+├── docs/
+├── config/
+│   ├── __init__.py
+│   └── settings.py
+├── core/
+│   ├── __init__.py
+│   ├── battery_management.py
+│   ├── motor_controller.py
+│   ├── charging_system.py
+│   └── vehicle_controller.py
+├── sensors/
+│   ├── __init__.py
+│   ├── imu.py
+│   ├── gps.py
+│   └── temperature.py
+├── communication/
+│   ├── __init__.py
+│   ├── can_bus.py
+│   └── telemetry.py
+├── ui/
+│   ├── __init__.py
+│   ├── dashboard.py
+│   └── mobile_app.py
+├── ai/
+│   ├── __init__.py
+│   ├── autopilot.py
+│   └── computer_vision.py
+├── utils/
+│   ├── __init__.py
+│   └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   └── test_core.py
+└── scripts/
+    └── setup.sh
