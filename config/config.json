@@ -1,0 +1,53 @@
+{
+  "vehicle": {
+    "model": "EV-2024",
+    "serial_number": "EV001",
+    "manufacturer": "EV Corp"
+  },
+  "battery": {
+    "capacity_kwh": 75.0,
+    "max_charge_rate_kw": 150.0,
+    "max_discharge_rate_kw": 200.0,
+    "nominal_voltage": 400.0,
+    "cell_count": 96
+  },
+  "motor": {
+    "max_power_kw": 150.0,
+    "max_torque_nm": 320.0,
+    "efficiency": 0.95,
+    "type": "permanent_magnet"
+  },
+  "charging": {
+    "ac_max_power_kw": 11.0,
+    "dc_max_power_kw": 150.0,
+    "connector_type": "CCS2",
+    "fast_charge_enabled": true
+  },
+  "sensors": {
+    "imu_enabled": true,
+    "gps_enabled": true,
+    "temperature_sensors": 8,
+    "sampling_rate_hz": 100
+  },
+  "communication": {
+    "can_bus_enabled": true,
+    "telemetry_enabled": true,
+    "update_interval_ms": 1000
+  },
+  "ui": {
+    "dashboard_enabled": true,
+    "mobile_app_enabled": true,
+    "theme": "dark"
+  },
+  "ai": {
+    "autopilot_enabled": false,
+    "computer_vision_enabled": false,
+    "model_path": "/models/"
+  },
+  "logging": {
+    "level": "INFO",
+    "file_path": "/var/log/ev_system.log",
+    "max_file_size_mb": 100,
+    "backup_count": 5
+  }
+}

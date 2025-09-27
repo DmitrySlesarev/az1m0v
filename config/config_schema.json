@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EV System Configuration Schema",
+  "description": "Schema for EV system configuration file",
+  "type": "object",
+  "required": [
+    "vehicle",
+    "battery",
+    "motor",
+    "charging",
+    "sensors",
+    "communication",
+    "ui",
+    "ai",
+    "logging"
+  ],
+  "properties": {
+    "vehicle": {
+      "type": "object",
+      "required": ["model", "serial_number", "manufacturer"],
+      "properties": {
+        "model": {"type": "string", "minLength": 1},
+        "serial_number": {"type": "string", "minLength": 1},
+        "manufacturer": {"type": "string", "minLength": 1}
+      }
+    },
+    "battery": {
+      "type": "object",
+      "required": ["capacity_kwh", "max_charge_rate_kw", "max_discharge_rate_kw", "nominal_voltage", "cell_count"],
+      "properties": {
+        "capacity_kwh": {"type": "number", "minimum": 0},
+        "max_charge_rate_kw": {"type": "number", "minimum": 0},
+        "max_discharge_rate_kw": {"type": "number", "minimum": 0},
+        "nominal_voltage": {"type": "number", "minimum": 0},
+        "cell_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "motor": {
+      "type": "object",
+      "required": ["max_power_kw", "max_torque_nm", "efficiency", "type"],
+      "properties": {
+        "max_power_kw": {"type": "number", "minimum": 0},
+        "max_torque_nm": {"type": "number", "minimum": 0},
+        "efficiency": {"type": "number", "minimum": 0, "maximum": 1},
+        "type": {"type": "string", "enum": ["permanent_magnet", "induction", "switched_reluctance"]}
+      }
+    },
+    "charging": {
+      "type": "object",
+      "required": ["ac_max_power_kw", "dc_max_power_kw", "connector_type", "fast_charge_enabled"],
+      "properties": {
+        "ac_max_power_kw": {"type": "number", "minimum": 0},
+        "dc_max_power_kw": {"type": "number", "minimum": 0},
+        "connector_type": {"type": "string", "enum": ["CCS1", "CCS2", "CHAdeMO", "Tesla"]},
+        "fast_charge_enabled": {"type": "boolean"}
+      }
+    },
+    "sensors": {
+      "type": "object",
+      "required": ["imu_enabled", "gps_enabled", "temperature_sensors", "sampling_rate_hz"],
+      "properties": {
+        "imu_enabled": {"type": "boolean"},
+        "gps_enabled": {"type": "boolean"},
+        "temperature_sensors": {"type": "integer", "minimum": 0},
+        "sampling_rate_hz": {"type": "number", "minimum": 0}
+      }
+    },
+    "communication": {
+      "type": "object",
+      "required": ["can_bus_enabled", "telemetry_enabled", "update_interval_ms"],
+      "properties": {
+        "can_bus_enabled": {"type": "boolean"},
+        "telemetry_enabled": {"type": "boolean"},
+        "update_interval_ms": {"type": "integer", "minimum": 1}
+      }
+    },
+    "ui": {
+      "type": "object",
+      "required": ["dashboard_enabled", "mobile_app_enabled", "theme"],
+      "properties": {
+        "dashboard_enabled": {"type": "boolean"},
+        "mobile_app_enabled": {"type": "boolean"},
+        "theme": {"type": "string", "enum": ["light", "dark", "auto"]}
+      }
+    },
+    "ai": {
+      "type": "object",
+      "required": ["autopilot_enabled", "computer_vision_enabled", "model_path"],
+      "properties": {
+        "autopilot_enabled": {"type": "boolean"},
+        "computer_vision_enabled": {"type": "boolean"},
+        "model_path": {"type": "string", "minLength": 1}
+      }
+    },
+    "logging": {
+      "type": "object",
+      "required": ["level", "file_path", "max_file_size_mb", "backup_count"],
+      "properties": {
+        "level": {"type": "string", "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]},
+        "file_path": {"type": "string", "minLength": 1},
+        "max_file_size_mb": {"type": "integer", "minimum": 1},
+        "backup_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
