@@ -1,4 +1,4 @@
-# az1m0v EV sw open source project
+# az1m0v EV open source project
 
 ## Features
 - Battery Management System
@@ -17,4 +17,4 @@
 See CONTRIBUTING.md for guidelines.
 
 ## License
-MIT
+GNU General Public License v3.0
