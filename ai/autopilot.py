@@ -229,7 +229,3 @@ class AutopilotSystem:
                 'emergency_brake_threshold': self.emergency_brake_threshold
             }
         }
-
-
-# TODO: implement autopilot
-pass
