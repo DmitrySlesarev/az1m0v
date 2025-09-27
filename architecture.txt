@@ -16,7 +16,8 @@ ev-project/
 │   ├── __init__.py
 │   ├── imu.py
 │   ├── gps.py
-│   └── temperature.py
+│   ├── temperature.py
+│   └── computer_vision.py
 ├── communication/
 │   ├── __init__.py
 │   ├── can_bus.py
@@ -27,8 +28,7 @@ ev-project/
 │   └── mobile_app.py
 ├── ai/
 │   ├── __init__.py
-│   ├── autopilot.py
-│   └── computer_vision.py
+│   └── autopilot.py
 ├── utils/
 │   ├── __init__.py
 │   └── helpers.py
