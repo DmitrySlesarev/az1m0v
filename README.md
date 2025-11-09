@@ -10,8 +10,14 @@
 - Dashboard UI
 
 ## Getting Started
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run main application: `python main.py`
+1. Install dependencies: `poetry install`
+2. Run main application: `poetry run python main.py`
+
+3. Run tests: `poetry run pytest tests/ -v`
+
+## Requirements
+- Python 3.13+
+- Poetry (for dependency management)
 
 ## Contributing
 See CONTRIBUTING.md for guidelines.

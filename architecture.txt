@@ -1,14 +1,18 @@
 ev-project/
 ├── README.md
 ├── main.py
-├── requirements.txt
+├── pyproject.toml
 ├── docs/
+│   ├── README.md
+│   └── configuration.md
 ├── config/
 │   ├── __init__.py
+│   ├── config.json
+│   ├── config_schema.json
 │   └── settings.py
 ├── core/
 │   ├── __init__.py
-│   ├── battery_management.py
+│   ├── battery_management.py      # Battery Management System (BMS)
 │   ├── motor_controller.py
 │   ├── charging_system.py
 │   └── vehicle_controller.py
@@ -20,7 +24,7 @@ ev-project/
 │   └── computer_vision.py
 ├── communication/
 │   ├── __init__.py
-│   ├── can_bus.py
+│   ├── can_bus.py                 # CAN bus interface and EV protocol
 │   └── telemetry.py
 ├── ui/
 │   ├── __init__.py
@@ -31,9 +35,24 @@ ev-project/
 │   └── autopilot.py
 ├── utils/
 │   ├── __init__.py
-│   └── helpers.py
+│   ├── helpers.py
+│   └── count_lines.py
 ├── tests/
 │   ├── __init__.py
-│   └── test_core.py
+│   ├── conftest.py
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   ├── test_autopilot.py
+│   │   ├── test_can_bus.py
+│   │   ├── test_computer_vision.py
+│   │   └── test_config.py
+│   └── functional/
+│       ├── __init__.py
+│       ├── test_autopilot_integration.py
+│       └── test_can_bus_integration.py
 └── scripts/
-    └── setup.sh
+    ├── setup.sh
+    └── integration/
+        ├── __init__.py
+        └── simpbms_builder.py     # SimpBMS firmware build and integration

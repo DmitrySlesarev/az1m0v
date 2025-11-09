@@ -19,7 +19,7 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
    ```
 3. **Testing**: Run the test suite to verify installation:
    ```bash
-   pytest -q
+   poetry run pytest -q
    ```
 
 ## Key Components
@@ -70,12 +70,12 @@ The system uses JSON-based configuration with schema validation:
 
 ### Testing
 - **Framework**: pytest
-- **Run Tests**: `pytest -q`
+- **Run Tests**: `poetry run pytest -q`
 - **Coverage**: Add `--cov` flag for coverage reports
 
 ### Dependencies
-- **Requirements**: `requirements.txt`
-- **Install**: `pip install -r requirements.txt`
+- **Package Manager**: Poetry
+- **Install**: `poetry install`
 
 ## Support
 
@@ -89,4 +89,4 @@ For questions or issues:
 
 - **Current Version**: 0.0.0.1
 - **Schema Version**: JSON Schema Draft 07
-- **Python Compatibility**: 3.8+
+- **Python Compatibility**: 3.13+
