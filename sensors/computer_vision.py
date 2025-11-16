@@ -382,6 +382,3 @@ class VisionBackbone:
         
         return status
 
-
-# TODO: implement computer_vision
-pass

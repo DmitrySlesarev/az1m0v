@@ -139,6 +139,13 @@ class EVCANProtocol:
         'MOTOR_TEMPERATURE': 0x202,
         'MOTOR_STATUS': 0x203,
         
+        # VESC-specific commands and status
+        'VESC_SET_RPM': 0x210,
+        'VESC_SET_CURRENT': 0x211,
+        'VESC_SET_DUTY': 0x212,
+        'VESC_STATUS': 0x213,
+        'VESC_VALUES': 0x214,
+        
         # Charging System
         'CHARGER_STATUS': 0x280,
         'CHARGER_VOLTAGE': 0x281,
@@ -203,14 +210,139 @@ class EVCANProtocol:
         )
         return self.can_bus.send_frame(frame)
     
+    def send_vesc_command_rpm(self, rpm: float) -> bool:
+        """Send VESC RPM command via CAN."""
+        message = CANMessage(
+            message_id=self.CAN_IDS['VESC_SET_RPM'],
+            name="VESC_SET_RPM",
+            description="VESC Set RPM Command",
+            data={'rpm': rpm},
+            timestamp=time.time(),
+            source="VehicleController"
+        )
+        return self._send_message(message)
+    
+    def send_vesc_command_current(self, current_a: float) -> bool:
+        """Send VESC current command via CAN."""
+        message = CANMessage(
+            message_id=self.CAN_IDS['VESC_SET_CURRENT'],
+            name="VESC_SET_CURRENT",
+            description="VESC Set Current Command",
+            data={'current': current_a},
+            timestamp=time.time(),
+            source="VehicleController"
+        )
+        return self._send_message(message)
+    
+    def send_vesc_command_duty(self, duty_cycle: float) -> bool:
+        """Send VESC duty cycle command via CAN."""
+        message = CANMessage(
+            message_id=self.CAN_IDS['VESC_SET_DUTY'],
+            name="VESC_SET_DUTY",
+            description="VESC Set Duty Cycle Command",
+            data={'duty_cycle': duty_cycle},
+            timestamp=time.time(),
+            source="VehicleController"
+        )
+        return self._send_message(message)
+    
+    def send_vesc_status(self, rpm: float, current: float, voltage: float, temperature: float) -> bool:
+        """Send VESC status information via CAN."""
+        message = CANMessage(
+            message_id=self.CAN_IDS['VESC_STATUS'],
+            name="VESC_STATUS",
+            description="VESC Status Information",
+            data={
+                'rpm': rpm,
+                'current': current,
+                'voltage': voltage,
+                'temperature': temperature
+            },
+            timestamp=time.time(),
+            source="VESC"
+        )
+        return self._send_message(message)
+    
+    def parse_vesc_command(self, frame: CANFrame) -> Optional[Dict[str, Any]]:
+        """
+        Parse VESC command from CAN frame.
+        
+        Args:
+            frame: CAN frame containing VESC command
+        
+        Returns:
+            Dictionary with command type and value, or None if invalid
+        """
+        if frame.can_id == self.CAN_IDS['VESC_SET_RPM']:
+            try:
+                rpm = struct.unpack('<f', frame.data[:4])[0]
+                return {'command': 'set_rpm', 'value': rpm}
+            except struct.error:
+                return None
+        elif frame.can_id == self.CAN_IDS['VESC_SET_CURRENT']:
+            try:
+                current = struct.unpack('<f', frame.data[:4])[0]
+                return {'command': 'set_current', 'value': current}
+            except struct.error:
+                return None
+        elif frame.can_id == self.CAN_IDS['VESC_SET_DUTY']:
+            try:
+                duty = struct.unpack('<f', frame.data[:4])[0]
+                return {'command': 'set_duty', 'value': duty}
+            except struct.error:
+                return None
+        return None
+    
+    def parse_vesc_status(self, frame: CANFrame) -> Optional[Dict[str, Any]]:
+        """
+        Parse VESC status from CAN frame.
+        
+        Args:
+            frame: CAN frame containing VESC status
+        
+        Returns:
+            Dictionary with status values, or None if invalid
+        """
+        if frame.can_id == self.CAN_IDS['VESC_STATUS']:
+            try:
+                if len(frame.data) >= 8:  # At least 2 floats = 8 bytes (CAN max)
+                    rpm = struct.unpack('<f', frame.data[0:4])[0]
+                    current = struct.unpack('<f', frame.data[4:8])[0]
+                    # If we have more data, parse voltage and temperature
+                    voltage = 0.0
+                    temperature = 0.0
+                    if len(frame.data) >= 12:
+                        voltage = struct.unpack('<f', frame.data[8:12])[0]
+                    if len(frame.data) >= 16:
+                        temperature = struct.unpack('<f', frame.data[12:16])[0]
+                    return {
+                        'rpm': rpm,
+                        'current': current,
+                        'voltage': voltage,
+                        'temperature': temperature
+                    }
+            except struct.error:
+                return None
+        return None
+    
+    def _send_message(self, message: CANMessage) -> bool:
+        """Send a CAN message."""
+        # Convert message to frame and send
+        frame = CANFrame(
+            can_id=message.message_id,
+            data=self._serialize_data(message.data),
+            timestamp=message.timestamp,
+            dlc=8
+        )
+        return self.can_bus.send_frame(frame)
+    
     def _serialize_data(self, data: Dict[str, Any]) -> bytes:
         """Serialize message data to bytes."""
         result = bytearray()
         for key, value in data.items():
             if isinstance(value, (int, float)):
                 result.extend(struct.pack('<f', float(value)))
+        # Pad to 8 bytes if needed, limit to 8 bytes if too long
+        if len(result) < 8:
+            result.extend(b'\x00' * (8 - len(result)))
         return bytes(result[:8])  # Limit to 8 bytes for CAN
-
-
-# TODO: implement can_bus
-pass

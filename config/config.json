@@ -17,6 +17,17 @@
     "efficiency": 0.95,
     "type": "permanent_magnet"
   },
+  "motor_controller": {
+    "type": "vesc",
+    "serial_port": "/dev/ttyUSB0",
+    "can_enabled": true,
+    "max_current_a": 200.0,
+    "max_rpm": 10000.0,
+    "max_temperature_c": 80.0,
+    "min_voltage_v": 300.0,
+    "max_voltage_v": 500.0,
+    "update_interval_ms": 100
+  },
   "charging": {
     "ac_max_power_kw": 11.0,
     "dc_max_power_kw": 150.0,

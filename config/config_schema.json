@@ -7,6 +7,7 @@
     "vehicle",
     "battery",
     "motor",
+    "motor_controller",
     "charging",
     "sensors",
     "communication",
@@ -43,6 +44,21 @@
         "max_torque_nm": {"type": "number", "minimum": 0},
         "efficiency": {"type": "number", "minimum": 0, "maximum": 1},
         "type": {"type": "string", "enum": ["permanent_magnet", "induction", "switched_reluctance"]}
+      }
+    },
+    "motor_controller": {
+      "type": "object",
+      "required": ["type", "serial_port", "can_enabled"],
+      "properties": {
+        "type": {"type": "string", "enum": ["vesc", "other"]},
+        "serial_port": {"type": "string", "minLength": 1},
+        "can_enabled": {"type": "boolean"},
+        "max_current_a": {"type": "number", "minimum": 0},
+        "max_rpm": {"type": "number", "minimum": 0},
+        "max_temperature_c": {"type": "number", "minimum": 0},
+        "min_voltage_v": {"type": "number", "minimum": 0},
+        "max_voltage_v": {"type": "number", "minimum": 0},
+        "update_interval_ms": {"type": "integer", "minimum": 1}
       }
     },
     "charging": {
