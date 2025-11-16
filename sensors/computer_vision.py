@@ -1,7 +1,7 @@
 """Computer vision backbone for Tesla-like autonomous driving system."""
 
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
 
@@ -52,7 +52,7 @@ class LaneInfo:
 
 class VisionBackbone:
     """Tesla-like computer vision backbone for autonomous driving."""
-    
+
     def __init__(self, config: Dict):
         """Initialize the vision backbone.
         
@@ -63,10 +63,10 @@ class VisionBackbone:
         self.cameras: Dict[CameraType, CameraConfig] = {}
         self.models = {}
         self.is_initialized = False
-        
+
         # Initialize camera configurations
         self._setup_cameras()
-        
+
     def _setup_cameras(self) -> None:
         """Setup camera configurations for Tesla-like 8-camera system."""
         camera_configs = {
@@ -127,9 +127,9 @@ class VisionBackbone:
                 rotation=(0.0, 0.0, 60.0)
             )
         }
-        
+
         self.cameras = camera_configs
-    
+
     def initialize_models(self) -> None:
         """Initialize neural network models for different tasks."""
         # TODO: Load actual models (YOLO, segmentation, depth estimation, etc.)
@@ -142,7 +142,7 @@ class VisionBackbone:
             'occupancy_network': None,  # Occupancy prediction
         }
         self.is_initialized = True
-    
+
     def process_frame(self, camera_type: CameraType, frame: np.ndarray) -> Dict:
         """Process a single camera frame through the vision pipeline.
         
@@ -155,7 +155,7 @@ class VisionBackbone:
         """
         if not self.is_initialized:
             self.initialize_models()
-        
+
         results = {
             'camera_type': camera_type,
             'detections': [],
@@ -165,27 +165,27 @@ class VisionBackbone:
             'traffic_lights': [],
             'occupancy_grid': None
         }
-        
+
         # Object detection
         results['detections'] = self._detect_objects(frame)
-        
+
         # Lane detection
         results['lanes'] = self._detect_lanes(frame)
-        
+
         # Depth estimation
         results['depth_map'] = self._estimate_depth(frame)
-        
+
         # Semantic segmentation
         results['semantic_segmentation'] = self._segment_semantics(frame)
-        
+
         # Traffic light detection
         results['traffic_lights'] = self._detect_traffic_lights(frame)
-        
+
         # Occupancy prediction
         results['occupancy_grid'] = self._predict_occupancy(frame)
-        
+
         return results
-    
+
     def _detect_objects(self, frame: np.ndarray) -> List[Detection]:
         """Detect objects in the frame.
         
@@ -198,14 +198,14 @@ class VisionBackbone:
         # TODO: Implement actual object detection using YOLO or similar
         # This is a placeholder implementation
         detections = []
-        
+
         # Example detections (replace with actual model inference)
         if self.models['object_detection'] is not None:
             # Run object detection model
             pass
-        
+
         return detections
-    
+
     def _detect_lanes(self, frame: np.ndarray) -> List[LaneInfo]:
         """Detect lane markings in the frame.
         
@@ -217,13 +217,13 @@ class VisionBackbone:
         """
         # TODO: Implement actual lane detection using LaneNet or similar
         lanes = []
-        
+
         if self.models['lane_detection'] is not None:
             # Run lane detection model
             pass
-        
+
         return lanes
-    
+
     def _estimate_depth(self, frame: np.ndarray) -> Optional[np.ndarray]:
         """Estimate depth from monocular image.
         
@@ -237,9 +237,9 @@ class VisionBackbone:
         if self.models['depth_estimation'] is not None:
             # Run depth estimation model
             pass
-        
+
         return None
-    
+
     def _segment_semantics(self, frame: np.ndarray) -> Optional[np.ndarray]:
         """Perform semantic segmentation of the frame.
         
@@ -253,9 +253,9 @@ class VisionBackbone:
         if self.models['semantic_segmentation'] is not None:
             # Run segmentation model
             pass
-        
+
         return None
-    
+
     def _detect_traffic_lights(self, frame: np.ndarray) -> List[Detection]:
         """Detect traffic lights in the frame.
         
@@ -267,13 +267,13 @@ class VisionBackbone:
         """
         # TODO: Implement traffic light detection
         traffic_lights = []
-        
+
         if self.models['traffic_light_detection'] is not None:
             # Run traffic light detection model
             pass
-        
+
         return traffic_lights
-    
+
     def _predict_occupancy(self, frame: np.ndarray) -> Optional[np.ndarray]:
         """Predict occupancy grid for path planning.
         
@@ -287,9 +287,9 @@ class VisionBackbone:
         if self.models['occupancy_network'] is not None:
             # Run occupancy prediction model
             pass
-        
+
         return None
-    
+
     def fuse_multi_camera(self, camera_results: Dict[CameraType, Dict]) -> Dict:
         """Fuse results from multiple cameras into unified representation.
         
@@ -306,16 +306,16 @@ class VisionBackbone:
             'occupancy_map': None,
             'trajectory_prediction': None
         }
-        
+
         # TODO: Implement multi-camera fusion
         # - Transform detections to vehicle coordinate system
         # - Merge overlapping detections
         # - Create bird's eye view
         # - Generate unified occupancy map
         # - Predict object trajectories
-        
+
         return fused_results
-    
+
     def get_camera_calibration(self, camera_type: CameraType) -> Dict:
         """Get camera calibration parameters.
         
@@ -327,9 +327,9 @@ class VisionBackbone:
         """
         if camera_type not in self.cameras:
             raise ValueError(f"Unknown camera type: {camera_type}")
-        
+
         camera = self.cameras[camera_type]
-        
+
         # TODO: Load actual calibration parameters
         calibration = {
             'intrinsic_matrix': np.eye(3),  # 3x3 camera matrix
@@ -340,9 +340,9 @@ class VisionBackbone:
             'position': camera.position,
             'rotation': camera.rotation
         }
-        
+
         return calibration
-    
+
     def update_camera_parameters(self, camera_type: CameraType, **kwargs) -> None:
         """Update camera parameters dynamically.
         
@@ -352,15 +352,15 @@ class VisionBackbone:
         """
         if camera_type not in self.cameras:
             raise ValueError(f"Unknown camera type: {camera_type}")
-        
+
         camera = self.cameras[camera_type]
-        
+
         for key, value in kwargs.items():
             if hasattr(camera, key):
                 setattr(camera, key, value)
             else:
                 raise ValueError(f"Unknown camera parameter: {key}")
-    
+
     def get_system_status(self) -> Dict:
         """Get current system status and health.
         
@@ -375,10 +375,9 @@ class VisionBackbone:
             'memory_usage': 0.0,  # TODO: Calculate memory usage
             'gpu_utilization': 0.0  # TODO: Get GPU utilization
         }
-        
+
         # Check model status
         for model_name, model in self.models.items():
             status['model_status'][model_name] = model is not None
-        
-        return status
 
+        return status

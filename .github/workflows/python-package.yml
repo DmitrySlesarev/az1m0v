@@ -1,0 +1,104 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python package
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v4
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock', '**/pyproject.toml') }}
+    
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+    
+    # - name: Install flake8 for linting
+    #   run: poetry run pip install flake8
+    #
+    # - name: Lint with flake8
+    #   run: |
+    #     # stop the build if there are Python syntax errors or undefined names
+    #     poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+    #     poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run unit tests
+      run: |
+        poetry run pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml
+    
+    - name: Run functional tests
+      run: |
+        poetry run pytest tests/functional/ -v --tb=short --junit-xml=junit-functional.xml
+    
+    - name: Run all tests with coverage
+      run: |
+        poetry run pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term-missing --cov-report=html --junit-xml=junit-all.xml
+    
+    - name: Upload unit test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: unit-test-results-${{ matrix.python-version }}
+        path: junit-unit.xml
+    
+    - name: Upload functional test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: functional-test-results-${{ matrix.python-version }}
+        path: junit-functional.xml
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports-${{ matrix.python-version }}
+        path: |
+          coverage.xml
+          htmlcov/
+    
+    # - name: Publish test results
+    #   uses: EnricoMi/publish-unit-test-result-action@v2
+    #   if: always()
+    #   with:
+    #     files: |
+    #       junit-all.xml
+    #       junit-unit.xml
+    #       junit-functional.xml
+    #     check_name: Test Results (Python ${{ matrix.python-version }})
+    #     comment_mode: always
+    #     report_individual_runs: true

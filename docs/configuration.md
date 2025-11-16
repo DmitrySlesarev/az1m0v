@@ -44,6 +44,17 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `connector_type` | string | Charging connector standard | CCS1, CCS2, CHAdeMO, Tesla | "CCS2" |
 | `fast_charge_enabled` | boolean | Enable fast charging capability | true/false | true |
 
+### Vehicle Controller Configuration
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `max_speed_kmh` | number | Maximum vehicle speed | ≥ 0 km/h | 120.0 |
+| `max_acceleration_ms2` | number | Maximum acceleration | ≥ 0 m/s² | 3.0 |
+| `max_deceleration_ms2` | number | Maximum deceleration (braking) | ≤ 0 m/s² | -5.0 |
+| `max_power_kw` | number | Maximum vehicle power output | ≥ 0 kW | 150.0 |
+| `efficiency_wh_per_km` | number | Energy consumption per kilometer | ≥ 0 Wh/km | 200.0 |
+| `weight_kg` | number | Vehicle weight | ≥ 0 kg | 1500.0 |
+
 ### Sensor Configuration
 
 | Parameter | Type | Description | Range/Units | Example |
@@ -113,6 +124,28 @@ def load_config(config_path: str = "config/config.json") -> dict:
 config = load_config()
 battery_capacity = config['battery']['capacity_kwh']
 ```
+
+### Vehicle Controller Configuration Example
+
+```json
+{
+  "vehicle_controller": {
+    "max_speed_kmh": 120.0,
+    "max_acceleration_ms2": 3.0,
+    "max_deceleration_ms2": -5.0,
+    "max_power_kw": 150.0,
+    "efficiency_wh_per_km": 200.0,
+    "weight_kg": 1500.0
+  }
+}
+```
+
+The vehicle controller coordinates all subsystems and enforces safety rules. Key features:
+- **State Management**: Manages vehicle states (PARKED, READY, DRIVING, CHARGING, ERROR, EMERGENCY)
+- **Safety Enforcement**: Prevents driving while charging and vice versa
+- **Drive Modes**: Supports ECO, NORMAL, SPORT, and REVERSE modes
+- **Range Calculation**: Estimates remaining range based on battery SOC and efficiency
+- **Energy Tracking**: Monitors energy consumption and distance traveled
 
 ### Validating Configuration
 

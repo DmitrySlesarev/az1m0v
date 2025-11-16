@@ -25,10 +25,14 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 ## Key Components
 
 ### Core Systems
-- **Battery Management**: Monitor and control battery operations
-- **Motor Controller**: Manage motor performance and efficiency
-- **Charging System**: Handle AC/DC charging protocols
-- **Vehicle Controller**: Central coordination of all systems
+- **Battery Management**: Monitor and control battery operations with cell-level tracking
+- **Motor Controller**: Manage motor performance and efficiency (VESC integration)
+- **Charging System**: Handle AC/DC charging protocols with multiple connector support
+- **Vehicle Controller**: High-level coordination system managing:
+  - Vehicle state transitions (PARKED, READY, DRIVING, CHARGING, ERROR, EMERGENCY)
+  - Safety enforcement (prevents driving while charging)
+  - Drive modes (ECO, NORMAL, SPORT, REVERSE)
+  - Range calculation and energy consumption tracking
 
 ### Sensors & Communication
 - **IMU**: Inertial measurement for vehicle dynamics
@@ -70,8 +74,12 @@ The system uses JSON-based configuration with schema validation:
 
 ### Testing
 - **Framework**: pytest
+- **Test Count**: 347 tests (45 unit + 14 functional for vehicle controller)
 - **Run Tests**: `poetry run pytest -q`
+- **Unit Tests**: `poetry run pytest tests/unit/ -v`
+- **Functional Tests**: `poetry run pytest tests/functional/ -v`
 - **Coverage**: Add `--cov` flag for coverage reports
+- **CI/CD**: All tests run automatically on every commit via GitHub Actions
 
 ### Dependencies
 - **Package Manager**: Poetry

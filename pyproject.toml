@@ -5,6 +5,7 @@ description = "Electric Vehicle Management System"
 authors = ["Dmitry Slesarev <dvslesar@gmail.com>"]
 license = "GPL"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.13"

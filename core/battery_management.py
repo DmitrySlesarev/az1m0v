@@ -54,7 +54,7 @@ class BatteryConfig:
 
 class BatteryManagementSystem:
     """Battery Management System for EV applications."""
-    
+
     def __init__(self, config: Dict, can_protocol: Optional[object] = None):
         """Initialize the Battery Management System.
         
@@ -73,10 +73,10 @@ class BatteryManagementSystem:
             min_temperature=config.get('min_temperature', 0.0),
             max_temperature=config.get('max_temperature', 45.0),
         )
-        
+
         self.can_protocol = can_protocol
         self.logger = logging.getLogger(__name__)
-        
+
         # Initialize battery state
         self.state = BatteryState(
             voltage=self.config.nominal_voltage,
@@ -90,7 +90,7 @@ class BatteryManagementSystem:
             status=BatteryStatus.STANDBY,
             timestamp=time.time()
         )
-        
+
         # Statistics
         self.stats = {
             'total_energy_charged_kwh': 0.0,
@@ -99,10 +99,10 @@ class BatteryManagementSystem:
             'fault_count': 0,
             'last_update': time.time()
         }
-        
+
         self.logger.info(f"BMS initialized: {self.config.capacity_kwh}kWh, {self.config.cell_count} cells")
-    
-    def update_state(self, voltage: Optional[float] = None, 
+
+    def update_state(self, voltage: Optional[float] = None,
                      current: Optional[float] = None,
                      temperature: Optional[float] = None,
                      cell_voltages: Optional[List[float]] = None,
@@ -118,85 +118,84 @@ class BatteryManagementSystem:
         """
         current_time = time.time()
         dt = current_time - self.state.timestamp
-        
+
         # Update voltage
         if voltage is not None:
             self.state.voltage = voltage
         elif cell_voltages is not None:
             self.state.voltage = sum(cell_voltages)
             self.state.cell_voltages = cell_voltages
-        
+
         # Update current
         if current is not None:
             self.state.current = current
-        
+
         # Update temperature
         if temperature is not None:
             self.state.temperature = temperature
         elif cell_temperatures is not None:
             self.state.cell_temperatures = cell_temperatures
             self.state.temperature = sum(cell_temperatures) / len(cell_temperatures)
-        
+
         # Calculate SOC from voltage (simplified coulomb counting)
         if dt > 0 and self.state.current != 0:
             # Integrate current over time
             energy_change_wh = (self.state.current * self.state.voltage * dt) / 3600.0
             energy_change_kwh = energy_change_wh / 1000.0
-            
+
             if self.state.current > 0:  # Charging
                 self.stats['total_energy_charged_kwh'] += abs(energy_change_kwh)
             else:  # Discharging
                 self.stats['total_energy_discharged_kwh'] += abs(energy_change_kwh)
-            
+
             # Update SOC
             soc_change = (energy_change_kwh / self.config.capacity_kwh) * 100.0
-            self.state.soc = max(self.config.min_soc, 
+            self.state.soc = max(self.config.min_soc,
                                 min(self.config.max_soc, self.state.soc + soc_change))
-        
+
         # Update SOC from voltage if no current measurement (fallback)
         if self.state.current == 0 and self.state.voltage > 0:
             # Simple voltage-based SOC estimation
-            nominal_cell_voltage = self.config.nominal_voltage / self.config.cell_count
             cell_voltage = self.state.voltage / self.config.cell_count
             voltage_ratio = (cell_voltage - self.config.min_voltage) / \
                            (self.config.max_voltage - self.config.min_voltage)
             self.state.soc = max(0, min(100, voltage_ratio * 100))
-        
+
         # Determine status
         self.state.status = self._determine_status()
-        
+
         # Update timestamp
         self.state.timestamp = current_time
         self.stats['last_update'] = current_time
-        
+
         # Send status to CAN bus if available
         if self.can_protocol:
             self._send_can_status()
-    
+
     def _determine_status(self) -> BatteryStatus:
         """Determine battery status based on current state."""
         # Check for pack-level critical conditions (SOC extremes)
         if (self.state.soc < 5.0 or self.state.soc > 95.0):
             return BatteryStatus.CRITICAL
-        
+
         # Check for pack-level temperature critical conditions
         pack_temp_critical = (self.state.temperature > self.config.max_temperature or
                              self.state.temperature < self.config.min_temperature)
-        
+
         # Check for voltage faults first (voltage faults are always FAULT, not CRITICAL)
         if self.state.cell_voltages:
             max_cell_voltage = max(self.state.cell_voltages)
             min_cell_voltage = min(self.state.cell_voltages)
             voltage_imbalance = max_cell_voltage - min_cell_voltage
-            
+
             if voltage_imbalance > 0.5:
                 return BatteryStatus.FAULT
-            
+
             for cell_voltage in self.state.cell_voltages:
                 if cell_voltage > self.config.max_voltage or cell_voltage < self.config.min_voltage:
                     return BatteryStatus.FAULT
-        
-        # For temperature: distinguish between uniform pack-level issues (CRITICAL) 
+
+        # For temperature: distinguish between uniform pack-level issues (CRITICAL)
         # and individual cell issues (FAULT)
         if pack_temp_critical:
             if self.state.cell_temperatures and len(self.state.cell_temperatures) > 0:
@@ -206,46 +205,46 @@ class BatteryManagementSystem:
                     t > self.config.max_temperature or t < self.config.min_temperature
                     for t in self.state.cell_temperatures
                 )
-                
+
                 # If all cells are uniformly out of range with small spread, it's a pack-level CRITICAL issue
                 if all_cells_out_of_range and temp_spread <= 1.0:
                     return BatteryStatus.CRITICAL
-                
+
                 # Check if only some cells are out of range (individual cell issue = FAULT)
-                cells_out_of_range = [t for t in self.state.cell_temperatures 
+                cells_out_of_range = [t for t in self.state.cell_temperatures
                                      if t > self.config.max_temperature or t < self.config.min_temperature]
-                cells_in_range = [t for t in self.state.cell_temperatures 
+                cells_in_range = [t for t in self.state.cell_temperatures
                                 if self.config.min_temperature <= t <= self.config.max_temperature]
-                
+
                 # If some cells are out of range and some are in range, it's a FAULT (individual cell issue)
                 if len(cells_out_of_range) > 0 and len(cells_in_range) > 0:
                     return BatteryStatus.FAULT
             else:
                 # No cell temperature data, but pack temp is critical = CRITICAL
                 return BatteryStatus.CRITICAL
-        
+
         # Check for individual cell temperature faults when pack temp is not critical
         if not pack_temp_critical and self.state.cell_temperatures:
-            cells_out_of_range = [t for t in self.state.cell_temperatures 
+            cells_out_of_range = [t for t in self.state.cell_temperatures
                                  if t > self.config.max_temperature or t < self.config.min_temperature]
             if len(cells_out_of_range) > 0:
                 return BatteryStatus.FAULT
-        
+
         # Check warning conditions
         if (self.state.temperature > self.config.max_temperature * 0.9 or
             self.state.temperature < self.config.min_temperature * 1.1 or
             self.state.soc < 10.0 or
             self.state.soc > 90.0):
             return BatteryStatus.WARNING
-        
+
         # Check charging/discharging
         if self.state.current > 0.1:
             return BatteryStatus.CHARGING
         elif self.state.current < -0.1:
             return BatteryStatus.DISCHARGING
-        
+
         return BatteryStatus.HEALTHY
-    
+
     def _check_faults(self) -> bool:
         """Check for battery faults."""
         # Check cell voltage balance
@@ -253,12 +252,12 @@ class BatteryManagementSystem:
             max_cell_voltage = max(self.state.cell_voltages)
             min_cell_voltage = min(self.state.cell_voltages)
             voltage_imbalance = max_cell_voltage - min_cell_voltage
-            
+
             if voltage_imbalance > 0.5:  # 500mV imbalance threshold
                 self.logger.warning(f"Cell voltage imbalance detected: {voltage_imbalance:.3f}V")
                 self.stats['fault_count'] += 1
                 return True
-            
+
             # Check for overvoltage/undervoltage
             for i, cell_voltage in enumerate(self.state.cell_voltages):
                 if cell_voltage > self.config.max_voltage:
@@ -269,7 +268,7 @@ class BatteryManagementSystem:
                     self.logger.error(f"Cell {i} undervoltage: {cell_voltage:.3f}V")
                     self.stats['fault_count'] += 1
                     return True
-        
+
         # Check temperature range
         if self.state.cell_temperatures:
             for i, cell_temp in enumerate(self.state.cell_temperatures):
@@ -281,9 +280,9 @@ class BatteryManagementSystem:
                     self.logger.error(f"Cell {i} undertemperature: {cell_temp:.2f}°C")
                     self.stats['fault_count'] += 1
                     return True
-        
+
         return False
-    
+
     def _send_can_status(self) -> None:
         """Send battery status to CAN bus."""
         if self.can_protocol and hasattr(self.can_protocol, 'send_battery_status'):
@@ -296,15 +295,15 @@ class BatteryManagementSystem:
                 )
             except Exception as e:
                 self.logger.error(f"Failed to send CAN status: {e}")
-    
+
     def get_state(self) -> BatteryState:
         """Get current battery state."""
         return self.state
-    
+
     def get_config(self) -> BatteryConfig:
         """Get battery configuration."""
         return self.config
-    
+
     def get_statistics(self) -> Dict:
         """Get battery statistics."""
         return {
@@ -316,7 +315,7 @@ class BatteryManagementSystem:
             'current': self.state.current,
             'temperature': self.state.temperature
         }
-    
+
     def get_health_status(self) -> Dict:
         """Get battery health status."""
         return {
@@ -332,7 +331,7 @@ class BatteryManagementSystem:
                 'average': self.state.voltage / self.config.cell_count if self.config.cell_count > 0 else 0
             }
         }
-    
+
     def can_charge(self, requested_power_kw: float) -> bool:
         """Check if battery can accept charge at requested power.
         
@@ -344,15 +343,15 @@ class BatteryManagementSystem:
         """
         if self.state.status in [BatteryStatus.FAULT, BatteryStatus.CRITICAL]:
             return False
-    
+
         if requested_power_kw > self.config.max_charge_rate_kw:
             return False
-    
+
         if self.state.soc >= self.config.max_soc:
             return False
-        
+
         return True
-    
+
     def can_discharge(self, requested_power_kw: float) -> bool:
         """Check if battery can provide discharge at requested power.
         
@@ -364,11 +363,11 @@ class BatteryManagementSystem:
         """
         if self.state.status in [BatteryStatus.FAULT, BatteryStatus.CRITICAL]:
             return False
-    
+
         if requested_power_kw > self.config.max_discharge_rate_kw:
             return False
-    
+
         if self.state.soc <= self.config.min_soc:
             return False
-        
+
         return True

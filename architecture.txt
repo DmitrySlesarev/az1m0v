@@ -1,58 +1,80 @@
-ev-project/
+az1m0v/ (EV Management System)
 ├── README.md
-├── main.py
-├── pyproject.toml
+├── LICENSE
+├── main.py                         # Entry point for EV system
+├── pyproject.toml                  # Poetry dependencies
+├── poetry.lock                      # Locked dependencies
+├── verify_tests.sh                  # Test verification script
+├── architecture.txt                 # This file
+├── architecture.drawio              # Visual architecture diagram (draw.io)
+├── .github/
+│   └── workflows/
+│       └── python-package.yml       # CI/CD workflow (runs tests on every commit)
 ├── docs/
 │   ├── README.md
 │   └── configuration.md
 ├── config/
 │   ├── __init__.py
-│   ├── config.json
-│   ├── config_schema.json
-│   └── settings.py
+│   ├── config.json                  # System configuration
+│   ├── config_schema.json           # JSON schema for validation
+│   └── settings.py                  # Configuration loader
 ├── core/
 │   ├── __init__.py
-│   ├── battery_management.py      # Battery Management System (BMS)
-│   ├── motor_controller.py
-│   ├── charging_system.py
-│   └── vehicle_controller.py
+│   ├── battery_management.py        # Battery Management System (BMS)
+│   ├── motor_controller.py          # VESC motor controller integration
+│   ├── charging_system.py           # Charging system management
+│   └── vehicle_controller.py        # High-level vehicle coordination:
+│                                      #   - State management (PARKED, READY, DRIVING, CHARGING, etc.)
+│                                      #   - Safety enforcement (prevents driving while charging)
+│                                      #   - Drive mode control (ECO, NORMAL, SPORT, REVERSE)
+│                                      #   - Range calculation and energy tracking
+│                                      #   - Coordinates BMS, motor, and charging systems
 ├── sensors/
 │   ├── __init__.py
-│   ├── imu.py
-│   ├── gps.py
-│   ├── temperature.py
-│   └── computer_vision.py
+│   ├── imu.py                       # Inertial Measurement Unit
+│   ├── gps.py                       # GPS positioning
+│   ├── temperature.py               # Temperature sensors
+│   └── computer_vision.py           # Camera/vision processing
 ├── communication/
 │   ├── __init__.py
-│   ├── can_bus.py                 # CAN bus interface and EV protocol
-│   └── telemetry.py
+│   ├── can_bus.py                   # CAN bus interface and EV protocol (includes VESC)
+│   └── telemetry.py                 # Telemetry data transmission
 ├── ui/
 │   ├── __init__.py
-│   ├── dashboard.py
-│   └── mobile_app.py
+│   ├── dashboard.py                 # Dashboard interface
+│   └── mobile_app.py                # Mobile application interface
 ├── ai/
 │   ├── __init__.py
-│   └── autopilot.py
+│   └── autopilot.py                  # Autonomous driving AI
 ├── utils/
 │   ├── __init__.py
-│   ├── helpers.py
-│   └── count_lines.py
+│   ├── helpers.py                   # Utility functions
+│   └── count_lines.py               # Code statistics
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py
+│   ├── conftest.py                  # Pytest configuration
 │   ├── unit/
 │   │   ├── __init__.py
 │   │   ├── conftest.py
 │   │   ├── test_autopilot.py
+│   │   ├── test_battery_management.py
 │   │   ├── test_can_bus.py
 │   │   ├── test_computer_vision.py
-│   │   └── test_config.py
+│   │   ├── test_config.py
+│   │   ├── test_core.py
+│   │   ├── test_motor_controller.py
+│   │   ├── test_charging_system.py
+│   │   └── test_vehicle_controller.py
 │   └── functional/
 │       ├── __init__.py
 │       ├── test_autopilot_integration.py
-│       └── test_can_bus_integration.py
+│       ├── test_can_bus_integration.py
+│       ├── test_motor_controller_integration.py
+│       ├── test_charging_system_integration.py
+│       └── test_vehicle_controller_integration.py
 └── scripts/
-    ├── setup.sh
+    ├── setup.sh                     # Setup script
     └── integration/
         ├── __init__.py
-        └── simpbms_builder.py     # SimpBMS firmware build and integration
+        ├── simpbms_builder.py       # SimpBMS firmware build and integration
+        └── vesc_builder.py          # VESC motor controller build and integration
