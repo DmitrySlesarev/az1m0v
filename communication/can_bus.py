@@ -199,6 +199,22 @@ class EVCANProtocol:
         )
         return self._send_message(message)
     
+    def send_charger_status(self, voltage: float, current: float, state: str) -> bool:
+        """Send charger status information."""
+        message = CANMessage(
+            message_id=self.CAN_IDS['CHARGER_STATUS'],
+            name="CHARGER_STATUS",
+            description="Charging System Status",
+            data={
+                'voltage': voltage,
+                'current': current,
+                'state': state
+            },
+            timestamp=time.time(),
+            source="ChargingSystem"
+        )
+        return self._send_message(message)
+    
     def _send_message(self, message: CANMessage) -> bool:
         """Send a CAN message."""
         # Convert message to frame and send

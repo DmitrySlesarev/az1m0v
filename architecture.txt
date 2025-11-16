@@ -53,12 +53,14 @@ az1m0v/ (EV Management System)
 │   │   ├── test_computer_vision.py
 │   │   ├── test_config.py
 │   │   ├── test_core.py
-│   │   └── test_motor_controller.py
+│   │   ├── test_motor_controller.py
+│   │   └── test_charging_system.py
 │   └── functional/
 │       ├── __init__.py
 │       ├── test_autopilot_integration.py
 │       ├── test_can_bus_integration.py
-│       └── test_motor_controller_integration.py
+│       ├── test_motor_controller_integration.py
+│       └── test_charging_system_integration.py
 └── scripts/
     ├── setup.sh                     # Setup script
     └── integration/

@@ -142,6 +142,14 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         
+        <!-- Charging System connections -->
+        <mxCell id="conn15" value="Charge Auth" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="charging" target="bms">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn16" value="Safety Check" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="charging" target="motor">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
       </root>
     </mxGraphModel>
   </diagram>

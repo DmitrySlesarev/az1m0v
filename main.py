@@ -13,6 +13,7 @@ import jsonschema
 from communication.can_bus import CANBusInterface, EVCANProtocol
 from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
+from core.charging_system import ChargingSystem
 
 
 class EVSystem:
@@ -33,6 +34,7 @@ class EVSystem:
         self.can_protocol: Optional[EVCANProtocol] = None
         self.bms: Optional[BatteryManagementSystem] = None
         self.motor_controller: Optional[VESCManager] = None
+        self.charging_system: Optional[ChargingSystem] = None
         
         # Setup logging first
         self._setup_logging()
@@ -102,6 +104,9 @@ class EVSystem:
         # Initialize Motor Controller
         self._initialize_motor_controller()
         
+        # Initialize Charging System
+        self._initialize_charging_system()
+        
         self.logger.info("All components initialized successfully")
     
     def _initialize_can_bus(self) -> None:
@@ -166,6 +171,21 @@ class EVSystem:
         except Exception as e:
             self.logger.error(f"Failed to initialize motor controller: {e}")
     
+    def _initialize_charging_system(self) -> None:
+        """Initialize Charging System."""
+        try:
+            charging_config = self.config.get('charging', {})
+            
+            self.charging_system = ChargingSystem(
+                config=charging_config,
+                bms=self.bms,
+                motor_controller=self.motor_controller,
+                can_protocol=self.can_protocol
+            )
+            self.logger.info("Charging System initialized")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize charging system: {e}")
+    
     def _signal_handler(self, signum, frame) -> None:
         """Handle shutdown signals."""
         self.logger.info(f"Received signal {signum}, shutting down...")
@@ -209,6 +229,12 @@ class EVSystem:
             motor_status = self.motor_controller.get_status()
             if motor_status:
                 self.logger.debug(f"Motor Status: {motor_status.state.value}, RPM: {motor_status.speed_rpm:.0f}")
+        
+        # Update charging system status
+        if self.charging_system and self.charging_system.is_connected():
+            charging_status = self.charging_system.get_status()
+            if charging_status:
+                self.logger.debug(f"Charging Status: {charging_status.state.value}, Power: {charging_status.power_kw:.2f}kW")
     
     def shutdown(self) -> None:
         """Shutdown the EV system gracefully."""
@@ -217,6 +243,12 @@ class EVSystem:
         
         self.logger.info("Shutting down EV system...")
         self.running = False
+        
+        # Stop charging if active
+        if self.charging_system and self.charging_system.is_charging():
+            self.charging_system.stop_charging()
+            self.charging_system.disconnect_charger()
+            self.logger.info("Charging system stopped and disconnected")
         
         # Stop motor controller
         if self.motor_controller and self.motor_controller.is_connected:
