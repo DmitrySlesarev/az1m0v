@@ -67,7 +67,7 @@
         <mxCell id="ui-group" value="User Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1120" y="140" width="200" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="dashboard" value="Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+        <mxCell id="dashboard" value="Web Dashboard&#xa;(Flask + WebSocket)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="1140" y="180" width="160" height="60" as="geometry" />
         </mxCell>
         <mxCell id="mobile" value="Mobile App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
@@ -167,6 +167,11 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         <mxCell id="conn20" value="Location" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gps" target="telemetry">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Dashboard connections from CAN Bus -->
+        <mxCell id="conn21" value="CAN Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="can" target="dashboard">
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         

@@ -11,6 +11,8 @@ package-mode = false
 python = "^3.13"
 jsonschema = "^4.0"
 numpy = "^1.21.0"
+flask = "^3.0.0"
+flask-socketio = "^5.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"

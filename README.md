@@ -48,7 +48,15 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 - **Computer Vision**: Real-time lane detection and object recognition
 
 ### User Interfaces
-- **Dashboard**: Primary control and monitoring interface
+- **Dashboard**: Web-based real-time monitoring and control interface:
+  - Real-time data visualization via WebSocket
+  - Battery status (voltage, current, temperature, SOC)
+  - Motor status (speed, torque, temperature)
+  - Charging system status
+  - Vehicle state monitoring
+  - CAN bus statistics
+  - Responsive design for desktop and mobile
+  - Raspberry Pi 4 optimized
 - **Mobile App**: Remote monitoring and control capabilities
 
 ### Integration & Build Tools
@@ -138,6 +146,32 @@ The system will:
 - Connect to motor controller (if serial port configured)
 - Start monitoring and control loops
 - Handle graceful shutdown on SIGINT/SIGTERM
+
+**Start the web dashboard:**
+```bash
+poetry run python -m ui.dashboard
+```
+
+Or integrate into your application:
+```python
+from ui.dashboard import EVDashboard
+from communication.can_bus import CANBusInterface, EVCANProtocol
+
+# Initialize CAN bus
+can_bus = CANBusInterface("can0", 500000)
+can_bus.connect()
+can_protocol = EVCANProtocol(can_bus)
+
+# Start dashboard
+dashboard = EVDashboard(can_bus=can_bus, can_protocol=can_protocol)
+dashboard.start()  # Runs on http://0.0.0.0:5000 by default
+```
+
+The dashboard provides:
+- Real-time WebSocket updates
+- REST API endpoint at `/api/status`
+- Responsive web interface accessible from any device
+- Automatic CAN bus data integration
 
 ### Testing
 
@@ -260,6 +294,8 @@ The system implements standard EV CAN protocols:
 - **Dependencies**:
   - `jsonschema` - Configuration validation
   - `numpy` - Numerical computations
+  - `flask` - Web framework for dashboard
+  - `flask-socketio` - WebSocket support for real-time updates
   - `pytest` - Testing framework (dev)
   - `pytest-cov` - Test coverage (dev)
 
@@ -293,7 +329,8 @@ See [LICENSE](LICENSE) for full license text.
 - Sensor Integration: ✅ Implemented
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
-- Test Suite: ✅ 378 tests passing (45 unit + 14 functional for vehicle controller, 21 unit + 10 functional for telemetry)
+- Web Dashboard: ✅ Implemented (Flask + WebSocket, CAN bus integrated, Raspberry Pi 4 compatible)
+- Test Suite: ✅ Comprehensive test coverage including dashboard tests
 - CI/CD: ✅ GitHub Actions workflow running all tests on every commit
 
 ## Support

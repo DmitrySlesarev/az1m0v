@@ -45,7 +45,14 @@ az1m0v/ (EV Management System)
 │                                      #   - Cellular communication
 ├── ui/
 │   ├── __init__.py
-│   ├── dashboard.py                 # Dashboard interface
+│   ├── dashboard.py                 # Web-based dashboard with Flask + WebSocket:
+│   │                                #   - Real-time data visualization
+│   │                                #   - CAN bus integration
+│   │                                #   - WebSocket for live updates
+│   │                                #   - REST API endpoint
+│   │                                #   - Raspberry Pi 4 optimized
+│   ├── templates/
+│   │   └── dashboard.html           # Dashboard HTML template with responsive design
 │   └── mobile_app.py                # Mobile application interface
 ├── ai/
 │   ├── __init__.py
