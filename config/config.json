@@ -45,6 +45,21 @@
     "telemetry_enabled": true,
     "update_interval_ms": 1000
   },
+  "telemetry": {
+    "enabled": true,
+    "server_url": "https://telemetry.example.com",
+    "server_port": 443,
+    "api_key": "",
+    "update_interval_s": 10.0,
+    "connection_timeout_s": 30.0,
+    "retry_attempts": 3,
+    "retry_delay_s": 5.0,
+    "use_ssl": true,
+    "cellular_apn": "internet",
+    "cellular_username": "",
+    "cellular_password": "",
+    "simulation_mode": true
+  },
   "ui": {
     "dashboard_enabled": true,
     "mobile_app_enabled": true,

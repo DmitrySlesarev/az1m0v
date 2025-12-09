@@ -38,7 +38,11 @@ az1m0v/ (EV Management System)
 ├── communication/
 │   ├── __init__.py
 │   ├── can_bus.py                   # CAN bus interface and EV protocol (includes VESC)
-│   └── telemetry.py                 # Telemetry data transmission
+│   └── telemetry.py                 # Telemetry data transmission (Quectel integration):
+│                                      #   - Remote data streaming
+│                                      #   - GPS location tracking
+│                                      #   - Error reporting
+│                                      #   - Cellular communication
 ├── ui/
 │   ├── __init__.py
 │   ├── dashboard.py                 # Dashboard interface
@@ -64,17 +68,20 @@ az1m0v/ (EV Management System)
 │   │   ├── test_core.py
 │   │   ├── test_motor_controller.py
 │   │   ├── test_charging_system.py
-│   │   └── test_vehicle_controller.py
+│   │   ├── test_vehicle_controller.py
+│   │   └── test_telemetry.py
 │   └── functional/
 │       ├── __init__.py
 │       ├── test_autopilot_integration.py
 │       ├── test_can_bus_integration.py
 │       ├── test_motor_controller_integration.py
 │       ├── test_charging_system_integration.py
-│       └── test_vehicle_controller_integration.py
+│       ├── test_vehicle_controller_integration.py
+│       └── test_telemetry_integration.py
 └── scripts/
     ├── setup.sh                     # Setup script
     └── integration/
         ├── __init__.py
         ├── simpbms_builder.py       # SimpBMS firmware build and integration
-        └── vesc_builder.py          # VESC motor controller build and integration
+        ├── vesc_builder.py          # VESC motor controller build and integration
+        └── quectel_builder.py       # Quectel QuecPython library build and integration

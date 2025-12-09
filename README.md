@@ -27,7 +27,12 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ### Communication
 - **CAN Bus Interface**: Industry-standard CAN bus communication with EV-specific protocol
 - **VESC Protocol**: Dedicated CAN IDs and message handlers for VESC motor controller
-- **Telemetry System**: Remote data transmission and monitoring
+- **Telemetry System**: Remote data transmission and monitoring using Quectel cellular modules:
+  - Real-time vehicle data streaming (battery, motor, charging status)
+  - GPS location tracking
+  - Error reporting and diagnostics
+  - Configurable update intervals and retry logic
+  - Simulation mode for development
 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
@@ -49,6 +54,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ### Integration & Build Tools
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
 - **SimpBMS Builder**: SimpBMS firmware build and integration support
+- **Quectel Builder**: Automated download, build, and integration of Quectel QuecPython library for telemetry
 
 ## Project Structure
 
@@ -113,6 +119,11 @@ See [architecture.txt](architecture.txt) for detailed structure.
    ```bash
    python simpbms_builder.py
    ```
+   
+   For Quectel telemetry:
+   ```bash
+   python quectel_builder.py
+   ```
 
 ### Running the System
 
@@ -147,9 +158,11 @@ poetry run pytest tests/functional/ -v
 poetry run pytest tests/unit/test_motor_controller.py -v
 ```
 
-The project includes **347 tests** covering all major components:
+The project includes **378 tests** covering all major components:
 - **45 unit tests** for vehicle controller
 - **14 functional/integration tests** for vehicle controller
+- **21 unit tests** for telemetry system
+- **10 functional/integration tests** for telemetry system
 - Comprehensive test coverage for all core systems
 - All tests run automatically on every commit via GitHub Actions
 
@@ -167,6 +180,7 @@ Key configuration sections:
 - Motor controller settings (VESC serial port, limits)
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
+- Telemetry settings (server URL, cellular APN, update intervals)
 - Sensor enablement
 - CAN bus settings
 - AI/autopilot configuration
@@ -253,6 +267,10 @@ Optional (for VESC):
 - `pyvesc` - VESC Python library (installed via integration script)
 - `pyserial` - Serial communication
 
+Optional (for Telemetry):
+- `quecpython` - Quectel QuecPython library (installed via integration script)
+- `requests` - HTTP/HTTPS requests for telemetry transmission
+
 ## License
 
 GNU General Public License v3.0
@@ -271,10 +289,11 @@ See [LICENSE](LICENSE) for full license text.
 - Charging System: ✅ Implemented
 - Vehicle Controller: ✅ Implemented
 - CAN Bus Communication: ✅ Implemented
+- Telemetry System: ✅ Implemented (Quectel integration)
 - Sensor Integration: ✅ Implemented
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
-- Test Suite: ✅ 347 tests passing (45 unit + 14 functional for vehicle controller)
+- Test Suite: ✅ 378 tests passing (45 unit + 14 functional for vehicle controller, 21 unit + 10 functional for telemetry)
 - CI/CD: ✅ GitHub Actions workflow running all tests on every commit
 
 ## Support

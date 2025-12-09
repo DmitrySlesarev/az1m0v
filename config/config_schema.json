@@ -90,6 +90,25 @@
         "update_interval_ms": {"type": "integer", "minimum": 1}
       }
     },
+    "telemetry": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "server_url": {"type": "string"},
+        "server_port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "api_key": {"type": "string"},
+        "update_interval_s": {"type": "number", "minimum": 0.1},
+        "connection_timeout_s": {"type": "number", "minimum": 1},
+        "retry_attempts": {"type": "integer", "minimum": 0},
+        "retry_delay_s": {"type": "number", "minimum": 0},
+        "use_ssl": {"type": "boolean"},
+        "cellular_apn": {"type": "string"},
+        "cellular_username": {"type": "string"},
+        "cellular_password": {"type": "string"},
+        "simulation_mode": {"type": "boolean"}
+      }
+    },
     "ui": {
       "type": "object",
       "required": ["dashboard_enabled", "mobile_app_enabled", "theme"],

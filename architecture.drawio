@@ -51,7 +51,7 @@
         <mxCell id="can" value="CAN Bus&#xa;(VESC Protocol)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="660" y="180" width="160" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="telemetry" value="Telemetry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+        <mxCell id="telemetry" value="Telemetry&#xa;(Quectel)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="660" y="260" width="160" height="60" as="geometry" />
         </mxCell>
         
@@ -79,9 +79,15 @@
           <mxGeometry x="40" y="380" width="320" height="120" as="geometry" />
         </mxCell>
         <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-          <mxGeometry x="60" y="420" width="130" height="60" as="geometry" />
+          <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="vesc" value="VESC Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="60" y="420" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="quectel" value="Quectel Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="210" y="420" width="130" height="60" as="geometry" />
         </mxCell>
         
@@ -147,6 +153,20 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         <mxCell id="conn16" value="Safety Check" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="charging" target="motor">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Telemetry connections -->
+        <mxCell id="conn17" value="Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="bms" target="telemetry">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn18" value="Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="motor" target="telemetry">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn19" value="Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="vehicle" target="telemetry">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn20" value="Location" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gps" target="telemetry">
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         

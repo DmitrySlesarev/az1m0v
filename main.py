@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any
 import jsonschema
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
+from communication.telemetry import TelemetrySystem
 from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
 from core.charging_system import ChargingSystem
@@ -35,6 +36,7 @@ class EVSystem:
         self.bms: Optional[BatteryManagementSystem] = None
         self.motor_controller: Optional[VESCManager] = None
         self.charging_system: Optional[ChargingSystem] = None
+        self.telemetry: Optional[TelemetrySystem] = None
 
         # Setup logging first
         self._setup_logging()
@@ -106,6 +108,9 @@ class EVSystem:
 
         # Initialize Charging System
         self._initialize_charging_system()
+
+        # Initialize Telemetry System
+        self._initialize_telemetry()
 
         self.logger.info("All components initialized successfully")
 
@@ -186,6 +191,26 @@ class EVSystem:
         except Exception as e:
             self.logger.error(f"Failed to initialize charging system: {e}")
 
+    def _initialize_telemetry(self) -> None:
+        """Initialize Telemetry System."""
+        try:
+            telemetry_config = self.config.get('telemetry', {})
+            vehicle_id = self.config.get('vehicle', {}).get('serial_number', 'EV001')
+
+            if telemetry_config.get('enabled', False):
+                self.telemetry = TelemetrySystem(
+                    config=telemetry_config,
+                    vehicle_id=vehicle_id
+                )
+                if self.telemetry.connect():
+                    self.logger.info("Telemetry System initialized and connected")
+                else:
+                    self.logger.warning("Telemetry System initialized but not connected")
+            else:
+                self.logger.info("Telemetry System disabled")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize telemetry system: {e}")
+
     def _signal_handler(self, signum, frame) -> None:
         """Handle shutdown signals."""
         self.logger.info(f"Received signal {signum}, shutting down...")
@@ -236,6 +261,64 @@ class EVSystem:
             if charging_status:
                 self.logger.debug(f"Charging Status: {charging_status.state.value}, Power: {charging_status.power_kw:.2f}kW")
 
+        # Send telemetry data
+        if self.telemetry and self.telemetry.is_enabled():
+            self._send_telemetry_data()
+
+    def _send_telemetry_data(self) -> None:
+        """Collect and send telemetry data."""
+        try:
+            # Get BMS data
+            battery_soc = 0.0
+            battery_voltage = 0.0
+            battery_current = 0.0
+            if self.bms:
+                bms_state = self.bms.get_state()
+                if bms_state:
+                    battery_soc = bms_state.soc
+                    battery_voltage = bms_state.voltage
+                    battery_current = bms_state.current
+
+            # Get motor data
+            motor_speed_rpm = 0.0
+            motor_current = 0.0
+            if self.motor_controller and self.motor_controller.is_connected:
+                motor_status = self.motor_controller.get_status()
+                if motor_status:
+                    motor_speed_rpm = motor_status.speed_rpm
+                    motor_current = motor_status.current_a
+
+            # Get charging data
+            charging_power_kw = 0.0
+            vehicle_state = "unknown"
+            if self.charging_system:
+                charging_status = self.charging_system.get_status()
+                if charging_status:
+                    charging_power_kw = charging_status.power_kw
+                    vehicle_state = charging_status.state.value
+
+            # Get temperature (from BMS if available)
+            temperature = 25.0
+            if self.bms:
+                bms_state = self.bms.get_state()
+                if bms_state and bms_state.temperatures:
+                    temperature = sum(bms_state.temperatures) / len(bms_state.temperatures)
+
+            # Send telemetry data
+            self.telemetry.send_data(
+                battery_soc=battery_soc,
+                battery_voltage=battery_voltage,
+                battery_current=battery_current,
+                motor_speed_rpm=motor_speed_rpm,
+                motor_current=motor_current,
+                vehicle_speed_kmh=0.0,  # Would come from vehicle controller
+                charging_power_kw=charging_power_kw,
+                temperature=temperature,
+                state=vehicle_state
+            )
+        except Exception as e:
+            self.logger.error(f"Error sending telemetry data: {e}")
+
     def shutdown(self) -> None:
         """Shutdown the EV system gracefully."""
         if not self.running:
@@ -255,6 +338,11 @@ class EVSystem:
             self.motor_controller.stop()
             self.motor_controller.disconnect()
             self.logger.info("Motor controller stopped and disconnected")
+
+        # Disconnect telemetry
+        if self.telemetry:
+            self.telemetry.disconnect()
+            self.logger.info("Telemetry system disconnected")
 
         # Disconnect CAN bus
         if self.can_bus and self.can_bus.is_connected:
