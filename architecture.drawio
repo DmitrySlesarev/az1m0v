@@ -81,9 +81,6 @@
         <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-          <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="vesc" value="VESC Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="60" y="420" width="130" height="60" as="geometry" />
         </mxCell>
