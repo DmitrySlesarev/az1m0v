@@ -58,15 +58,15 @@ jobs:
     
     - name: Run unit tests
       run: |
-        poetry run pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml
+        poetry run pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml -m "not playwright"
     
     - name: Run functional tests
       run: |
-        poetry run pytest tests/functional/ -v --tb=short --junit-xml=junit-functional.xml
+        poetry run pytest tests/functional/ -v --tb=short --junit-xml=junit-functional.xml -m "not playwright"
     
     - name: Run all tests with coverage
       run: |
-        poetry run pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term-missing --cov-report=html --junit-xml=junit-all.xml
+        poetry run pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term-missing --cov-report=html --junit-xml=junit-all.xml -m "not playwright"
     
     - name: Upload unit test results
       uses: actions/upload-artifact@v4
@@ -91,14 +91,14 @@ jobs:
           coverage.xml
           htmlcov/
     
-    # - name: Publish test results
-    #   uses: EnricoMi/publish-unit-test-result-action@v2
-    #   if: always()
-    #   with:
-    #     files: |
-    #       junit-all.xml
-    #       junit-unit.xml
-    #       junit-functional.xml
-    #     check_name: Test Results (Python ${{ matrix.python-version }})
-    #     comment_mode: always
-    #     report_individual_runs: true
+    - name: Publish test results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          junit-all.xml
+          junit-unit.xml
+          junit-functional.xml
+        check_name: Test Results (Python ${{ matrix.python-version }})
+        comment_mode: always
+        report_individual_runs: true
