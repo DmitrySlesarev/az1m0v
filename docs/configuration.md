@@ -4,7 +4,7 @@ This document describes all configuration parameters available in the EV system 
 
 ## Overview
 
-The EV system configuration is stored in JSON format and validated against a JSON schema. The configuration is organized into logical sections covering vehicle specifications, battery management, motor control, charging systems, sensors, communication, user interface, AI features, and logging.
+The EV system configuration is stored in JSON format and validated against a JSON schema. The configuration is organized into logical sections covering vehicle specifications, battery management, motor control, motor controller hardware, charging systems, sensors, communication, telemetry, user interface, AI features, and logging.
 
 ## Configuration Sections
 
@@ -35,6 +35,20 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `efficiency` | number | Motor efficiency factor | 0.0 - 1.0 | 0.95 |
 | `type` | string | Motor type | permanent_magnet, induction, switched_reluctance | "permanent_magnet" |
 
+### Motor Controller Configuration
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `type` | string | Motor controller type | vesc, other | "vesc" |
+| `serial_port` | string | Serial port for UART communication | Valid device path | "/dev/ttyUSB0" |
+| `can_enabled` | boolean | Enable CAN bus communication | true/false | true |
+| `max_current_a` | number | Maximum current limit | ≥ 0 A | 200.0 |
+| `max_rpm` | number | Maximum motor RPM | ≥ 0 RPM | 10000.0 |
+| `max_temperature_c` | number | Maximum operating temperature | ≥ 0 °C | 80.0 |
+| `min_voltage_v` | number | Minimum operating voltage | ≥ 0 V | 300.0 |
+| `max_voltage_v` | number | Maximum operating voltage | ≥ 0 V | 500.0 |
+| `update_interval_ms` | integer | Controller update interval | ≥ 1 ms | 100 |
+
 ### Charging Configuration
 
 | Parameter | Type | Description | Range/Units | Example |
@@ -43,17 +57,6 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `dc_max_power_kw` | number | Maximum DC fast charging power | ≥ 0 kW | 150.0 |
 | `connector_type` | string | Charging connector standard | CCS1, CCS2, CHAdeMO, Tesla | "CCS2" |
 | `fast_charge_enabled` | boolean | Enable fast charging capability | true/false | true |
-
-### Vehicle Controller Configuration
-
-| Parameter | Type | Description | Range/Units | Example |
-|-----------|------|-------------|-------------|---------|
-| `max_speed_kmh` | number | Maximum vehicle speed | ≥ 0 km/h | 120.0 |
-| `max_acceleration_ms2` | number | Maximum acceleration | ≥ 0 m/s² | 3.0 |
-| `max_deceleration_ms2` | number | Maximum deceleration (braking) | ≤ 0 m/s² | -5.0 |
-| `max_power_kw` | number | Maximum vehicle power output | ≥ 0 kW | 150.0 |
-| `efficiency_wh_per_km` | number | Energy consumption per kilometer | ≥ 0 Wh/km | 200.0 |
-| `weight_kg` | number | Vehicle weight | ≥ 0 kg | 1500.0 |
 
 ### Sensor Configuration
 
@@ -71,6 +74,24 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `can_bus_enabled` | boolean | Enable CAN bus communication | true/false | true |
 | `telemetry_enabled` | boolean | Enable telemetry data transmission | true/false | true |
 | `update_interval_ms` | integer | Communication update interval | ≥ 1 ms | 1000 |
+
+### Telemetry Configuration
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `enabled` | boolean | Enable telemetry system | true/false | true |
+| `server_url` | string | Telemetry server URL | Valid URL | "https://telemetry.example.com" |
+| `server_port` | integer | Telemetry server port | 1 - 65535 | 443 |
+| `api_key` | string | API key for authentication | String | "" |
+| `update_interval_s` | number | Telemetry update interval | ≥ 0.1 s | 10.0 |
+| `connection_timeout_s` | number | Connection timeout | ≥ 1 s | 30.0 |
+| `retry_attempts` | integer | Number of retry attempts | ≥ 0 | 3 |
+| `retry_delay_s` | number | Delay between retries | ≥ 0 s | 5.0 |
+| `use_ssl` | boolean | Use SSL/TLS encryption | true/false | true |
+| `cellular_apn` | string | Cellular APN for connection | String | "internet" |
+| `cellular_username` | string | Cellular username | String | "" |
+| `cellular_password` | string | Cellular password | String | "" |
+| `simulation_mode` | boolean | Enable simulation mode | true/false | true |
 
 ### User Interface Configuration
 
@@ -107,6 +128,26 @@ The configuration file is validated against `config/config_schema.json` which en
 - String values match allowed enumerations
 - File paths are properly formatted
 
+### Required Configuration Sections
+
+The following sections are required in the configuration file:
+- `vehicle` - Vehicle identification information
+- `battery` - Battery specifications and limits
+- `motor` - Motor specifications
+- `motor_controller` - Motor controller hardware configuration
+- `charging` - Charging system configuration
+- `sensors` - Sensor system configuration
+- `communication` - Communication system settings
+- `ui` - User interface settings
+- `ai` - AI features configuration
+- `logging` - Logging system configuration
+
+### Optional Configuration Sections
+
+The following sections are optional but may be included:
+- `telemetry` - Telemetry system configuration (for remote monitoring)
+- `temperature_sensors` - Advanced temperature sensor configuration (extends basic sensor config)
+
 ## Usage Examples
 
 ### Loading Configuration
@@ -125,27 +166,58 @@ config = load_config()
 battery_capacity = config['battery']['capacity_kwh']
 ```
 
-### Vehicle Controller Configuration Example
+### Motor Controller Configuration Example
 
 ```json
 {
-  "vehicle_controller": {
-    "max_speed_kmh": 120.0,
-    "max_acceleration_ms2": 3.0,
-    "max_deceleration_ms2": -5.0,
-    "max_power_kw": 150.0,
-    "efficiency_wh_per_km": 200.0,
-    "weight_kg": 1500.0
+  "motor_controller": {
+    "type": "vesc",
+    "serial_port": "/dev/ttyUSB0",
+    "can_enabled": true,
+    "max_current_a": 200.0,
+    "max_rpm": 10000.0,
+    "max_temperature_c": 80.0,
+    "min_voltage_v": 300.0,
+    "max_voltage_v": 500.0,
+    "update_interval_ms": 100
   }
 }
 ```
 
-The vehicle controller coordinates all subsystems and enforces safety rules. Key features:
-- **State Management**: Manages vehicle states (PARKED, READY, DRIVING, CHARGING, ERROR, EMERGENCY)
-- **Safety Enforcement**: Prevents driving while charging and vice versa
-- **Drive Modes**: Supports ECO, NORMAL, SPORT, and REVERSE modes
-- **Range Calculation**: Estimates remaining range based on battery SOC and efficiency
-- **Energy Tracking**: Monitors energy consumption and distance traveled
+The motor controller manages the VESC (Vedder Electronic Speed Controller) or other motor controller hardware. It provides:
+- **Serial Communication**: UART interface for direct motor control
+- **CAN Bus Integration**: Optional CAN bus communication for distributed systems
+- **Safety Limits**: Enforces current, voltage, temperature, and RPM limits
+- **Real-time Monitoring**: Tracks motor status including temperature, current, and RPM
+
+### Telemetry Configuration Example
+
+```json
+{
+  "telemetry": {
+    "enabled": true,
+    "server_url": "https://telemetry.example.com",
+    "server_port": 443,
+    "api_key": "",
+    "update_interval_s": 10.0,
+    "connection_timeout_s": 30.0,
+    "retry_attempts": 3,
+    "retry_delay_s": 5.0,
+    "use_ssl": true,
+    "cellular_apn": "internet",
+    "cellular_username": "",
+    "cellular_password": "",
+    "simulation_mode": true
+  }
+}
+```
+
+The telemetry system enables remote monitoring and data collection. Features include:
+- **Remote Data Transmission**: Sends vehicle data to remote servers
+- **Cellular Connectivity**: Supports cellular network connections with APN configuration
+- **Retry Logic**: Automatic retry with configurable attempts and delays
+- **SSL/TLS Security**: Optional encrypted connections
+- **Simulation Mode**: Test telemetry without actual hardware connections
 
 ### Validating Configuration
 
