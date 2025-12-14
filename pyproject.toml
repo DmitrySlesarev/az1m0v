@@ -17,6 +17,8 @@ flask-socketio = "^5.3.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
 pytest-cov = "^4.0"
+pytest-playwright = "^0.7.2"
+playwright = "^1.57.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -28,3 +30,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "playwright: marks tests as playwright tests (deselect with '-m \"not playwright\"')",
+    "integration: marks tests as integration tests that may be slower or flaky",
+]
