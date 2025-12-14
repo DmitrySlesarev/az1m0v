@@ -11,7 +11,6 @@ sys.path.insert(0, str(project_root))
 from ui.dashboard import EVDashboard
 from communication.can_bus import CANBusInterface, EVCANProtocol
 import json
-import jsonschema
 
 def load_config(config_path: str = "config/config.json"):
     """Load and validate configuration."""

@@ -167,6 +167,21 @@
             font-size: 0.9em;
         }
 
+        .temp-warning {
+            color: #FFC107;
+            font-weight: bold;
+        }
+
+        .temp-fault {
+            color: #f44336;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        .temp-normal {
+            color: #4CAF50;
+        }
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -289,6 +304,53 @@
                 </div>
             </div>
 
+            <!-- Temperature Sensors Card -->
+            <div class="card">
+                <h2>🌡️ Temperature Sensors</h2>
+                <div class="metric">
+                    <span class="metric-label">Battery Cell Groups</span>
+                    <span class="metric-value">
+                        <span id="temp-battery-groups">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Coolant Inlet</span>
+                    <span class="metric-value">
+                        <span id="temp-coolant-inlet">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Coolant Outlet</span>
+                    <span class="metric-value">
+                        <span id="temp-coolant-outlet">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Motor Stator</span>
+                    <span class="metric-value">
+                        <span id="temp-motor-stator">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Charging Port</span>
+                    <span class="metric-value">
+                        <span id="temp-charging-port">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Charging Connector</span>
+                    <span class="metric-value">
+                        <span id="temp-charging-connector">--</span>
+                        <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+            </div>
+
             <!-- CAN Bus Stats Card -->
             <div class="card">
                 <h2>📡 CAN Bus</h2>
@@ -381,6 +443,57 @@
                 updateStateBadge('vehicle-state', data.vehicle.state);
             }
 
+            // Update temperature sensor data
+            if (data.temperature) {
+                // Battery cell groups - show average or list
+                // Warning: 40°C, Fault: 50°C (typical for battery cells)
+                if (data.temperature.battery_cell_groups && data.temperature.battery_cell_groups.length > 0) {
+                    const cellTemps = data.temperature.battery_cell_groups.filter(t => t !== null && t !== undefined);
+                    if (cellTemps.length > 0) {
+                        const avg = cellTemps.reduce((a, b) => a + b, 0) / cellTemps.length;
+                        const min = Math.min(...cellTemps);
+                        const max = Math.max(...cellTemps);
+                        const displayValue = `${avg.toFixed(1)} (${min.toFixed(1)}-${max.toFixed(1)})`;
+                        updateTemperatureRange('temp-battery-groups', displayValue, 40, 50);
+                    } else {
+                        updateElement('temp-battery-groups', '--');
+                    }
+                } else {
+                    updateElement('temp-battery-groups', '--');
+                }
+                
+                // Coolant temperatures
+                // Warning: 60°C, Fault: 90°C
+                if (data.temperature.coolant) {
+                    updateTemperatureElement('temp-coolant-inlet', data.temperature.coolant.inlet, 60, 90);
+                    updateTemperatureElement('temp-coolant-outlet', data.temperature.coolant.outlet, 60, 90);
+                }
+                
+                // Motor stator temperatures - show average or list
+                // Warning: 80°C, Fault: 150°C
+                if (data.temperature.motor_stator && data.temperature.motor_stator.length > 0) {
+                    const statorTemps = data.temperature.motor_stator.filter(t => t !== null && t !== undefined);
+                    if (statorTemps.length > 0) {
+                        const avg = statorTemps.reduce((a, b) => a + b, 0) / statorTemps.length;
+                        const min = Math.min(...statorTemps);
+                        const max = Math.max(...statorTemps);
+                        const displayValue = `${avg.toFixed(1)} (${min.toFixed(1)}-${max.toFixed(1)})`;
+                        updateTemperatureRange('temp-motor-stator', displayValue, 80, 150);
+                    } else {
+                        updateElement('temp-motor-stator', '--');
+                    }
+                } else {
+                    updateElement('temp-motor-stator', '--');
+                }
+                
+                // Charging temperatures
+                // Warning: 60°C, Fault: 100°C
+                if (data.temperature.charging) {
+                    updateTemperatureElement('temp-charging-port', data.temperature.charging.port, 60, 100);
+                    updateTemperatureElement('temp-charging-connector', data.temperature.charging.connector, 60, 100);
+                }
+            }
+
             // Update CAN stats
             if (data.can_stats) {
                 updateElement('can-frames-sent', data.can_stats.frames_sent);
@@ -414,6 +527,52 @@
             } else if (element) {
                 element.textContent = '--';
                 element.className = 'state-badge';
+            }
+        }
+
+        function updateTemperatureElement(id, value, warningThreshold, faultThreshold) {
+            const element = document.getElementById(id);
+            if (element && value !== undefined && value !== null) {
+                element.textContent = value;
+                // Remove all temperature classes
+                element.classList.remove('temp-normal', 'temp-warning', 'temp-fault');
+                // Add appropriate class based on threshold
+                if (faultThreshold && value >= faultThreshold) {
+                    element.classList.add('temp-fault');
+                } else if (warningThreshold && value >= warningThreshold) {
+                    element.classList.add('temp-warning');
+                } else {
+                    element.classList.add('temp-normal');
+                }
+            } else if (element) {
+                element.textContent = '--';
+                element.classList.remove('temp-normal', 'temp-warning', 'temp-fault');
+            }
+        }
+
+        function updateTemperatureRange(id, value, warningThreshold, faultThreshold) {
+            const element = document.getElementById(id);
+            if (element && value !== undefined && value !== null) {
+                element.textContent = value;
+                // For range values, check the max part (after the dash)
+                const parts = value.split('(');
+                if (parts.length > 1) {
+                    const rangePart = parts[1].split('-')[1];
+                    if (rangePart) {
+                        const maxTemp = parseFloat(rangePart.split(')')[0]);
+                        element.classList.remove('temp-normal', 'temp-warning', 'temp-fault');
+                        if (faultThreshold && maxTemp >= faultThreshold) {
+                            element.classList.add('temp-fault');
+                        } else if (warningThreshold && maxTemp >= warningThreshold) {
+                            element.classList.add('temp-warning');
+                        } else {
+                            element.classList.add('temp-normal');
+                        }
+                    }
+                }
+            } else if (element) {
+                element.textContent = '--';
+                element.classList.remove('temp-normal', 'temp-warning', 'temp-fault');
             }
         }
 

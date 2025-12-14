@@ -5,7 +5,7 @@ Compatible with SimpBMS and other open-source BMS systems via CAN bus.
 
 import logging
 from typing import Dict, Optional, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 import time
 
@@ -34,6 +34,9 @@ class BatteryState:
     cell_temperatures: List[float]  # Individual cell temperatures
     status: BatteryStatus
     timestamp: float
+    cell_group_temperatures: List[float] = field(default_factory=list)  # Temperatures per cell group
+    coolant_inlet_temperature: Optional[float] = None  # Coolant inlet temperature in °C
+    coolant_outlet_temperature: Optional[float] = None  # Coolant outlet temperature in °C
 
 
 @dataclass
@@ -55,12 +58,13 @@ class BatteryConfig:
 class BatteryManagementSystem:
     """Battery Management System for EV applications."""
 
-    def __init__(self, config: Dict, can_protocol: Optional[object] = None):
+    def __init__(self, config: Dict, can_protocol: Optional[object] = None, temperature_sensor_manager: Optional[object] = None):
         """Initialize the Battery Management System.
         
         Args:
             config: Battery configuration dictionary
             can_protocol: Optional EVCANProtocol instance for CAN bus communication
+            temperature_sensor_manager: Optional TemperatureSensorManager instance for temperature readings
         """
         self.config = BatteryConfig(
             capacity_kwh=config.get('capacity_kwh', 75.0),
@@ -75,6 +79,7 @@ class BatteryManagementSystem:
         )
 
         self.can_protocol = can_protocol
+        self.temperature_sensor_manager = temperature_sensor_manager
         self.logger = logging.getLogger(__name__)
 
         # Initialize battery state
@@ -88,7 +93,10 @@ class BatteryManagementSystem:
             cell_voltages=[self.config.nominal_voltage / self.config.cell_count] * self.config.cell_count,
             cell_temperatures=[25.0] * self.config.cell_count,
             status=BatteryStatus.STANDBY,
-            timestamp=time.time()
+            timestamp=time.time(),
+            cell_group_temperatures=[],
+            coolant_inlet_temperature=None,
+            coolant_outlet_temperature=None
         )
 
         # Statistics
@@ -130,7 +138,32 @@ class BatteryManagementSystem:
         if current is not None:
             self.state.current = current
 
-        # Update temperature
+        # Update temperature from temperature sensor manager if available
+        if self.temperature_sensor_manager:
+            # Get cell group temperatures
+            cell_group_temps = self.temperature_sensor_manager.get_battery_cell_temperatures()
+            if cell_group_temps:
+                self.state.cell_group_temperatures = cell_group_temps
+                # Map cell group temperatures to individual cells (if needed)
+                if cell_temperatures is None:
+                    # Distribute group temperatures to cells
+                    cells_per_group = max(1, self.config.cell_count // len(cell_group_temps))
+                    cell_temps = []
+                    for group_temp in cell_group_temps:
+                        cell_temps.extend([group_temp] * cells_per_group)
+                    # Trim to exact cell count
+                    cell_temps = cell_temps[:self.config.cell_count]
+                    self.state.cell_temperatures = cell_temps
+                    self.state.temperature = sum(cell_temps) / len(cell_temps) if cell_temps else 25.0
+
+            # Get coolant temperatures
+            coolant_temps = self.temperature_sensor_manager.get_coolant_temperatures()
+            if 'inlet' in coolant_temps:
+                self.state.coolant_inlet_temperature = coolant_temps['inlet']
+            if 'outlet' in coolant_temps:
+                self.state.coolant_outlet_temperature = coolant_temps['outlet']
+
+        # Update temperature from direct parameters (fallback)
         if temperature is not None:
             self.state.temperature = temperature
         elif cell_temperatures is not None:
@@ -293,6 +326,27 @@ class BatteryManagementSystem:
                     temperature=self.state.temperature,
                     soc=self.state.soc
                 )
+                # Send cell group temperatures if available
+                if self.state.cell_group_temperatures and hasattr(self.can_protocol, 'send_temperature_data'):
+                    for i, temp in enumerate(self.state.cell_group_temperatures):
+                        self.can_protocol.send_temperature_data(
+                            sensor_type='battery_cell_group',
+                            sensor_id=f'cell_group_{i+1}',
+                            temperature=temp
+                        )
+                # Send coolant temperatures if available
+                if self.state.coolant_inlet_temperature is not None and hasattr(self.can_protocol, 'send_temperature_data'):
+                    self.can_protocol.send_temperature_data(
+                        sensor_type='coolant_inlet',
+                        sensor_id='coolant_inlet',
+                        temperature=self.state.coolant_inlet_temperature
+                    )
+                if self.state.coolant_outlet_temperature is not None and hasattr(self.can_protocol, 'send_temperature_data'):
+                    self.can_protocol.send_temperature_data(
+                        sensor_type='coolant_outlet',
+                        sensor_id='coolant_outlet',
+                        temperature=self.state.coolant_outlet_temperature
+                    )
             except Exception as e:
                 self.logger.error(f"Failed to send CAN status: {e}")
 

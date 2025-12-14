@@ -4,8 +4,8 @@ Implements high-level interface for VESC (Vedder Electronic Speed Controller).
 
 import time
 import logging
-from typing import Optional, Dict, Any
-from dataclasses import dataclass
+from typing import Optional, Dict, Any, List
+from dataclasses import dataclass, field
 from enum import Enum
 
 try:
@@ -65,6 +65,7 @@ class MotorStatus:
     power_w: float = 0.0
     state: MotorState = MotorState.DISCONNECTED
     timestamp: float = 0.0
+    stator_temperatures: List[float] = None  # Stator winding temperatures per phase
 
 
 class VESCManager:
@@ -78,7 +79,8 @@ class VESCManager:
         serial_port: Optional[str] = None,
         can_bus: Optional[Any] = None,
         can_protocol: Optional[Any] = None,
-        config: Optional[Dict[str, Any]] = None
+        config: Optional[Dict[str, Any]] = None,
+        temperature_sensor_manager: Optional[Any] = None
     ):
         """
         Initialize VESC manager.
@@ -88,16 +90,20 @@ class VESCManager:
             can_bus: CAN bus interface (optional, for CAN communication)
             can_protocol: EV CAN protocol instance (optional)
             config: Configuration dictionary with motor parameters
+            temperature_sensor_manager: Optional TemperatureSensorManager instance for stator temperature readings
         """
         self.serial_port = serial_port
         self.can_bus = can_bus
         self.can_protocol = can_protocol
         self.config = config or {}
+        self.temperature_sensor_manager = temperature_sensor_manager
 
         self.logger = logging.getLogger(__name__)
         self.vesc: Optional[VESC] = None
         self.is_connected = False
         self.current_status = MotorStatus()
+        if self.current_status.stator_temperatures is None:
+            self.current_status.stator_temperatures = []
 
         # Motor limits from config
         self.max_power_kw = self.config.get('max_power_kw', 150.0)
@@ -317,6 +323,15 @@ class VESCManager:
                 # Simulation mode - update timestamp
                 self.current_status.timestamp = time.time()
 
+            # Update stator temperatures from temperature sensor manager if available
+            if self.temperature_sensor_manager:
+                stator_temps = self.temperature_sensor_manager.get_motor_stator_temperatures()
+                if stator_temps:
+                    self.current_status.stator_temperatures = stator_temps
+                    # Use average stator temperature if no direct temperature measurement
+                    if self.current_status.temperature_c == 0.0:
+                        self.current_status.temperature_c = sum(stator_temps) / len(stator_temps) if stator_temps else 0.0
+
             # Check safety limits (works in both real and simulation mode)
             # Only check voltage if it's been measured (non-zero)
             if self.current_status.temperature_c > self.max_temperature_c:
@@ -357,6 +372,14 @@ class VESCManager:
                 torque=self._calculate_torque(),
                 temperature=self.current_status.temperature_c
             )
+            # Send stator temperatures if available
+            if self.current_status.stator_temperatures and hasattr(self.can_protocol, 'send_temperature_data'):
+                for i, temp in enumerate(self.current_status.stator_temperatures):
+                    self.can_protocol.send_temperature_data(
+                        sensor_type='motor_stator',
+                        sensor_id=f'stator_{i+1}',
+                        temperature=temp
+                    )
         except Exception as e:
             self.logger.warning(f"Failed to send motor status to CAN: {e}")
 

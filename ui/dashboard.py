@@ -51,6 +51,12 @@ class EVDashboard:
             'motor': {},
             'charging': {},
             'vehicle': {},
+            'temperature': {
+                'battery_cell_groups': [],
+                'coolant': {'inlet': None, 'outlet': None},
+                'motor_stator': [],
+                'charging': {'port': None, 'connector': None}
+            },
             'can_stats': {},
             'timestamp': time.time()
         }
@@ -94,7 +100,8 @@ class EVDashboard:
         def handle_connect():
             """Handle client connection."""
             client_id = request.sid
-            self.clients.append(client_id)
+            if client_id not in self.clients:
+                self.clients.append(client_id)
             self.logger.info(f"Client connected: {client_id}")
             # Send current state to new client
             emit('data_update', self.latest_data)
@@ -193,6 +200,23 @@ class EVDashboard:
                 can_ids['VEHICLE_STATUS'],
                 create_handler(can_ids['VEHICLE_STATUS'], 'VEHICLE_STATUS')
             )
+        
+        # Register temperature sensor handlers
+        temp_can_ids = [
+            'TEMPERATURE_BATTERY_CELL_GROUP',
+            'TEMPERATURE_COOLANT_INLET',
+            'TEMPERATURE_COOLANT_OUTLET',
+            'TEMPERATURE_MOTOR_STATOR',
+            'TEMPERATURE_CHARGING_PORT',
+            'TEMPERATURE_CHARGING_CONNECTOR'
+        ]
+        
+        for temp_id in temp_can_ids:
+            if temp_id in can_ids:
+                self.can_bus.register_message_handler(
+                    can_ids[temp_id],
+                    self._create_temperature_handler(can_ids[temp_id], temp_id)
+                )
 
     def _unpack_float(self, data: bytes) -> float:
         """Unpack a float from bytes (little-endian)."""
@@ -242,6 +266,86 @@ class EVDashboard:
         self.latest_data['timestamp'] = time.time()
         self._broadcast_update()
 
+    def _create_temperature_handler(self, can_id: int, sensor_type: str):
+        """Create a handler function for temperature sensor CAN messages."""
+        def handler(frame: CANFrame):
+            try:
+                # Try to use CAN protocol's parse method if available
+                if self.can_protocol and hasattr(self.can_protocol, 'parse_temperature_data'):
+                    parsed = self.can_protocol.parse_temperature_data(frame)
+                    if parsed:
+                        temperature = parsed.get('temperature', 0.0)
+                        sensor_id = parsed.get('sensor_id', 'unknown')
+                        parsed_type = parsed.get('sensor_type', sensor_type.lower().replace('temperature_', ''))
+                        self._update_temperature_data(parsed_type, sensor_id, temperature)
+                        return
+                
+                # Fallback: Parse temperature directly from frame
+                if len(frame.data) >= 4:
+                    temperature = self._unpack_float(frame.data[0:4])
+                    
+                    # Map CAN ID to sensor type
+                    sensor_type_map = {
+                        'TEMPERATURE_BATTERY_CELL_GROUP': 'battery_cell_group',
+                        'TEMPERATURE_COOLANT_INLET': 'coolant_inlet',
+                        'TEMPERATURE_COOLANT_OUTLET': 'coolant_outlet',
+                        'TEMPERATURE_MOTOR_STATOR': 'motor_stator',
+                        'TEMPERATURE_CHARGING_PORT': 'charging_port',
+                        'TEMPERATURE_CHARGING_CONNECTOR': 'charging_connector'
+                    }
+                    
+                    mapped_type = sensor_type_map.get(sensor_type, 'unknown')
+                    sensor_id = f"{mapped_type}_{can_id}"
+                    self._update_temperature_data(mapped_type, sensor_id, temperature)
+                    
+            except Exception as e:
+                self.logger.error(f"Error handling temperature frame {can_id:03X}: {e}")
+        return handler
+
+    def _update_temperature_data(self, sensor_type: str, sensor_id: str, temperature: float) -> None:
+        """Update temperature sensor data and broadcast to clients.
+        
+        Args:
+            sensor_type: Type of temperature sensor
+            sensor_id: Sensor identifier
+            temperature: Temperature reading in Celsius
+        """
+        temp_data = self.latest_data['temperature']
+        
+        if sensor_type == 'battery_cell_group':
+            if 'battery_cell_groups' not in temp_data:
+                temp_data['battery_cell_groups'] = []
+            # Try to update specific cell group by ID, or append
+            try:
+                group_num = int(sensor_id.split('_')[-1]) - 1
+                while len(temp_data['battery_cell_groups']) <= group_num:
+                    temp_data['battery_cell_groups'].append(None)
+                temp_data['battery_cell_groups'][group_num] = round(temperature, 2)
+            except (ValueError, IndexError):
+                # Fallback: append to list
+                temp_data['battery_cell_groups'].append(round(temperature, 2))
+        elif sensor_type == 'coolant_inlet':
+            temp_data['coolant']['inlet'] = round(temperature, 2)
+        elif sensor_type == 'coolant_outlet':
+            temp_data['coolant']['outlet'] = round(temperature, 2)
+        elif sensor_type == 'motor_stator':
+            if 'motor_stator' not in temp_data:
+                temp_data['motor_stator'] = []
+            try:
+                phase_num = int(sensor_id.split('_')[-1]) - 1
+                while len(temp_data['motor_stator']) <= phase_num:
+                    temp_data['motor_stator'].append(None)
+                temp_data['motor_stator'][phase_num] = round(temperature, 2)
+            except (ValueError, IndexError):
+                temp_data['motor_stator'].append(round(temperature, 2))
+        elif sensor_type == 'charging_port':
+            temp_data['charging']['port'] = round(temperature, 2)
+        elif sensor_type == 'charging_connector':
+            temp_data['charging']['connector'] = round(temperature, 2)
+        
+        self.latest_data['timestamp'] = time.time()
+        self._broadcast_update()
+
     def _update_can_stats(self) -> None:
         """Update CAN bus statistics."""
         if self.can_bus:
@@ -257,8 +361,15 @@ class EVDashboard:
 
     def _broadcast_update(self) -> None:
         """Broadcast data update to all connected clients."""
-        if self.clients:
-            self.socketio.emit('data_update', self.latest_data)
+        try:
+            if self.clients:
+                self.socketio.emit('data_update', self.latest_data)
+            else:
+                # Broadcast to all namespaces if no specific clients tracked
+                # This helps with tests where clients might not be in self.clients
+                self.socketio.emit('data_update', self.latest_data, namespace='/')
+        except Exception as e:
+            self.logger.warning(f"Failed to broadcast update: {e}")
 
     def _update_loop(self) -> None:
         """Background thread to periodically update CAN stats."""
@@ -307,10 +418,19 @@ class EVDashboard:
         """Manually update dashboard data (for testing or external updates).
         
         Args:
-            data_type: Type of data ('battery', 'motor', 'charging', 'vehicle')
+            data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:
-            self.latest_data[data_type].update(data)
+            if data_type == 'temperature' and isinstance(data, dict):
+                # Deep update for temperature data
+                for key, value in data.items():
+                    if key in self.latest_data['temperature']:
+                        if isinstance(value, dict):
+                            self.latest_data['temperature'][key].update(value)
+                        else:
+                            self.latest_data['temperature'][key] = value
+            else:
+                self.latest_data[data_type].update(data)
             self.latest_data['timestamp'] = time.time()
             self._broadcast_update()

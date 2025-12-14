@@ -10,12 +10,18 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 
 ### Core Systems
 - **Battery Management System (BMS)**: Comprehensive battery monitoring with cell-level voltage and temperature tracking, SOC/SOH calculation, and safety fault detection
+  - Integrated temperature sensor support for cell groups and coolant monitoring
+  - Cell group temperature tracking (one sensor per series group)
+  - Coolant inlet/outlet temperature monitoring
 - **Motor Controller**: VESC (Vedder Electronic Speed Controller) integration with support for:
   - RPM, current, and duty cycle control
   - Real-time status monitoring
   - Safety limit enforcement
   - CAN bus integration
+  - Stator winding temperature monitoring (per phase)
 - **Charging System**: AC/DC charging management with multiple connector support (CCS1, CCS2, CHAdeMO, Tesla)
+  - Charging port and connector temperature monitoring
+  - Automatic charging shutdown on overtemperature conditions
 - **Vehicle Controller**: High-level vehicle coordination system that:
   - Manages overall vehicle state (PARKED, READY, DRIVING, CHARGING, ERROR, EMERGENCY)
   - Coordinates between BMS, motor controller, and charging system
@@ -27,6 +33,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ### Communication
 - **CAN Bus Interface**: Industry-standard CAN bus communication with EV-specific protocol
 - **VESC Protocol**: Dedicated CAN IDs and message handlers for VESC motor controller
+- **Temperature Sensor Protocol**: CAN bus messages for all temperature sensor types (battery, coolant, motor, charging)
 - **Telemetry System**: Remote data transmission and monitoring using Quectel cellular modules:
   - Real-time vehicle data streaming (battery, motor, charging status)
   - GPS location tracking
@@ -37,7 +44,14 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
 - **GPS**: Positioning and navigation data
-- **Temperature Sensors**: Multi-point thermal monitoring
+- **Temperature Sensors**: Comprehensive multi-point thermal monitoring system:
+  - Battery cell group sensors (one per series group, configurable)
+  - Coolant inlet and outlet sensors
+  - Motor stator winding sensors (per phase, typically 3-phase)
+  - Charging port and connector sensors
+  - Configurable thresholds (warning, fault)
+  - Real-time status monitoring and CAN bus integration
+  - Automatic fault detection and reporting
 - **Computer Vision**: Environmental perception and lane detection
 
 ### AI & Autonomy
@@ -74,6 +88,7 @@ az1m0v/
 │   ├── charging_system.py
 │   └── vehicle_controller.py
 ├── sensors/                 # Sensor interfaces
+│   ├── temperature.py      # Comprehensive temperature sensor system
 ├── communication/           # CAN bus and telemetry
 ├── ai/                      # Autopilot and AI systems
 ├── ui/                      # User interfaces
@@ -192,11 +207,13 @@ poetry run pytest tests/functional/ -v
 poetry run pytest tests/unit/test_motor_controller.py -v
 ```
 
-The project includes **378 tests** covering all major components:
+The project includes **409 tests** covering all major components:
 - **45 unit tests** for vehicle controller
 - **14 functional/integration tests** for vehicle controller
 - **21 unit tests** for telemetry system
 - **10 functional/integration tests** for telemetry system
+- **24 unit tests** for temperature sensor system
+- **7 functional/integration tests** for temperature sensor integration
 - Comprehensive test coverage for all core systems
 - All tests run automatically on every commit via GitHub Actions
 
@@ -215,6 +232,12 @@ Key configuration sections:
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
 - Telemetry settings (server URL, cellular APN, update intervals)
+- Temperature sensor configuration:
+  - Cell group sensor settings (cells per group)
+  - Coolant sensor enablement
+  - Motor stator sensor configuration
+  - Charging sensor enablement
+  - Update intervals and thresholds
 - Sensor enablement
 - CAN bus settings
 - AI/autopilot configuration
@@ -285,7 +308,9 @@ The system implements standard EV CAN protocols:
 - ISO 11898 compliant
 - EV-specific message IDs
 - VESC protocol extensions
+- Temperature sensor protocol (CAN IDs 0x400-0x406)
 - Message handlers and routing
+- Support for battery, motor, charging, and temperature data
 
 ## Requirements
 
@@ -320,17 +345,18 @@ See [LICENSE](LICENSE) for full license text.
 ## Status
 
 ✅ **Active Development** - Core systems implemented and tested
-- Battery Management System: ✅ Implemented
-- Motor Controller (VESC): ✅ Implemented
-- Charging System: ✅ Implemented
+- Battery Management System: ✅ Implemented (with temperature sensor integration)
+- Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
+- Charging System: ✅ Implemented (with port/connector temperature monitoring)
 - Vehicle Controller: ✅ Implemented
-- CAN Bus Communication: ✅ Implemented
+- CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
+- Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)
 - Sensor Integration: ✅ Implemented
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
 - Web Dashboard: ✅ Implemented (Flask + WebSocket, CAN bus integrated, Raspberry Pi 4 compatible)
-- Test Suite: ✅ Comprehensive test coverage including dashboard tests
+- Test Suite: ✅ Comprehensive test coverage (409 tests, including temperature sensor tests)
 - CI/CD: ✅ GitHub Actions workflow running all tests on every commit
 
 ## Support

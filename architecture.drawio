@@ -37,8 +37,8 @@
         <mxCell id="gps" value="GPS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="520" y="180" width="80" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="temp" value="Temperature" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="420" y="250" width="80" height="50" as="geometry" />
+        <mxCell id="temp" value="Temperature&#xa;Sensors&#xa;(Multi-point)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="420" y="250" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="vision" value="Computer Vision" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="520" y="250" width="80" height="50" as="geometry" />
@@ -77,9 +77,6 @@
         <!-- Integration Scripts -->
         <mxCell id="scripts-group" value="Integration Scripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="40" y="380" width="320" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-          <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="simpbms" value="SimpBMS Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="60" y="360" width="130" height="60" as="geometry" />
@@ -172,6 +169,20 @@
         
         <!-- Dashboard connections from CAN Bus -->
         <mxCell id="conn21" value="CAN Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="can" target="dashboard">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Temperature sensor connections -->
+        <mxCell id="conn22" value="Cell Groups&#xa;Coolant" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="temp" target="bms">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn23" value="Stator" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="temp" target="motor">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn24" value="Port/Connector" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="temp" target="charging">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn25" value="Temp Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="temp" target="can">
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         

@@ -47,6 +47,8 @@ class ChargingStatus:
     temperature_c: float = 0.0
     error_code: Optional[str] = None
     timestamp: float = 0.0
+    port_temperature: Optional[float] = None  # Charging port temperature in °C
+    connector_temperature: Optional[float] = None  # Charging connector temperature in °C
 
 
 class ChargingSystem:
@@ -60,7 +62,8 @@ class ChargingSystem:
         config: Dict[str, Any],
         bms: Optional[Any] = None,
         motor_controller: Optional[Any] = None,
-        can_protocol: Optional[Any] = None
+        can_protocol: Optional[Any] = None,
+        temperature_sensor_manager: Optional[Any] = None
     ):
         """
         Initialize charging system.
@@ -70,11 +73,13 @@ class ChargingSystem:
             bms: Battery Management System instance (for charge authorization)
             motor_controller: Motor controller instance (VESC, for safety checks)
             can_protocol: EV CAN protocol instance (optional)
+            temperature_sensor_manager: Optional TemperatureSensorManager instance for port/connector temperature readings
         """
         self.config = config
         self.bms = bms
         self.motor_controller = motor_controller
         self.can_protocol = can_protocol
+        self.temperature_sensor_manager = temperature_sensor_manager
 
         self.logger = logging.getLogger(__name__)
         self.current_status = ChargingStatus()
@@ -314,6 +319,17 @@ class ChargingSystem:
             if temperature_c is None:
                 self.current_status.temperature_c = bms_state.temperature
 
+        # Update port and connector temperatures from temperature sensor manager if available
+        if self.temperature_sensor_manager:
+            charging_temps = self.temperature_sensor_manager.get_charging_temperatures()
+            if 'port' in charging_temps:
+                self.current_status.port_temperature = charging_temps['port']
+            if 'connector' in charging_temps:
+                self.current_status.connector_temperature = charging_temps['connector']
+            # Use port temperature as main temperature if not set
+            if temperature_c is None and self.current_status.port_temperature is not None:
+                self.current_status.temperature_c = self.current_status.port_temperature
+
         # Calculate power
         self.current_status.power_kw = (
             abs(self.current_status.voltage_v * self.current_status.current_a) / 1000.0
@@ -340,7 +356,20 @@ class ChargingSystem:
                     self.charging_start_time = None
 
             # Check safety limits
-            if self.current_status.temperature_c > self.max_temperature_c:
+            # Check port temperature
+            if self.current_status.port_temperature and self.current_status.port_temperature > self.max_temperature_c:
+                self.current_status.state = ChargingState.ERROR
+                self.current_status.error_code = "PORT_OVERTEMPERATURE"
+                self.logger.error(f"Charging stopped: port temperature {self.current_status.port_temperature}°C exceeds limit")
+                self.stop_charging()
+            # Check connector temperature
+            elif self.current_status.connector_temperature and self.current_status.connector_temperature > self.max_temperature_c:
+                self.current_status.state = ChargingState.ERROR
+                self.current_status.error_code = "CONNECTOR_OVERTEMPERATURE"
+                self.logger.error(f"Charging stopped: connector temperature {self.current_status.connector_temperature}°C exceeds limit")
+                self.stop_charging()
+            # Check general temperature
+            elif self.current_status.temperature_c > self.max_temperature_c:
                 self.current_status.state = ChargingState.ERROR
                 self.current_status.error_code = "OVERTEMPERATURE"
                 self.logger.error(f"Charging stopped: temperature {self.current_status.temperature_c}°C exceeds limit")
@@ -397,6 +426,20 @@ class ChargingSystem:
                     current=self.current_status.current_a,
                     state=self.current_status.state.value
                 )
+            # Send port and connector temperatures if available
+            if hasattr(self.can_protocol, 'send_temperature_data'):
+                if self.current_status.port_temperature is not None:
+                    self.can_protocol.send_temperature_data(
+                        sensor_type='charging_port',
+                        sensor_id='charging_port',
+                        temperature=self.current_status.port_temperature
+                    )
+                if self.current_status.connector_temperature is not None:
+                    self.can_protocol.send_temperature_data(
+                        sensor_type='charging_connector',
+                        sensor_id='charging_connector',
+                        temperature=self.current_status.connector_temperature
+                    )
         except Exception as e:
             self.logger.warning(f"Failed to send charging status to CAN: {e}")
 

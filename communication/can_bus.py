@@ -158,6 +158,15 @@ class EVCANProtocol:
         # Safety Systems
         'BRAKE_STATUS': 0x380,
         'STEERING_ANGLE': 0x381,
+
+        # Temperature Sensors
+        'TEMPERATURE_BATTERY_CELL_GROUP': 0x400,
+        'TEMPERATURE_COOLANT_INLET': 0x401,
+        'TEMPERATURE_COOLANT_OUTLET': 0x402,
+        'TEMPERATURE_MOTOR_STATOR': 0x403,
+        'TEMPERATURE_CHARGING_PORT': 0x404,
+        'TEMPERATURE_CHARGING_CONNECTOR': 0x405,
+        'TEMPERATURE_GENERIC': 0x406,
     }
 
     def __init__(self, can_bus: CANBusInterface):
@@ -335,6 +344,94 @@ class EVCANProtocol:
                         'current': current,
                         'voltage': voltage,
                         'temperature': temperature
+                    }
+            except struct.error:
+                return None
+        return None
+
+    def send_temperature_data(self, sensor_type: str, sensor_id: str, temperature: float) -> bool:
+        """Send temperature sensor data to CAN bus.
+        
+        Args:
+            sensor_type: Type of temperature sensor (e.g., 'battery_cell_group', 'coolant_inlet')
+            sensor_id: Unique identifier for the sensor
+            temperature: Temperature reading in Celsius
+            
+        Returns:
+            True if message sent successfully, False otherwise
+        """
+        # Map sensor type to CAN ID
+        can_id_map = {
+            'battery_cell_group': self.CAN_IDS['TEMPERATURE_BATTERY_CELL_GROUP'],
+            'coolant_inlet': self.CAN_IDS['TEMPERATURE_COOLANT_INLET'],
+            'coolant_outlet': self.CAN_IDS['TEMPERATURE_COOLANT_OUTLET'],
+            'motor_stator': self.CAN_IDS['TEMPERATURE_MOTOR_STATOR'],
+            'charging_port': self.CAN_IDS['TEMPERATURE_CHARGING_PORT'],
+            'charging_connector': self.CAN_IDS['TEMPERATURE_CHARGING_CONNECTOR'],
+        }
+        
+        can_id = can_id_map.get(sensor_type, self.CAN_IDS['TEMPERATURE_GENERIC'])
+        
+        message = CANMessage(
+            message_id=can_id,
+            name=f"TEMPERATURE_{sensor_type.upper()}",
+            description=f"Temperature sensor data: {sensor_id}",
+            data={
+                'sensor_id': sensor_id,
+                'temperature': temperature,
+                'sensor_type': sensor_type
+            },
+            timestamp=time.time(),
+            source="TemperatureSensor"
+        )
+        return self._send_message(message)
+
+    def parse_temperature_data(self, frame: CANFrame) -> Optional[Dict[str, Any]]:
+        """
+        Parse temperature sensor data from CAN frame.
+        
+        Args:
+            frame: CAN frame containing temperature data
+            
+        Returns:
+            Dictionary with sensor_id, temperature, and sensor_type, or None if invalid
+        """
+        temperature_can_ids = [
+            self.CAN_IDS['TEMPERATURE_BATTERY_CELL_GROUP'],
+            self.CAN_IDS['TEMPERATURE_COOLANT_INLET'],
+            self.CAN_IDS['TEMPERATURE_COOLANT_OUTLET'],
+            self.CAN_IDS['TEMPERATURE_MOTOR_STATOR'],
+            self.CAN_IDS['TEMPERATURE_CHARGING_PORT'],
+            self.CAN_IDS['TEMPERATURE_CHARGING_CONNECTOR'],
+            self.CAN_IDS['TEMPERATURE_GENERIC'],
+        ]
+        
+        if frame.can_id in temperature_can_ids:
+            try:
+                if len(frame.data) >= 4:
+                    temperature = struct.unpack('<f', frame.data[0:4])[0]
+                    # Try to extract sensor_id from remaining bytes if available
+                    sensor_id = "unknown"
+                    sensor_type = "generic"
+                    
+                    # Map CAN ID back to sensor type
+                    if frame.can_id == self.CAN_IDS['TEMPERATURE_BATTERY_CELL_GROUP']:
+                        sensor_type = 'battery_cell_group'
+                    elif frame.can_id == self.CAN_IDS['TEMPERATURE_COOLANT_INLET']:
+                        sensor_type = 'coolant_inlet'
+                    elif frame.can_id == self.CAN_IDS['TEMPERATURE_COOLANT_OUTLET']:
+                        sensor_type = 'coolant_outlet'
+                    elif frame.can_id == self.CAN_IDS['TEMPERATURE_MOTOR_STATOR']:
+                        sensor_type = 'motor_stator'
+                    elif frame.can_id == self.CAN_IDS['TEMPERATURE_CHARGING_PORT']:
+                        sensor_type = 'charging_port'
+                    elif frame.can_id == self.CAN_IDS['TEMPERATURE_CHARGING_CONNECTOR']:
+                        sensor_type = 'charging_connector'
+                    
+                    return {
+                        'temperature': temperature,
+                        'sensor_type': sensor_type,
+                        'sensor_id': sensor_id
                     }
             except struct.error:
                 return None
