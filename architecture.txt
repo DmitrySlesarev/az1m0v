@@ -20,9 +20,14 @@ az1m0v/ (EV Management System)
 │   └── settings.py                  # Configuration loader
 ├── core/
 │   ├── __init__.py
-│   ├── battery_management.py        # Battery Management System (BMS)
-│   ├── motor_controller.py          # VESC motor controller integration
-│   ├── charging_system.py           # Charging system management
+│   ├── battery_management.py        # Battery Management System (BMS):
+│   │                                #   - Cell group temperature integration
+│   │                                #   - Coolant temperature monitoring
+│   ├── motor_controller.py          # VESC motor controller integration:
+│   │                                #   - Stator temperature monitoring
+│   ├── charging_system.py           # Charging system management:
+│   │                                #   - Port/connector temperature monitoring
+│   │                                #   - Overtemperature safety shutdown
 │   └── vehicle_controller.py        # High-level vehicle coordination:
 │                                      #   - State management (PARKED, READY, DRIVING, CHARGING, etc.)
 │                                      #   - Safety enforcement (prevents driving while charging)
@@ -33,11 +38,21 @@ az1m0v/ (EV Management System)
 │   ├── __init__.py
 │   ├── imu.py                       # Inertial Measurement Unit
 │   ├── gps.py                       # GPS positioning
-│   ├── temperature.py               # Temperature sensors
+│   ├── temperature.py               # Comprehensive temperature sensor system:
+│   │                                #   - Battery cell group sensors (one per series group)
+│   │                                #   - Coolant inlet/outlet sensors
+│   │                                #   - Motor stator winding sensors (per phase)
+│   │                                #   - Charging port/connector sensors
+│   │                                #   - Configurable thresholds and fault detection
+│   │                                #   - CAN bus integration
 │   └── computer_vision.py           # Camera/vision processing
 ├── communication/
 │   ├── __init__.py
-│   ├── can_bus.py                   # CAN bus interface and EV protocol (includes VESC)
+│   ├── can_bus.py                   # CAN bus interface and EV protocol:
+│   │                                #   - VESC protocol support
+│   │                                #   - Temperature sensor protocol (CAN IDs 0x400-0x406)
+│   │                                #   - Battery, motor, charging status messages
+│   │                                #   - ISO 11898 compliant
 │   └── telemetry.py                 # Telemetry data transmission (Quectel integration):
 │                                      #   - Remote data streaming
 │                                      #   - GPS location tracking
@@ -76,7 +91,8 @@ az1m0v/ (EV Management System)
 │   │   ├── test_motor_controller.py
 │   │   ├── test_charging_system.py
 │   │   ├── test_vehicle_controller.py
-│   │   └── test_telemetry.py
+│   │   ├── test_telemetry.py
+│   │   └── test_temperature.py     # Temperature sensor unit tests
 │   └── functional/
 │       ├── __init__.py
 │       ├── test_autopilot_integration.py
@@ -84,7 +100,8 @@ az1m0v/ (EV Management System)
 │       ├── test_motor_controller_integration.py
 │       ├── test_charging_system_integration.py
 │       ├── test_vehicle_controller_integration.py
-│       └── test_telemetry_integration.py
+│       ├── test_telemetry_integration.py
+│       └── test_temperature_integration.py  # Temperature sensor integration tests
 └── scripts/
     ├── setup.sh                     # Setup script
     └── integration/

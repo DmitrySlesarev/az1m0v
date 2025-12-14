@@ -1,8 +1,8 @@
 {
   "vehicle": {
-    "model": "EV-2024",
+    "model": "wildboar",
     "serial_number": "EV001",
-    "manufacturer": "EV Corp"
+    "manufacturer": "az1m0v"
   },
   "battery": {
     "capacity_kwh": 75.0,
@@ -39,6 +39,19 @@
     "gps_enabled": true,
     "temperature_sensors": 8,
     "sampling_rate_hz": 100
+  },
+  "temperature_sensors": {
+    "enabled": true,
+    "cells_per_group": 12,
+    "update_interval_s": 0.1,
+    "coolant_enabled": true,
+    "motor_stator_enabled": true,
+    "motor_stator_sensors": 3,
+    "charging_enabled": true,
+    "battery": {
+      "min_temperature": 0.0,
+      "max_temperature": 45.0
+    }
   },
   "communication": {
     "can_bus_enabled": true,
