@@ -9,7 +9,13 @@
     "max_charge_rate_kw": 150.0,
     "max_discharge_rate_kw": 200.0,
     "nominal_voltage": 400.0,
-    "cell_count": 96
+    "cell_count": 96,
+    "min_voltage": 3.0,
+    "max_voltage": 4.2,
+    "min_temperature": 0.0,
+    "max_temperature": 45.0,
+    "min_soc": 0.0,
+    "max_soc": 100.0
   },
   "motor": {
     "max_power_kw": 150.0,
@@ -32,7 +38,10 @@
     "ac_max_power_kw": 11.0,
     "dc_max_power_kw": 150.0,
     "connector_type": "CCS2",
-    "fast_charge_enabled": true
+    "fast_charge_enabled": true,
+    "max_temperature_c": 60.0,
+    "max_voltage_v": 500.0,
+    "min_voltage_v": 300.0
   },
   "sensors": {
     "imu_enabled": true,
@@ -75,6 +84,19 @@
     "telemetry_enabled": true,
     "update_interval_ms": 1000
   },
+  "can_bus": {
+    "channel": "can0",
+    "bitrate": 500000,
+    "interface": "socketcan"
+  },
+  "vehicle_controller": {
+    "max_speed_kmh": 120.0,
+    "max_acceleration_ms2": 3.0,
+    "max_deceleration_ms2": -5.0,
+    "max_power_kw": 150.0,
+    "efficiency_wh_per_km": 200.0,
+    "weight_kg": 1500.0
+  },
   "telemetry": {
     "enabled": true,
     "server_url": "https://telemetry.example.com",
@@ -93,12 +115,18 @@
   "ui": {
     "dashboard_enabled": true,
     "mobile_app_enabled": true,
-    "theme": "dark"
+    "theme": "dark",
+    "dashboard_host": "0.0.0.0",
+    "dashboard_port": 5000,
+    "dashboard_debug": false
   },
   "ai": {
     "autopilot_enabled": false,
     "computer_vision_enabled": false,
-    "model_path": "/models/"
+    "model_path": "/models/",
+    "min_following_distance": 2.0,
+    "max_speed": 30.0,
+    "emergency_brake_threshold": 1.5
   },
   "logging": {
     "level": "INFO",
