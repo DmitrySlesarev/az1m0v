@@ -43,6 +43,11 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
+  - Support for MPU-6050 (6-DOF: accelerometer + gyroscope)
+  - Support for MPU-9250 (9-DOF: accelerometer + gyroscope + magnetometer)
+  - I2C communication interface
+  - Configurable sampling rates and calibration
+  - Simulation mode for development
 - **GPS**: Positioning and navigation data
 - **Temperature Sensors**: Comprehensive multi-point thermal monitoring system:
   - Battery cell group sensors (one per series group, configurable)
@@ -77,6 +82,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
 - **SimpBMS Builder**: SimpBMS firmware build and integration support
 - **Quectel Builder**: Automated download, build, and integration of Quectel QuecPython library for telemetry
+- **MPU Builder**: Automated download, build, and integration of MPU-6050/MPU-9250 IMU libraries
 
 ## Project Structure
 
@@ -146,6 +152,11 @@ See [architecture.txt](architecture.txt) for detailed structure.
    For Quectel telemetry:
    ```bash
    python quectel_builder.py
+   ```
+   
+   For MPU IMU sensors:
+   ```bash
+   python mpu_builder.py --sensor mpu6050  # or mpu9250
    ```
 
 ### Running the System
@@ -232,6 +243,10 @@ Key configuration sections:
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
 - Telemetry settings (server URL, cellular APN, update intervals)
+- IMU sensor configuration:
+  - Sensor type (MPU-6050 or MPU-9250)
+  - I2C address and bus
+  - Sampling rate and calibration parameters
 - Temperature sensor configuration:
   - Cell group sensor settings (cells per group)
   - Coolant sensor enablement
@@ -332,6 +347,11 @@ Optional (for Telemetry):
 - `quecpython` - Quectel QuecPython library (installed via integration script)
 - `requests` - HTTP/HTTPS requests for telemetry transmission
 
+Optional (for IMU):
+- `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
+- `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
+- `smbus2` - I2C communication library (installed via integration script)
+
 ## License
 
 GNU General Public License v3.0
@@ -352,6 +372,7 @@ See [LICENSE](LICENSE) for full license text.
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)
+- IMU Sensor System: ✅ Implemented (MPU-6050/MPU-9250 support)
 - Sensor Integration: ✅ Implemented
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented

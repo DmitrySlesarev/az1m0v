@@ -36,7 +36,12 @@ az1m0v/ (EV Management System)
 │                                      #   - Coordinates BMS, motor, and charging systems
 ├── sensors/
 │   ├── __init__.py
-│   ├── imu.py                       # Inertial Measurement Unit
+│   ├── imu.py                       # Inertial Measurement Unit (MPU-6050/MPU-9250):
+│   │                                #   - 6-DOF (MPU-6050) or 9-DOF (MPU-9250) support
+│   │                                #   - I2C communication
+│   │                                #   - Configurable sampling rates
+│   │                                #   - Calibration support
+│   │                                #   - Simulation mode
 │   ├── gps.py                       # GPS positioning
 │   ├── temperature.py               # Comprehensive temperature sensor system:
 │   │                                #   - Battery cell group sensors (one per series group)
@@ -108,4 +113,5 @@ az1m0v/ (EV Management System)
         ├── __init__.py
         ├── simpbms_builder.py       # SimpBMS firmware build and integration
         ├── vesc_builder.py          # VESC motor controller build and integration
-        └── quectel_builder.py       # Quectel QuecPython library build and integration
+        ├── quectel_builder.py       # Quectel QuecPython library build and integration
+        └── mpu_builder.py           # MPU-6050/MPU-9250 IMU library build and integration
