@@ -80,11 +80,21 @@ class TestDashboardStartStop:
         dashboard.can_bus = MagicMock()
         dashboard.can_bus.get_statistics.side_effect = Exception("Error")
         
-        # Should handle exception gracefully
-        try:
-            dashboard._update_loop()
-        except:
-            pass  # Loop should catch exceptions
+        # Run update loop in a thread and stop it quickly
+        import threading
+        loop_thread = threading.Thread(target=dashboard._update_loop, daemon=True)
+        loop_thread.start()
+        
+        # Let it run for a short time to catch the exception
+        time.sleep(0.1)
+        
+        # Stop the loop
+        dashboard.running = False
+        
+        # Wait for thread to finish (with timeout)
+        loop_thread.join(timeout=1.0)
+        
+        # Should handle exception gracefully without crashing
         assert True
 
     def test_update_data_temperature(self, dashboard):
