@@ -15,6 +15,7 @@
     "ai",
     "logging"
   ],
+  "additionalProperties": true,
   "properties": {
     "vehicle": {
       "type": "object",
@@ -33,7 +34,13 @@
         "max_charge_rate_kw": {"type": "number", "minimum": 0},
         "max_discharge_rate_kw": {"type": "number", "minimum": 0},
         "nominal_voltage": {"type": "number", "minimum": 0},
-        "cell_count": {"type": "integer", "minimum": 1}
+        "cell_count": {"type": "integer", "minimum": 1},
+        "min_voltage": {"type": "number", "minimum": 0},
+        "max_voltage": {"type": "number", "minimum": 0},
+        "min_temperature": {"type": "number"},
+        "max_temperature": {"type": "number"},
+        "min_soc": {"type": "number", "minimum": 0, "maximum": 100},
+        "max_soc": {"type": "number", "minimum": 0, "maximum": 100}
       }
     },
     "motor": {
@@ -68,7 +75,10 @@
         "ac_max_power_kw": {"type": "number", "minimum": 0},
         "dc_max_power_kw": {"type": "number", "minimum": 0},
         "connector_type": {"type": "string", "enum": ["CCS1", "CCS2", "CHAdeMO", "Tesla"]},
-        "fast_charge_enabled": {"type": "boolean"}
+        "fast_charge_enabled": {"type": "boolean"},
+        "max_temperature_c": {"type": "number", "minimum": 0},
+        "max_voltage_v": {"type": "number", "minimum": 0},
+        "min_voltage_v": {"type": "number", "minimum": 0}
       }
     },
     "sensors": {
@@ -81,6 +91,27 @@
         "sampling_rate_hz": {"type": "number", "minimum": 0}
       }
     },
+    "imu": {
+      "type": "object",
+      "required": ["sensor_type", "i2c_address", "i2c_bus", "sampling_rate_hz", "simulation_mode"],
+      "properties": {
+        "sensor_type": {"type": "string", "enum": ["mpu6050", "mpu9250"]},
+        "i2c_address": {"type": "integer", "minimum": 0, "maximum": 255},
+        "i2c_bus": {"type": "integer", "minimum": 0},
+        "sampling_rate_hz": {"type": "number", "minimum": 1, "maximum": 1000},
+        "simulation_mode": {"type": "boolean"},
+        "calibration_samples": {"type": "integer", "minimum": 10, "maximum": 1000},
+        "accel_offset_x": {"type": "number"},
+        "accel_offset_y": {"type": "number"},
+        "accel_offset_z": {"type": "number"},
+        "gyro_offset_x": {"type": "number"},
+        "gyro_offset_y": {"type": "number"},
+        "gyro_offset_z": {"type": "number"},
+        "mag_offset_x": {"type": "number"},
+        "mag_offset_y": {"type": "number"},
+        "mag_offset_z": {"type": "number"}
+      }
+    },
     "communication": {
       "type": "object",
       "required": ["can_bus_enabled", "telemetry_enabled", "update_interval_ms"],
@@ -88,6 +119,27 @@
         "can_bus_enabled": {"type": "boolean"},
         "telemetry_enabled": {"type": "boolean"},
         "update_interval_ms": {"type": "integer", "minimum": 1}
+      }
+    },
+    "can_bus": {
+      "type": "object",
+      "required": ["channel", "bitrate", "interface"],
+      "properties": {
+        "channel": {"type": "string", "minLength": 1},
+        "bitrate": {"type": "integer", "minimum": 125000, "maximum": 1000000},
+        "interface": {"type": "string", "enum": ["socketcan", "virtual", "slcan"]}
+      }
+    },
+    "vehicle_controller": {
+      "type": "object",
+      "required": ["max_speed_kmh", "max_acceleration_ms2", "max_deceleration_ms2", "max_power_kw", "efficiency_wh_per_km", "weight_kg"],
+      "properties": {
+        "max_speed_kmh": {"type": "number", "minimum": 0},
+        "max_acceleration_ms2": {"type": "number", "minimum": 0},
+        "max_deceleration_ms2": {"type": "number", "maximum": 0},
+        "max_power_kw": {"type": "number", "minimum": 0},
+        "efficiency_wh_per_km": {"type": "number", "minimum": 0},
+        "weight_kg": {"type": "number", "minimum": 0}
       }
     },
     "telemetry": {
@@ -115,7 +167,10 @@
       "properties": {
         "dashboard_enabled": {"type": "boolean"},
         "mobile_app_enabled": {"type": "boolean"},
-        "theme": {"type": "string", "enum": ["light", "dark", "auto"]}
+        "theme": {"type": "string", "enum": ["light", "dark", "auto"]},
+        "dashboard_host": {"type": "string"},
+        "dashboard_port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "dashboard_debug": {"type": "boolean"}
       }
     },
     "ai": {
@@ -124,7 +179,10 @@
       "properties": {
         "autopilot_enabled": {"type": "boolean"},
         "computer_vision_enabled": {"type": "boolean"},
-        "model_path": {"type": "string", "minLength": 1}
+        "model_path": {"type": "string", "minLength": 1},
+        "min_following_distance": {"type": "number", "minimum": 0},
+        "max_speed": {"type": "number", "minimum": 0},
+        "emergency_brake_threshold": {"type": "number", "minimum": 0}
       }
     },
     "logging": {

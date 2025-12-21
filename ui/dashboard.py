@@ -118,6 +118,26 @@ class EVDashboard:
         def handle_request_update():
             """Handle client request for data update."""
             emit('data_update', self.latest_data)
+        
+        @self.socketio.on('control_command')
+        def handle_control_command(data: Dict[str, Any]):
+            """Handle control commands from client.
+            
+            Expected data format:
+            {
+                'command': 'accelerate' | 'brake' | 'stop' | 'set_drive_mode' | 'start_charging' | 
+                          'stop_charging' | 'set_vehicle_state' | 'set_autopilot_mode',
+                'params': {...}  # Command-specific parameters
+            }
+            """
+            try:
+                command = data.get('command')
+                params = data.get('params', {})
+                result = self._handle_control_command(command, params)
+                emit('control_response', {'success': result, 'command': command})
+            except Exception as e:
+                self.logger.error(f"Error handling control command: {e}")
+                emit('control_response', {'success': False, 'command': data.get('command'), 'error': str(e)})
 
     def _register_can_handlers(self) -> None:
         """Register CAN bus message handlers."""
@@ -413,6 +433,111 @@ class EVDashboard:
         if self.update_thread:
             self.update_thread.join(timeout=2.0)
         self.logger.info("Dashboard stopped")
+
+    def _handle_control_command(self, command: str, params: Dict[str, Any]) -> bool:
+        """Handle control commands from dashboard clients.
+        
+        Args:
+            command: Command name
+            params: Command parameters
+            
+        Returns:
+            True if command executed successfully, False otherwise
+        """
+        # Store references to system components (set by main.py)
+        ev_system = getattr(self, 'ev_system', None)
+        vehicle_controller = getattr(self, 'vehicle_controller', None)
+        motor_controller = getattr(self, 'motor_controller', None)
+        charging_system = getattr(self, 'charging_system', None)
+        autopilot = getattr(self, 'autopilot', None)
+        
+        try:
+            if command == 'accelerate':
+                if vehicle_controller:
+                    throttle = params.get('throttle', 0.0)
+                    return vehicle_controller.accelerate(throttle)
+                return False
+            
+            elif command == 'brake':
+                if vehicle_controller:
+                    brake_percent = params.get('brake', 0.0)
+                    return vehicle_controller.brake(brake_percent)
+                return False
+            
+            elif command == 'stop':
+                if vehicle_controller:
+                    return vehicle_controller.stop_driving()
+                elif motor_controller:
+                    return motor_controller.stop()
+                return False
+            
+            elif command == 'set_drive_mode':
+                if vehicle_controller:
+                    mode_str = params.get('mode', 'normal').lower()
+                    from core.vehicle_controller import DriveMode
+                    mode_map = {
+                        'eco': DriveMode.ECO,
+                        'normal': DriveMode.NORMAL,
+                        'sport': DriveMode.SPORT,
+                        'reverse': DriveMode.REVERSE
+                    }
+                    mode = mode_map.get(mode_str, DriveMode.NORMAL)
+                    return vehicle_controller.set_drive_mode(mode)
+                return False
+            
+            elif command == 'start_charging':
+                if charging_system:
+                    power_kw = params.get('power_kw', None)
+                    return charging_system.start_charging(power_kw=power_kw)
+                return False
+            
+            elif command == 'stop_charging':
+                if charging_system:
+                    return charging_system.stop_charging()
+                return False
+            
+            elif command == 'set_vehicle_state':
+                if vehicle_controller:
+                    state_str = params.get('state', 'parked').lower()
+                    from core.vehicle_controller import VehicleState
+                    state_map = {
+                        'parked': VehicleState.PARKED,
+                        'ready': VehicleState.READY,
+                        'driving': VehicleState.DRIVING,
+                        'charging': VehicleState.CHARGING,
+                        'error': VehicleState.ERROR,
+                        'emergency': VehicleState.EMERGENCY,
+                        'standby': VehicleState.STANDBY
+                    }
+                    state = state_map.get(state_str, VehicleState.PARKED)
+                    return vehicle_controller.set_state(state)
+                return False
+            
+            elif command == 'set_autopilot_mode':
+                if autopilot:
+                    mode_str = params.get('mode', 'manual').lower()
+                    from ai.autopilot import DrivingMode
+                    mode_map = {
+                        'manual': DrivingMode.MANUAL,
+                        'assist': DrivingMode.ASSIST,
+                        'autopilot': DrivingMode.AUTOPILOT,
+                        'emergency': DrivingMode.EMERGENCY
+                    }
+                    mode = mode_map.get(mode_str, DrivingMode.MANUAL)
+                    if mode == DrivingMode.MANUAL:
+                        autopilot.deactivate()
+                        return True
+                    else:
+                        return autopilot.activate(mode)
+                return False
+            
+            else:
+                self.logger.warning(f"Unknown control command: {command}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error executing control command {command}: {e}")
+            return False
 
     def update_data(self, data_type: str, data: Dict[str, Any]) -> None:
         """Manually update dashboard data (for testing or external updates).

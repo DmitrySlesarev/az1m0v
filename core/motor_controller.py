@@ -400,7 +400,10 @@ class VESCManager:
             return 0.0
 
         omega = 2 * 3.14159 * self.current_status.speed_rpm / 60.0
-        torque_nm = power_w / omega if omega > 0 else 0.0
+        if abs(omega) < 1e-6:  # Avoid division by zero
+            return 0.0
+        
+        torque_nm = power_w / omega
 
         # Clamp to maximum torque
         return max(-self.max_torque_nm, min(self.max_torque_nm, torque_nm))

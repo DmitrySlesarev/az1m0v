@@ -1,7 +1,13 @@
 az1m0v/ (EV Management System)
 ├── README.md
 ├── LICENSE
-├── main.py                         # Entry point for EV system
+├── main.py                         # Entry point for EV system:
+│                                  #   - Initializes all components (BMS, motor, charging, vehicle controller)
+│                                  #   - Initializes sensors (IMU, temperature sensors)
+│                                  #   - Initializes autopilot (if enabled)
+│                                  #   - Starts dashboard automatically (if enabled)
+│                                  #   - Main update loop feeds data to dashboard
+│                                  #   - Handles graceful shutdown
 ├── pyproject.toml                  # Poetry dependencies
 ├── poetry.lock                      # Locked dependencies
 ├── verify_tests.sh                  # Test verification script
@@ -36,7 +42,12 @@ az1m0v/ (EV Management System)
 │                                      #   - Coordinates BMS, motor, and charging systems
 ├── sensors/
 │   ├── __init__.py
-│   ├── imu.py                       # Inertial Measurement Unit
+│   ├── imu.py                       # Inertial Measurement Unit (MPU-6050/MPU-9250):
+│   │                                #   - 6-DOF (MPU-6050) or 9-DOF (MPU-9250) support
+│   │                                #   - I2C communication
+│   │                                #   - Configurable sampling rates
+│   │                                #   - Calibration support
+│   │                                #   - Simulation mode
 │   ├── gps.py                       # GPS positioning
 │   ├── temperature.py               # Comprehensive temperature sensor system:
 │   │                                #   - Battery cell group sensors (one per series group)
@@ -65,7 +76,10 @@ az1m0v/ (EV Management System)
 │   │                                #   - CAN bus integration
 │   │                                #   - WebSocket for live updates
 │   │                                #   - REST API endpoint
+│   │                                #   - Control commands (accelerate, brake, drive modes, charging, autopilot)
+│   │                                #   - Vehicle state control
 │   │                                #   - Raspberry Pi 4 optimized
+│   │                                #   - Integrated with main.py for automatic startup
 │   ├── templates/
 │   │   └── dashboard.html           # Dashboard HTML template with responsive design
 │   └── mobile_app.py                # Mobile application interface
@@ -92,7 +106,10 @@ az1m0v/ (EV Management System)
 │   │   ├── test_charging_system.py
 │   │   ├── test_vehicle_controller.py
 │   │   ├── test_telemetry.py
-│   │   └── test_temperature.py     # Temperature sensor unit tests
+│   │   ├── test_temperature.py     # Temperature sensor unit tests
+│   │   ├── test_main.py            # Unit tests for main.py EVSystem
+│   │   ├── test_dashboard.py       # Unit tests for dashboard (including control commands)
+│   │   └── test_ui_main.py         # Unit tests for ui/__main__.py
 │   └── functional/
 │       ├── __init__.py
 │       ├── test_autopilot_integration.py
@@ -101,11 +118,13 @@ az1m0v/ (EV Management System)
 │       ├── test_charging_system_integration.py
 │       ├── test_vehicle_controller_integration.py
 │       ├── test_telemetry_integration.py
-│       └── test_temperature_integration.py  # Temperature sensor integration tests
+│       ├── test_temperature_integration.py  # Temperature sensor integration tests
+│       └── test_main_integration.py         # Integration tests for main.py EVSystem
 └── scripts/
     ├── setup.sh                     # Setup script
     └── integration/
         ├── __init__.py
         ├── simpbms_builder.py       # SimpBMS firmware build and integration
         ├── vesc_builder.py          # VESC motor controller build and integration
-        └── quectel_builder.py       # Quectel QuecPython library build and integration
+        ├── quectel_builder.py       # Quectel QuecPython library build and integration
+        └── mpu_builder.py           # MPU-6050/MPU-9250 IMU library build and integration

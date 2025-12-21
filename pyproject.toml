@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "az1m0v"
-version = "0.1.0"
+version = "0.1.1"
 description = "Electric Vehicle Management System"
 authors = ["Dmitry Slesarev <dvslesar@gmail.com>"]
 license = "GPL"

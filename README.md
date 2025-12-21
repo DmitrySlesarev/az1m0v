@@ -43,6 +43,11 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
+  - Support for MPU-6050 (6-DOF: accelerometer + gyroscope)
+  - Support for MPU-9250 (9-DOF: accelerometer + gyroscope + magnetometer)
+  - I2C communication interface
+  - Configurable sampling rates and calibration
+  - Simulation mode for development
 - **GPS**: Positioning and navigation data
 - **Temperature Sensors**: Comprehensive multi-point thermal monitoring system:
   - Battery cell group sensors (one per series group, configurable)
@@ -77,6 +82,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
 - **SimpBMS Builder**: SimpBMS firmware build and integration support
 - **Quectel Builder**: Automated download, build, and integration of Quectel QuecPython library for telemetry
+- **MPU Builder**: Automated download, build, and integration of MPU-6050/MPU-9250 IMU libraries
 
 ## Project Structure
 
@@ -147,24 +153,46 @@ See [architecture.txt](architecture.txt) for detailed structure.
    ```bash
    python quectel_builder.py
    ```
+   
+   For MPU IMU sensors:
+   ```bash
+   python mpu_builder.py --sensor mpu6050  # or mpu9250
+   ```
 
 ### Running the System
 
-**Start the main application:**
+**Start the main application (recommended):**
 ```bash
 poetry run python main.py
 ```
 
-The system will:
-- Load and validate configuration
-- Initialize CAN bus (if enabled)
-- Connect to motor controller (if serial port configured)
+The system will automatically:
+- Load and validate configuration from `config/config.json`
+- Initialize CAN bus (if enabled in config)
+- Initialize Battery Management System (BMS)
+- Initialize Motor Controller (VESC, if serial port configured)
+- Initialize Charging System
+- Initialize Vehicle Controller
+- Initialize Sensors (IMU, GPS, Temperature Sensors - if enabled)
+- Initialize Autopilot System (if enabled in config)
+- **Start the web dashboard** (if `dashboard_enabled: true` in config)
 - Start monitoring and control loops
 - Handle graceful shutdown on SIGINT/SIGTERM
 
-**Start the web dashboard:**
+**Access the web dashboard:**
+Once the system is running, the dashboard is automatically available at:
+- `http://localhost:5000` (default port, configurable in `config/config.json`)
+- The dashboard runs in a background thread and provides:
+  - Real-time WebSocket updates from all system components
+  - REST API endpoint at `/api/status`
+  - Control interface for vehicle operations (accelerate, brake, drive modes, charging, autopilot)
+  - Responsive web interface accessible from any device on the network
+  - Automatic integration with CAN bus, BMS, motor controller, and sensors
+
+**Standalone dashboard mode (alternative):**
+If you want to run the dashboard separately without the full EV system:
 ```bash
-poetry run python -m ui.dashboard
+poetry run python -m ui
 ```
 
 Or integrate into your application:
@@ -182,11 +210,13 @@ dashboard = EVDashboard(can_bus=can_bus, can_protocol=can_protocol)
 dashboard.start()  # Runs on http://0.0.0.0:5000 by default
 ```
 
-The dashboard provides:
-- Real-time WebSocket updates
-- REST API endpoint at `/api/status`
-- Responsive web interface accessible from any device
-- Automatic CAN bus data integration
+**Dashboard control commands:**
+The dashboard supports WebSocket control commands for:
+- Vehicle acceleration and braking
+- Drive mode selection (ECO, NORMAL, SPORT, REVERSE)
+- Vehicle state control (PARKED, READY, DRIVING, CHARGING)
+- Charging start/stop
+- Autopilot mode control (MANUAL, ASSIST, AUTOPILOT)
 
 ### Testing
 
@@ -232,6 +262,10 @@ Key configuration sections:
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
 - Telemetry settings (server URL, cellular APN, update intervals)
+- IMU sensor configuration:
+  - Sensor type (MPU-6050 or MPU-9250)
+  - I2C address and bus
+  - Sampling rate and calibration parameters
 - Temperature sensor configuration:
   - Cell group sensor settings (cells per group)
   - Coolant sensor enablement
@@ -332,6 +366,11 @@ Optional (for Telemetry):
 - `quecpython` - Quectel QuecPython library (installed via integration script)
 - `requests` - HTTP/HTTPS requests for telemetry transmission
 
+Optional (for IMU):
+- `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
+- `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
+- `smbus2` - I2C communication library (installed via integration script)
+
 ## License
 
 GNU General Public License v3.0
@@ -352,6 +391,7 @@ See [LICENSE](LICENSE) for full license text.
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)
+- IMU Sensor System: ✅ Implemented (MPU-6050/MPU-9250 support)
 - Sensor Integration: ✅ Implemented
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
