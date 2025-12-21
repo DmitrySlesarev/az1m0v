@@ -202,3 +202,128 @@ class TestEVDashboard:
         assert dashboard.latest_data['battery']['current'] == 50.0
         assert dashboard.latest_data['battery']['soc'] == 85.0
 
+    def test_handle_control_command_accelerate(self, dashboard):
+        """Test control command: accelerate."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.accelerate.return_value = True
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('accelerate', {'throttle': 50.0})
+        assert result is True
+        mock_vc.accelerate.assert_called_once_with(50.0)
+
+    def test_handle_control_command_brake(self, dashboard):
+        """Test control command: brake."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.brake.return_value = True
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('brake', {'brake': 30.0})
+        assert result is True
+        mock_vc.brake.assert_called_once_with(30.0)
+
+    def test_handle_control_command_stop(self, dashboard):
+        """Test control command: stop."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.stop_driving.return_value = True
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('stop', {})
+        assert result is True
+        mock_vc.stop_driving.assert_called_once()
+
+    def test_handle_control_command_stop_no_vehicle_controller(self, dashboard):
+        """Test control command: stop without vehicle controller."""
+        dashboard.vehicle_controller = None
+        from core.motor_controller import VESCManager
+        mock_mc = Mock(spec=VESCManager)
+        mock_mc.stop.return_value = True
+        dashboard.motor_controller = mock_mc
+        
+        result = dashboard._handle_control_command('stop', {})
+        assert result is True
+        mock_mc.stop.assert_called_once()
+
+    def test_handle_control_command_set_drive_mode(self, dashboard):
+        """Test control command: set drive mode."""
+        from core.vehicle_controller import VehicleController, DriveMode
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.set_drive_mode.return_value = True
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('set_drive_mode', {'mode': 'sport'})
+        assert result is True
+        mock_vc.set_drive_mode.assert_called_once_with(DriveMode.SPORT)
+
+    def test_handle_control_command_start_charging(self, dashboard):
+        """Test control command: start charging."""
+        from core.charging_system import ChargingSystem
+        mock_cs = Mock(spec=ChargingSystem)
+        mock_cs.start_charging.return_value = True
+        dashboard.charging_system = mock_cs
+        
+        result = dashboard._handle_control_command('start_charging', {'power_kw': 50.0})
+        assert result is True
+        mock_cs.start_charging.assert_called_once_with(power_kw=50.0)
+
+    def test_handle_control_command_stop_charging(self, dashboard):
+        """Test control command: stop charging."""
+        from core.charging_system import ChargingSystem
+        mock_cs = Mock(spec=ChargingSystem)
+        mock_cs.stop_charging.return_value = True
+        dashboard.charging_system = mock_cs
+        
+        result = dashboard._handle_control_command('stop_charging', {})
+        assert result is True
+        mock_cs.stop_charging.assert_called_once()
+
+    def test_handle_control_command_set_vehicle_state(self, dashboard):
+        """Test control command: set vehicle state."""
+        from core.vehicle_controller import VehicleController, VehicleState
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.set_state.return_value = True
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('set_vehicle_state', {'state': 'driving'})
+        assert result is True
+        mock_vc.set_state.assert_called_once_with(VehicleState.DRIVING)
+
+    def test_handle_control_command_set_autopilot_mode(self, dashboard):
+        """Test control command: set autopilot mode."""
+        from ai.autopilot import AutopilotSystem, DrivingMode
+        mock_ap = Mock(spec=AutopilotSystem)
+        mock_ap.activate.return_value = True
+        dashboard.autopilot = mock_ap
+        
+        result = dashboard._handle_control_command('set_autopilot_mode', {'mode': 'assist'})
+        assert result is True
+        mock_ap.activate.assert_called_once_with(DrivingMode.ASSIST)
+
+    def test_handle_control_command_set_autopilot_manual(self, dashboard):
+        """Test control command: set autopilot mode to manual."""
+        from ai.autopilot import AutopilotSystem
+        mock_ap = Mock(spec=AutopilotSystem)
+        dashboard.autopilot = mock_ap
+        
+        result = dashboard._handle_control_command('set_autopilot_mode', {'mode': 'manual'})
+        assert result is True
+        mock_ap.deactivate.assert_called_once()
+
+    def test_handle_control_command_unknown(self, dashboard):
+        """Test control command: unknown command."""
+        result = dashboard._handle_control_command('unknown_command', {})
+        assert result is False
+
+    def test_handle_control_command_error(self, dashboard):
+        """Test control command: error handling."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.accelerate.side_effect = Exception("Test error")
+        dashboard.vehicle_controller = mock_vc
+        
+        result = dashboard._handle_control_command('accelerate', {'throttle': 50.0})
+        assert result is False
+

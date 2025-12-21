@@ -95,6 +95,6 @@ For questions or issues:
 
 ## Version Information
 
-- **Current Version**: 0.0.0.1
+- **Current Version**: 0.0.0.4
 - **Schema Version**: JSON Schema Draft 07
 - **Python Compatibility**: 3.13+

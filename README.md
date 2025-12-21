@@ -161,21 +161,38 @@ See [architecture.txt](architecture.txt) for detailed structure.
 
 ### Running the System
 
-**Start the main application:**
+**Start the main application (recommended):**
 ```bash
 poetry run python main.py
 ```
 
-The system will:
-- Load and validate configuration
-- Initialize CAN bus (if enabled)
-- Connect to motor controller (if serial port configured)
+The system will automatically:
+- Load and validate configuration from `config/config.json`
+- Initialize CAN bus (if enabled in config)
+- Initialize Battery Management System (BMS)
+- Initialize Motor Controller (VESC, if serial port configured)
+- Initialize Charging System
+- Initialize Vehicle Controller
+- Initialize Sensors (IMU, GPS, Temperature Sensors - if enabled)
+- Initialize Autopilot System (if enabled in config)
+- **Start the web dashboard** (if `dashboard_enabled: true` in config)
 - Start monitoring and control loops
 - Handle graceful shutdown on SIGINT/SIGTERM
 
-**Start the web dashboard:**
+**Access the web dashboard:**
+Once the system is running, the dashboard is automatically available at:
+- `http://localhost:5000` (default port, configurable in `config/config.json`)
+- The dashboard runs in a background thread and provides:
+  - Real-time WebSocket updates from all system components
+  - REST API endpoint at `/api/status`
+  - Control interface for vehicle operations (accelerate, brake, drive modes, charging, autopilot)
+  - Responsive web interface accessible from any device on the network
+  - Automatic integration with CAN bus, BMS, motor controller, and sensors
+
+**Standalone dashboard mode (alternative):**
+If you want to run the dashboard separately without the full EV system:
 ```bash
-poetry run python -m ui.dashboard
+poetry run python -m ui
 ```
 
 Or integrate into your application:
@@ -193,11 +210,13 @@ dashboard = EVDashboard(can_bus=can_bus, can_protocol=can_protocol)
 dashboard.start()  # Runs on http://0.0.0.0:5000 by default
 ```
 
-The dashboard provides:
-- Real-time WebSocket updates
-- REST API endpoint at `/api/status`
-- Responsive web interface accessible from any device
-- Automatic CAN bus data integration
+**Dashboard control commands:**
+The dashboard supports WebSocket control commands for:
+- Vehicle acceleration and braking
+- Drive mode selection (ECO, NORMAL, SPORT, REVERSE)
+- Vehicle state control (PARKED, READY, DRIVING, CHARGING)
+- Charging start/stop
+- Autopilot mode control (MANUAL, ASSIST, AUTOPILOT)
 
 ### Testing
 

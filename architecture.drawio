@@ -6,8 +6,8 @@
         <mxCell id="1" parent="0" />
         
         <!-- Main System -->
-        <mxCell id="main" value="EV Management System&#xa;(az1m0v)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="600" y="40" width="200" height="60" as="geometry" />
+        <mxCell id="main" value="EV Management System&#xa;(az1m0v)&#xa;main.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="200" height="80" as="geometry" />
         </mxCell>
         
         <!-- Core Components -->
@@ -67,8 +67,8 @@
         <mxCell id="ui-group" value="User Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;" vertex="1" parent="1">
           <mxGeometry x="1120" y="140" width="200" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="dashboard" value="Web Dashboard&#xa;(Flask + WebSocket)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="180" width="160" height="60" as="geometry" />
+        <mxCell id="dashboard" value="Web Dashboard&#xa;(Flask + WebSocket)&#xa;Monitoring &amp; Control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="180" width="160" height="80" as="geometry" />
         </mxCell>
         <mxCell id="mobile" value="Mobile App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="1140" y="260" width="160" height="60" as="geometry" />
@@ -170,8 +170,11 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         
-        <!-- Dashboard connections from CAN Bus -->
-        <mxCell id="conn21" value="CAN Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="can" target="dashboard">
+        <!-- Dashboard connections from CAN Bus and main system -->
+        <mxCell id="conn21" value="CAN Data&#xa;&amp; System Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="can" target="dashboard">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn26" value="Control Commands" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d6b656;" edge="1" parent="1" source="dashboard" target="vehicle">
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         

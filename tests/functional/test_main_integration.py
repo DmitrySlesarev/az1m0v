@@ -26,6 +26,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -37,6 +40,7 @@ class TestEVSystem:
             system = EVSystem(config_path=temp_path)
             assert system.config is not None
             assert system.bms is not None
+            assert system.vehicle_controller is not None
             assert system.running is False
         finally:
             Path(temp_path).unlink()
@@ -54,6 +58,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -81,6 +88,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -93,6 +103,45 @@ class TestEVSystem:
             assert system.bms is not None
             assert system.motor_controller is not None
             assert system.charging_system is not None
+            assert system.vehicle_controller is not None
+            # Sensors may or may not be initialized depending on config
+        finally:
+            Path(temp_path).unlink()
+
+    def test_evsystem_initialize_with_all_components(self):
+        """Test initialization with all components enabled."""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            config = {
+                'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
+                'battery': {'capacity_kwh': 50.0, 'max_charge_rate_kw': 100.0, 
+                           'max_discharge_rate_kw': 150.0, 'nominal_voltage': 400.0, 'cell_count': 96},
+                'motor': {'max_power_kw': 100.0, 'max_torque_nm': 250.0, 'efficiency': 0.9, 'type': 'permanent_magnet'},
+                'motor_controller': {'type': 'vesc', 'serial_port': None, 'can_enabled': False},
+                'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
+                           'connector_type': 'CCS2', 'fast_charge_enabled': True},
+                'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
+                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
+                'ui': {'dashboard_enabled': True, 'dashboard_host': '127.0.0.1', 'dashboard_port': 5002},
+                'ai': {'autopilot_enabled': True, 'computer_vision_enabled': False, 'model_path': '/models/'},
+                'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
+            }
+            json.dump(config, f)
+            temp_path = f.name
+        
+        try:
+            with patch('ui.dashboard.Flask'), patch('ui.dashboard.SocketIO'):
+                system = EVSystem(config_path=temp_path)
+                assert system.bms is not None
+                assert system.motor_controller is not None
+                assert system.charging_system is not None
+                assert system.vehicle_controller is not None
+                assert system.imu is not None
+                assert system.temperature_manager is not None
+                assert system.autopilot is not None
+                assert system.dashboard is not None
         finally:
             Path(temp_path).unlink()
 
@@ -109,6 +158,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': True, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -137,6 +189,9 @@ class TestEVSystem:
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': True, 'update_interval_ms': 1000},
                 'telemetry': {'enabled': True, 'simulation_mode': True},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -164,6 +219,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -195,6 +253,9 @@ class TestEVSystem:
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': True, 'update_interval_ms': 1000},
                 'telemetry': {'enabled': True, 'simulation_mode': True},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -223,6 +284,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -251,6 +315,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -280,6 +347,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -310,6 +380,9 @@ class TestEVSystem:
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
                 'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
+                'temperature_sensors': {'enabled': True},
+                'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
