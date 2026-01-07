@@ -29,6 +29,14 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Provides unified interface for vehicle operations (accelerate, brake, drive modes)
   - Calculates range and tracks energy consumption
   - Integrates with CAN bus for status reporting
+- **Safety System**: Comprehensive safety monitoring and protection:
+  - Thermal runaway detection for battery and motor (rapid temperature rise monitoring)
+  - Emergency shutdown coordination (graceful power-down sequence)
+  - Electrical safety monitoring (overvoltage, undervoltage, overcurrent detection)
+  - Fault tracking and management with severity levels
+  - Safety state management (NORMAL, WARNING, CRITICAL, EMERGENCY)
+  - Monitors all core components (BMS, motor, charging, vehicle controller)
+  - Configurable safety thresholds and thermal rate limits
 
 ### Communication
 - **CAN Bus Interface**: Industry-standard CAN bus communication with EV-specific protocol
@@ -92,7 +100,8 @@ az1m0v/
 │   ├── battery_management.py
 │   ├── motor_controller.py  # VESC integration
 │   ├── charging_system.py
-│   └── vehicle_controller.py
+│   ├── vehicle_controller.py
+│   └── safety_system.py    # Safety monitoring and protection
 ├── sensors/                 # Sensor interfaces
 │   ├── temperature.py      # Comprehensive temperature sensor system
 ├── communication/           # CAN bus and telemetry
@@ -261,6 +270,7 @@ Key configuration sections:
 - Motor controller settings (VESC serial port, limits)
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
+- Safety system configuration (temperature thresholds, thermal runaway rates, voltage/current limits)
 - Telemetry settings (server URL, cellular APN, update intervals)
 - IMU sensor configuration:
   - Sensor type (MPU-6050 or MPU-9250)
@@ -388,6 +398,7 @@ See [LICENSE](LICENSE) for full license text.
 - Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
 - Vehicle Controller: ✅ Implemented
+- Safety System: ✅ Implemented (thermal runaway detection, emergency shutdown, fault tracking)
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)

@@ -34,12 +34,19 @@ az1m0v/ (EV Management System)
 │   ├── charging_system.py           # Charging system management:
 │   │                                #   - Port/connector temperature monitoring
 │   │                                #   - Overtemperature safety shutdown
-│   └── vehicle_controller.py        # High-level vehicle coordination:
-│                                      #   - State management (PARKED, READY, DRIVING, CHARGING, etc.)
-│                                      #   - Safety enforcement (prevents driving while charging)
-│                                      #   - Drive mode control (ECO, NORMAL, SPORT, REVERSE)
-│                                      #   - Range calculation and energy tracking
-│                                      #   - Coordinates BMS, motor, and charging systems
+│   ├── vehicle_controller.py        # High-level vehicle coordination:
+│   │                                #   - State management (PARKED, READY, DRIVING, CHARGING, etc.)
+│   │                                #   - Safety enforcement (prevents driving while charging)
+│   │                                #   - Drive mode control (ECO, NORMAL, SPORT, REVERSE)
+│   │                                #   - Range calculation and energy tracking
+│   │                                #   - Coordinates BMS, motor, and charging systems
+│   └── safety_system.py             # Safety System:
+│                                      #   - Thermal runaway detection (battery and motor)
+│                                      #   - Emergency shutdown coordination
+│                                      #   - Electrical safety monitoring (voltage, current)
+│                                      #   - Fault tracking and management
+│                                      #   - Safety state management (NORMAL, WARNING, CRITICAL, EMERGENCY)
+│                                      #   - Monitors all core components
 ├── sensors/
 │   ├── __init__.py
 │   ├── imu.py                       # Inertial Measurement Unit (MPU-6050/MPU-9250):
