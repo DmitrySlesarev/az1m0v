@@ -240,12 +240,13 @@ class VehicleController:
 
         return self.set_state(VehicleState.READY)
 
-    def accelerate(self, throttle_percent: float) -> bool:
+    def accelerate(self, throttle_percent: float, safety_system: Optional[Any] = None) -> bool:
         """
         Accelerate vehicle.
         
         Args:
             throttle_percent: Throttle position (0-100%)
+            safety_system: Optional SafetySystem instance for limp-home mode limits
             
         Returns:
             True if command successful, False otherwise
@@ -257,24 +258,38 @@ class VehicleController:
         # Validate throttle
         throttle_percent = max(0.0, min(100.0, throttle_percent))
 
+        # Apply limp-home mode limits if available
+        max_power_kw = self.config.max_power_kw
+        max_acceleration_ms2 = self.config.max_acceleration_ms2
+        max_speed_kmh = self.config.max_speed_kmh
+        
+        if safety_system and hasattr(safety_system, 'diagnostics'):
+            try:
+                limp_home_limits = safety_system.diagnostics.get_limp_home_limits()
+                max_power_kw = min(max_power_kw, limp_home_limits.max_power_kw)
+                max_acceleration_ms2 = min(max_acceleration_ms2, limp_home_limits.max_acceleration_ms2)
+                max_speed_kmh = min(max_speed_kmh, limp_home_limits.max_speed_kmh)
+            except Exception as e:
+                self.logger.warning(f"Error getting limp-home limits: {e}")
+
         # Check BMS can discharge
         if self.bms:
             # Calculate requested power
-            requested_power_kw = (throttle_percent / 100.0) * self.config.max_power_kw
+            requested_power_kw = (throttle_percent / 100.0) * max_power_kw
 
             if not self.bms.can_discharge(requested_power_kw):
                 self.logger.warning(f"BMS cannot discharge at {requested_power_kw}kW")
                 return False
 
         # Calculate target acceleration
-        target_acceleration = (throttle_percent / 100.0) * self.config.max_acceleration_ms2
+        target_acceleration = (throttle_percent / 100.0) * max_acceleration_ms2
 
         # Limit acceleration
-        target_acceleration = min(target_acceleration, self.config.max_acceleration_ms2)
+        target_acceleration = min(target_acceleration, max_acceleration_ms2)
         self.current_status.acceleration_ms2 = target_acceleration
 
         # Calculate power
-        power_kw = (throttle_percent / 100.0) * self.config.max_power_kw
+        power_kw = (throttle_percent / 100.0) * max_power_kw
         self.current_status.power_kw = power_kw
 
         # Send command to motor controller
@@ -284,7 +299,7 @@ class VehicleController:
             self.motor_controller.set_duty_cycle(duty_cycle)
 
         # Update speed (simplified physics)
-        self._update_speed()
+        self._update_speed(max_speed_kmh)
 
         # Update energy consumption
         self._update_energy_consumption()
@@ -361,13 +376,15 @@ class VehicleController:
         self.logger.info(f"Drive mode set to {mode.value}")
         return True
 
-    def start_charging(self, power_kw: Optional[float] = None, target_soc: float = 100.0) -> bool:
+    def start_charging(self, power_kw: Optional[float] = None, target_soc: float = 100.0,
+                      safety_system: Optional[Any] = None) -> bool:
         """
         Start charging process.
         
         Args:
             power_kw: Requested charging power (None = use max available)
             target_soc: Target state of charge (0-100%)
+            safety_system: Optional SafetySystem instance for limp-home mode limits
             
         Returns:
             True if charging started, False otherwise
@@ -379,6 +396,15 @@ class VehicleController:
         if not self.charging_system:
             self.logger.error("Charging system not available")
             return False
+
+        # Check limp-home mode restrictions
+        if safety_system and hasattr(safety_system, 'diagnostics'):
+            try:
+                if not safety_system.diagnostics.is_operation_allowed('charging'):
+                    self.logger.error("Charging not allowed in current limp-home mode")
+                    return False
+            except Exception as e:
+                self.logger.warning(f"Error checking limp-home mode: {e}")
 
         # Connect charger if not connected
         if not self.charging_system.is_connected():
@@ -474,8 +500,13 @@ class VehicleController:
 
         return self.current_status
 
-    def _update_speed(self) -> None:
-        """Update vehicle speed based on acceleration."""
+    def _update_speed(self, max_speed_kmh: Optional[float] = None) -> None:
+        """
+        Update vehicle speed based on acceleration.
+        
+        Args:
+            max_speed_kmh: Maximum speed limit (None = use config default)
+        """
         current_time = time.time()
         dt = current_time - self.last_speed_update
 
@@ -485,7 +516,8 @@ class VehicleController:
             speed_ms += self.current_status.acceleration_ms2 * dt
 
             # Limit speed
-            max_speed_ms = self.config.max_speed_kmh / 3.6
+            speed_limit = max_speed_kmh if max_speed_kmh is not None else self.config.max_speed_kmh
+            max_speed_ms = speed_limit / 3.6
             speed_ms = max(0.0, min(max_speed_ms, speed_ms))
 
             # Convert back to km/h

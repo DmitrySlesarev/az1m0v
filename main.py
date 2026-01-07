@@ -17,6 +17,7 @@ from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
 from core.charging_system import ChargingSystem
 from core.vehicle_controller import VehicleController
+from core.safety_system import SafetySystem
 from sensors.imu import IMU, IMUConfig, IMUType
 from sensors.temperature import TemperatureSensorManager
 from ai.autopilot import AutopilotSystem
@@ -43,6 +44,7 @@ class EVSystem:
         self.motor_controller: Optional[VESCManager] = None
         self.charging_system: Optional[ChargingSystem] = None
         self.vehicle_controller: Optional[VehicleController] = None
+        self.safety_system: Optional[SafetySystem] = None
         self.telemetry: Optional[TelemetrySystem] = None
         
         # Sensors
@@ -132,6 +134,9 @@ class EVSystem:
 
         # Initialize Vehicle Controller
         self._initialize_vehicle_controller()
+
+        # Initialize Safety System
+        self._initialize_safety_system()
 
         # Initialize Sensors
         self._initialize_sensors()
@@ -261,6 +266,22 @@ class EVSystem:
             self.logger.info("Vehicle Controller initialized")
         except Exception as e:
             self.logger.error(f"Failed to initialize vehicle controller: {e}")
+
+    def _initialize_safety_system(self) -> None:
+        """Initialize Safety System."""
+        try:
+            safety_config = self.config.get('safety_system', {})
+            
+            self.safety_system = SafetySystem(
+                battery_management=self.bms,
+                motor_controller=self.motor_controller,
+                charging_system=self.charging_system,
+                vehicle_controller=self.vehicle_controller,
+                config=safety_config
+            )
+            self.logger.info("Safety System initialized")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize safety system: {e}")
 
     def _initialize_sensors(self) -> None:
         """Initialize sensor systems."""
@@ -470,6 +491,12 @@ class EVSystem:
         if self.temperature_manager:
             self._update_temperature_data()
 
+        # Monitor safety system (includes diagnostics system: DTC, limp-home modes, fault logging)
+        if self.safety_system:
+            self.safety_system.monitor_system()
+            # Diagnostics system is automatically integrated and processes faults
+            # Access via: safety_system.diagnostics (DTC manager, limp-home manager, fault logger)
+
         # Send telemetry data
         if self.telemetry and self.telemetry.is_enabled():
             self._send_telemetry_data()
@@ -621,6 +648,9 @@ class EVSystem:
         if self.can_bus and self.can_bus.is_connected:
             self.can_bus.disconnect()
             self.logger.info("CAN bus disconnected")
+
+        # Safety system shutdown is handled by emergency_shutdown if needed
+        # No explicit shutdown needed as it's passive monitoring
 
         self.logger.info("EV system shutdown complete")
 
