@@ -29,6 +29,13 @@ az1m0v/ (EV Management System)
 │   ├── battery_management.py        # Battery Management System (BMS):
 │   │                                #   - Cell group temperature integration
 │   │                                #   - Coolant temperature monitoring
+│   │                                #   - State of Health (SOH) calculation:
+│   │                                #     * Cycle-based degradation tracking
+│   │                                #     * Temperature history-based degradation
+│   │                                #     * Fault-based degradation
+│   │                                #     * Age-based calendar aging
+│   │                                #     * Automatic charge cycle detection
+│   │                                #     * Temperature history tracking (30-day rolling window)
 │   ├── motor_controller.py          # VESC motor controller integration:
 │   │                                #   - Stator temperature monitoring
 │   ├── charging_system.py           # Charging system management:

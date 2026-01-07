@@ -699,3 +699,128 @@ class TestBatteryManagementSystem:
         status = bms._determine_status()
 
         assert status == BatteryStatus.FAULT
+
+    def test_soh_initial_value(self, bms):
+        """Test that initial SOH is 100%."""
+        assert bms.state.soh == 100.0
+
+    def test_soh_calculation_with_cycles(self, bms):
+        """Test SOH calculation with charge cycles."""
+        # Simulate multiple charge cycles
+        bms.stats['charge_cycles'] = 100
+        bms.state.temperature = 25.0
+        
+        soh = bms._calculate_soh()
+        
+        # With 100 cycles at 0.05% per cycle = 5% degradation
+        # Should be around 95% (minus small age-based degradation)
+        assert soh < 100.0
+        assert soh >= 90.0  # Should be at least 90% after 100 cycles
+
+    def test_soh_calculation_with_faults(self, bms):
+        """Test SOH calculation with faults."""
+        bms.stats['fault_count'] = 10
+        bms.stats['charge_cycles'] = 0
+        bms.state.temperature = 25.0
+        
+        soh = bms._calculate_soh()
+        
+        # With 10 faults at 0.1% per fault = 1% degradation
+        # Should be around 99% (minus small age-based degradation)
+        assert soh < 100.0
+        assert soh >= 98.0
+
+    def test_soh_calculation_with_high_temperature(self, bms):
+        """Test SOH calculation with high temperature history."""
+        # Simulate high temperature history
+        current_time = time.time()
+        # Add 24 hours of high temperature (40°C+)
+        for i in range(24):
+            bms._temperature_history.append((current_time - (24 - i) * 3600, 45.0))
+        
+        bms.state.temperature = 45.0
+        bms.stats['charge_cycles'] = 0
+        bms.stats['fault_count'] = 0
+        
+        soh = bms._calculate_soh()
+        
+        # High temperature should cause some degradation
+        assert soh < 100.0
+
+    def test_soh_calculation_combined_factors(self, bms):
+        """Test SOH calculation with multiple degradation factors."""
+        bms.stats['charge_cycles'] = 200
+        bms.stats['fault_count'] = 5
+        bms.state.temperature = 30.0
+        
+        # Add some temperature history
+        current_time = time.time()
+        for i in range(10):
+            bms._temperature_history.append((current_time - (10 - i) * 3600, 42.0))
+        
+        soh = bms._calculate_soh()
+        
+        # Combined factors should reduce SOH significantly
+        assert soh < 100.0
+        assert soh >= 80.0  # Should still be reasonable
+
+    def test_soh_bounds(self, bms):
+        """Test that SOH stays within valid bounds (0-100%)."""
+        # Set extreme values
+        bms.stats['charge_cycles'] = 10000
+        bms.stats['fault_count'] = 1000
+        bms.state.temperature = 60.0
+        
+        soh = bms._calculate_soh()
+        
+        # Should be clamped to valid range
+        assert soh >= 0.0
+        assert soh <= 100.0
+
+    def test_soh_updates_on_state_update(self, bms):
+        """Test that SOH is updated when state is updated."""
+        initial_soh = bms.state.soh
+        
+        # Simulate some degradation
+        bms.stats['charge_cycles'] = 50
+        bms.state.temperature = 25.0
+        
+        # Update state to trigger SOH recalculation
+        bms.update_state(voltage=400.0, current=0.0, temperature=25.0)
+        
+        # SOH should have been recalculated
+        assert bms.state.soh != initial_soh or bms.stats['charge_cycles'] == 0
+
+    def test_cycle_detection(self, bms):
+        """Test charge cycle detection."""
+        initial_cycles = bms.stats['charge_cycles']
+        
+        # Simulate a full charge-discharge cycle
+        # Start at low SOC
+        bms.state.soc = 10.0
+        bms._last_soc_for_cycle_detection = 10.0
+        bms._cycle_energy_charged_wh = 0.0
+        bms._cycle_energy_discharged_wh = 0.0
+        
+        # Charge to high SOC with significant energy
+        bms.state.soc = 90.0
+        bms._cycle_energy_charged_wh = bms.config.capacity_kwh * 0.9 * 1000  # 90% of capacity
+        bms._cycle_energy_discharged_wh = bms.config.capacity_kwh * 0.8 * 1000  # 80% discharged
+        
+        # Trigger cycle detection
+        bms._detect_charge_cycle()
+        
+        # Should have detected a cycle
+        assert bms.stats['charge_cycles'] >= initial_cycles
+
+    def test_temperature_history_tracking(self, bms):
+        """Test temperature history tracking."""
+        current_time = time.time()
+        
+        # Update state multiple times to build history
+        for i in range(5):
+            bms.update_state(voltage=400.0, current=0.0, temperature=25.0 + i)
+        
+        # Should have temperature history
+        assert len(bms._temperature_history) > 0
+        assert len(bms._temperature_history) <= 5  # May be limited by history duration

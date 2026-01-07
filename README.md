@@ -13,6 +13,14 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Integrated temperature sensor support for cell groups and coolant monitoring
   - Cell group temperature tracking (one sensor per series group)
   - Coolant inlet/outlet temperature monitoring
+  - **State of Health (SOH) Calculation**: Advanced battery health monitoring:
+    - Cycle-based degradation (0.05% per charge cycle)
+    - Temperature history tracking (30-day rolling window)
+    - High-temperature degradation acceleration
+    - Fault-based degradation tracking
+    - Calendar aging (age-based degradation with temperature adjustment)
+    - Automatic charge cycle detection (SOC-based and energy-based)
+    - Real-time SOH updates on every state change
 - **Motor Controller**: VESC (Vedder Electronic Speed Controller) integration with support for:
   - RPM, current, and duty cycle control
   - Real-time status monitoring
@@ -96,7 +104,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ### User Interfaces
 - **Dashboard**: Web-based real-time monitoring and control interface:
   - Real-time data visualization via WebSocket
-  - Battery status (voltage, current, temperature, SOC)
+  - Battery status (voltage, current, temperature, SOC, SOH)
   - Motor status (speed, torque, temperature)
   - Charging system status
   - Vehicle state monitoring
@@ -417,7 +425,7 @@ See [LICENSE](LICENSE) for full license text.
 ## Status
 
 ✅ **Active Development** - Core systems implemented and tested
-- Battery Management System: ✅ Implemented (with temperature sensor integration)
+- Battery Management System: ✅ Implemented (with temperature sensor integration, SOC/SOH calculation)
 - Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
 - Vehicle Controller: ✅ Implemented

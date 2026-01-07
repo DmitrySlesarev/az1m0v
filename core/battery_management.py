@@ -108,6 +108,16 @@ class BatteryManagementSystem:
             'last_update': time.time()
         }
 
+        # SOH calculation tracking
+        self._initial_capacity_kwh = self.config.capacity_kwh
+        self._last_soc_for_cycle_detection = self.state.soc
+        self._cycle_energy_charged_wh = 0.0  # Energy charged in current cycle
+        self._cycle_energy_discharged_wh = 0.0  # Energy discharged in current cycle
+        self._temperature_history: List[tuple] = []  # List of (timestamp, temperature) tuples
+        self._max_temperature_history_duration = 86400.0 * 30  # 30 days in seconds
+        self._high_temperature_threshold = 40.0  # °C - temperatures above this accelerate degradation
+        self._initialization_time = time.time()
+
         self.logger.info(f"BMS initialized: {self.config.capacity_kwh}kWh, {self.config.cell_count} cells")
 
     def update_state(self, voltage: Optional[float] = None,
@@ -178,13 +188,18 @@ class BatteryManagementSystem:
 
             if self.state.current > 0:  # Charging
                 self.stats['total_energy_charged_kwh'] += abs(energy_change_kwh)
+                self._cycle_energy_charged_wh += abs(energy_change_wh)
             else:  # Discharging
                 self.stats['total_energy_discharged_kwh'] += abs(energy_change_kwh)
+                self._cycle_energy_discharged_wh += abs(energy_change_wh)
 
             # Update SOC
             soc_change = (energy_change_kwh / self.config.capacity_kwh) * 100.0
             self.state.soc = max(self.config.min_soc,
                                 min(self.config.max_soc, self.state.soc + soc_change))
+
+            # Detect charge cycles (full charge-discharge cycle)
+            self._detect_charge_cycle()
 
         # Update SOC from voltage if no current measurement (fallback)
         if self.state.current == 0 and self.state.voltage > 0:
@@ -193,6 +208,12 @@ class BatteryManagementSystem:
             voltage_ratio = (cell_voltage - self.config.min_voltage) / \
                            (self.config.max_voltage - self.config.min_voltage)
             self.state.soc = max(0, min(100, voltage_ratio * 100))
+
+        # Update temperature history for SOH calculation
+        self._update_temperature_history(current_time)
+
+        # Calculate SOH
+        self.state.soh = self._calculate_soh()
 
         # Determine status
         self.state.status = self._determine_status()
@@ -204,6 +225,126 @@ class BatteryManagementSystem:
         # Send status to CAN bus if available
         if self.can_protocol:
             self._send_can_status()
+
+    def _detect_charge_cycle(self) -> None:
+        """Detect when a full charge-discharge cycle is completed.
+        
+        A cycle is considered complete when:
+        - Battery goes from low SOC (<20%) to high SOC (>80%) and back, OR
+        - Total energy charged + discharged in current cycle >= 80% of nominal capacity
+        """
+        current_soc = self.state.soc
+        previous_soc = self._last_soc_for_cycle_detection
+        
+        # Check for cycle completion based on SOC swing
+        # Cycle: low -> high -> low (or high -> low -> high)
+        cycle_threshold_high = 80.0
+        cycle_threshold_low = 20.0
+        
+        # Detect cycle completion: went from low to high and back to low, or vice versa
+        if (previous_soc < cycle_threshold_low and current_soc > cycle_threshold_high) or \
+           (previous_soc > cycle_threshold_high and current_soc < cycle_threshold_low):
+            # Check if we've completed a full cycle (charged and discharged)
+            total_cycle_energy_kwh = (self._cycle_energy_charged_wh + self._cycle_energy_discharged_wh) / 1000.0
+            if total_cycle_energy_kwh >= self.config.capacity_kwh * 0.8:  # 80% of capacity
+                self.stats['charge_cycles'] += 1
+                self._cycle_energy_charged_wh = 0.0
+                self._cycle_energy_discharged_wh = 0.0
+                self.logger.info(f"Charge cycle detected. Total cycles: {self.stats['charge_cycles']}")
+        
+        # Alternative: cycle based on energy throughput
+        total_cycle_energy_kwh = (self._cycle_energy_charged_wh + self._cycle_energy_discharged_wh) / 1000.0
+        if total_cycle_energy_kwh >= self.config.capacity_kwh * 1.6:  # Full charge + full discharge
+            self.stats['charge_cycles'] += 1
+            self._cycle_energy_charged_wh = 0.0
+            self._cycle_energy_discharged_wh = 0.0
+            self.logger.info(f"Charge cycle detected (energy-based). Total cycles: {self.stats['charge_cycles']}")
+        
+        self._last_soc_for_cycle_detection = current_soc
+
+    def _update_temperature_history(self, current_time: float) -> None:
+        """Update temperature history for SOH calculation.
+        
+        Args:
+            current_time: Current timestamp
+        """
+        # Add current temperature to history
+        self._temperature_history.append((current_time, self.state.temperature))
+        
+        # Remove old entries (older than max history duration)
+        cutoff_time = current_time - self._max_temperature_history_duration
+        self._temperature_history = [(t, temp) for t, temp in self._temperature_history if t >= cutoff_time]
+
+    def _calculate_soh(self) -> float:
+        """Calculate State of Health (SOH) based on multiple factors.
+        
+        SOH is calculated using:
+        1. Cycle-based degradation (0.05% per cycle typical for Li-ion)
+        2. Temperature-based degradation (time spent at high temperatures)
+        3. Fault-based degradation (each fault reduces SOH)
+        4. Age-based degradation (calendar aging)
+        
+        Returns:
+            SOH percentage (0-100%)
+        """
+        base_soh = 100.0
+        
+        # 1. Cycle-based degradation
+        # Typical Li-ion batteries lose ~0.05% capacity per cycle
+        # This can vary: 0.03-0.1% depending on depth of discharge and usage
+        cycle_degradation = self.stats['charge_cycles'] * 0.05
+        base_soh -= cycle_degradation
+        
+        # 2. Temperature-based degradation
+        # High temperatures accelerate degradation
+        # Calculate time-weighted average of time spent above threshold
+        if self._temperature_history:
+            high_temp_time = 0.0
+            total_time = 0.0
+            previous_time = self._temperature_history[0][0] if self._temperature_history else self._initialization_time
+            
+            for timestamp, temp in self._temperature_history:
+                if previous_time < timestamp:
+                    time_interval = timestamp - previous_time
+                    total_time += time_interval
+                    if temp > self._high_temperature_threshold:
+                        high_temp_time += time_interval
+                    previous_time = timestamp
+            
+            if total_time > 0:
+                high_temp_ratio = high_temp_time / total_time
+                # Degradation: 0.1% per day spent above threshold (scaled)
+                # Convert to degradation per hour: 0.1 / 24 = 0.00417% per hour
+                hours_at_high_temp = high_temp_time / 3600.0
+                temp_degradation = hours_at_high_temp * 0.00417
+                base_soh -= temp_degradation
+        
+        # 3. Fault-based degradation
+        # Each fault indicates stress and reduces SOH
+        # Assume 0.1% degradation per fault
+        fault_degradation = self.stats['fault_count'] * 0.1
+        base_soh -= fault_degradation
+        
+        # 4. Age-based degradation (calendar aging)
+        # Li-ion batteries degrade over time even without use
+        # Typical: ~2-3% per year at 25°C, accelerated at higher temperatures
+        age_years = (time.time() - self._initialization_time) / (365.25 * 24 * 3600)
+        # Base calendar aging: 2.5% per year
+        # Adjust for average temperature (higher temp = faster aging)
+        avg_temp = self.state.temperature
+        temp_factor = 1.0 + max(0, (avg_temp - 25.0) / 10.0) * 0.5  # 50% increase per 10°C above 25°C
+        calendar_degradation = age_years * 2.5 * temp_factor
+        base_soh -= calendar_degradation
+        
+        # 5. Capacity-based SOH (if we have capacity measurements)
+        # This would require actual capacity testing, but we can estimate
+        # based on energy throughput vs SOC changes
+        # For now, we rely on the other factors
+        
+        # Ensure SOH stays within valid range
+        soh = max(0.0, min(100.0, base_soh))
+        
+        return soh
 
     def _determine_status(self) -> BatteryStatus:
         """Determine battery status based on current state."""
