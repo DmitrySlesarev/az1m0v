@@ -21,6 +21,14 @@ class BatteryStatus(Enum):
     STANDBY = "standby"
 
 
+class BalancingAlgorithm(Enum):
+    """Cell balancing algorithm types."""
+    NONE = "none"  # No balancing
+    PASSIVE = "passive"  # Dissipative balancing (bleed resistors)
+    ACTIVE = "active"  # Redistributive balancing (energy transfer)
+    ADAPTIVE = "adaptive"  # Automatically selects passive or active based on conditions
+
+
 @dataclass
 class BatteryState:
     """Current battery state information."""
@@ -37,6 +45,8 @@ class BatteryState:
     cell_group_temperatures: List[float] = field(default_factory=list)  # Temperatures per cell group
     coolant_inlet_temperature: Optional[float] = None  # Coolant inlet temperature in °C
     coolant_outlet_temperature: Optional[float] = None  # Coolant outlet temperature in °C
+    balancing_active: bool = False  # Whether cell balancing is currently active
+    cells_balancing: List[int] = field(default_factory=list)  # List of cell indices currently being balanced
 
 
 @dataclass
@@ -53,6 +63,14 @@ class BatteryConfig:
     max_temperature: float = 45.0  # Maximum operating temperature in °C
     max_soc: float = 100.0  # Maximum SOC percentage
     min_soc: float = 0.0  # Minimum SOC percentage
+    # Balancing configuration
+    balancing_enabled: bool = True  # Enable cell balancing
+    balancing_algorithm: str = "adaptive"  # Balancing algorithm: "none", "passive", "active", "adaptive"
+    balancing_threshold_mv: float = 50.0  # Voltage difference threshold to start balancing (mV)
+    passive_bleed_current_ma: float = 100.0  # Passive balancing bleed current (mA)
+    active_balance_efficiency: float = 0.85  # Active balancing efficiency (0-1)
+    balancing_min_soc: float = 20.0  # Minimum SOC to allow balancing (%)
+    balancing_max_soc: float = 95.0  # Maximum SOC to allow balancing (%)
 
 
 class BatteryManagementSystem:
@@ -76,6 +94,13 @@ class BatteryManagementSystem:
             max_voltage=config.get('max_voltage', 4.2),
             min_temperature=config.get('min_temperature', 0.0),
             max_temperature=config.get('max_temperature', 45.0),
+            balancing_enabled=config.get('balancing_enabled', True),
+            balancing_algorithm=config.get('balancing_algorithm', 'adaptive'),
+            balancing_threshold_mv=config.get('balancing_threshold_mv', 50.0),
+            passive_bleed_current_ma=config.get('passive_bleed_current_ma', 100.0),
+            active_balance_efficiency=config.get('active_balance_efficiency', 0.85),
+            balancing_min_soc=config.get('balancing_min_soc', 20.0),
+            balancing_max_soc=config.get('balancing_max_soc', 95.0),
         )
 
         self.can_protocol = can_protocol
@@ -96,7 +121,9 @@ class BatteryManagementSystem:
             timestamp=time.time(),
             cell_group_temperatures=[],
             coolant_inlet_temperature=None,
-            coolant_outlet_temperature=None
+            coolant_outlet_temperature=None,
+            balancing_active=False,
+            cells_balancing=[]
         )
 
         # Statistics
@@ -105,7 +132,10 @@ class BatteryManagementSystem:
             'total_energy_discharged_kwh': 0.0,
             'charge_cycles': 0,
             'fault_count': 0,
-            'last_update': time.time()
+            'last_update': time.time(),
+            'balancing_events': 0,
+            'total_balancing_time_s': 0.0,
+            'last_balancing_time': None
         }
 
         # SOH calculation tracking
@@ -214,6 +244,18 @@ class BatteryManagementSystem:
 
         # Calculate SOH
         self.state.soh = self._calculate_soh()
+
+        # Perform cell balancing if enabled
+        was_balancing = self.state.balancing_active
+        if self.config.balancing_enabled and self.state.cell_voltages:
+            self._perform_balancing(dt)
+        
+        # Track balancing duration when balancing stops
+        if was_balancing and not self.state.balancing_active:
+            if self.stats.get('last_balancing_time'):
+                balancing_duration = current_time - self.stats['last_balancing_time']
+                self.stats['total_balancing_time_s'] += balancing_duration
+                self.stats['last_balancing_time'] = None
 
         # Determine status
         self.state.status = self._determine_status()
@@ -345,6 +387,202 @@ class BatteryManagementSystem:
         soh = max(0.0, min(100.0, base_soh))
         
         return soh
+
+    def _perform_balancing(self, dt: float) -> None:
+        """Perform cell balancing based on configured algorithm.
+        
+        Args:
+            dt: Time delta since last update in seconds
+        """
+        if not self.state.cell_voltages or len(self.state.cell_voltages) < 2:
+            return
+
+        # Check if balancing should be active based on SOC
+        if self.state.soc < self.config.balancing_min_soc or self.state.soc > self.config.balancing_max_soc:
+            self.state.balancing_active = False
+            self.state.cells_balancing = []
+            return
+
+        # Calculate voltage imbalance
+        max_voltage = max(self.state.cell_voltages)
+        min_voltage = min(self.state.cell_voltages)
+        voltage_imbalance_mv = (max_voltage - min_voltage) * 1000.0  # Convert to mV
+
+        # Check if imbalance exceeds threshold
+        if voltage_imbalance_mv < self.config.balancing_threshold_mv:
+            self.state.balancing_active = False
+            self.state.cells_balancing = []
+            return
+
+        # Select balancing algorithm
+        algorithm = BalancingAlgorithm(self.config.balancing_algorithm)
+        
+        if algorithm == BalancingAlgorithm.ADAPTIVE:
+            # Adaptive: use active balancing for large imbalances, passive for small
+            if voltage_imbalance_mv > 200.0:  # >200mV use active
+                algorithm = BalancingAlgorithm.ACTIVE
+            else:
+                algorithm = BalancingAlgorithm.PASSIVE
+
+        # Perform balancing
+        if algorithm == BalancingAlgorithm.PASSIVE:
+            self._passive_balancing(dt, voltage_imbalance_mv)
+        elif algorithm == BalancingAlgorithm.ACTIVE:
+            self._active_balancing(dt, voltage_imbalance_mv)
+        else:
+            self.state.balancing_active = False
+            self.state.cells_balancing = []
+
+    def _passive_balancing(self, dt: float, voltage_imbalance_mv: float) -> None:
+        """Perform passive (dissipative) cell balancing.
+        
+        Passive balancing bleeds current from high-voltage cells using resistors.
+        This is simpler and cheaper but wastes energy as heat.
+        
+        Args:
+            dt: Time delta since last update in seconds
+            voltage_imbalance_mv: Voltage imbalance in millivolts
+        """
+        if not self.state.cell_voltages:
+            return
+
+        # Calculate average cell voltage
+        avg_voltage = sum(self.state.cell_voltages) / len(self.state.cell_voltages)
+        threshold_voltage = avg_voltage + (self.config.balancing_threshold_mv / 1000.0)
+
+        # Find cells that need balancing (above threshold)
+        cells_to_balance = []
+        for i, cell_voltage in enumerate(self.state.cell_voltages):
+            if cell_voltage > threshold_voltage:
+                cells_to_balance.append(i)
+
+        if not cells_to_balance:
+            self.state.balancing_active = False
+            self.state.cells_balancing = []
+            return
+
+        # Update balancing state
+        self.state.balancing_active = True
+        self.state.cells_balancing = cells_to_balance
+
+        # Simulate passive balancing by reducing voltage of high cells
+        # In real hardware, this would be done by switching on bleed resistors
+        bleed_current_a = self.config.passive_bleed_current_ma / 1000.0  # Convert mA to A
+        
+        # Estimate cell capacity (simplified - assumes all cells have same capacity)
+        cell_capacity_ah = (self.config.capacity_kwh * 1000.0) / (self.config.nominal_voltage * 3600.0) / self.config.cell_count
+        
+        # Calculate voltage drop from bleeding
+        # Simplified: Q = I * t, voltage drop depends on cell characteristics
+        # For Li-ion: approximately 0.01V per 1% SOC change
+        energy_bleed_wh = (bleed_current_a * avg_voltage * dt) / 3600.0
+        soc_drop = (energy_bleed_wh / (cell_capacity_ah * avg_voltage / 100.0)) * 100.0
+        
+        # Apply balancing to high cells
+        for cell_idx in cells_to_balance:
+            # Reduce voltage proportionally (simplified model)
+            voltage_drop = (soc_drop / 100.0) * (self.config.max_voltage - self.config.min_voltage) * 0.01
+            self.state.cell_voltages[cell_idx] = max(
+                avg_voltage,
+                self.state.cell_voltages[cell_idx] - voltage_drop
+            )
+
+        # Update statistics
+        if not self.stats.get('last_balancing_time'):
+            self.stats['last_balancing_time'] = time.time()
+            self.stats['balancing_events'] += 1
+
+        # Recalculate pack voltage
+        self.state.voltage = sum(self.state.cell_voltages)
+
+    def _active_balancing(self, dt: float, voltage_imbalance_mv: float) -> None:
+        """Perform active (redistributive) cell balancing.
+        
+        Active balancing transfers energy from high-voltage cells to low-voltage cells.
+        More efficient than passive but requires additional hardware (capacitors/inductors).
+        
+        Args:
+            dt: Time delta since last update in seconds
+            voltage_imbalance_mv: Voltage imbalance in millivolts
+        """
+        if not self.state.cell_voltages or len(self.state.cell_voltages) < 2:
+            return
+
+        # Find highest and lowest voltage cells
+        max_voltage = max(self.state.cell_voltages)
+        min_voltage = min(self.state.cell_voltages)
+        max_idx = self.state.cell_voltages.index(max_voltage)
+        min_idx = self.state.cell_voltages.index(min_voltage)
+
+        # Calculate average voltage
+        avg_voltage = sum(self.state.cell_voltages) / len(self.state.cell_voltages)
+
+        # Determine cells to balance
+        # High cells: above average + threshold
+        # Low cells: below average - threshold
+        threshold = self.config.balancing_threshold_mv / 1000.0
+        high_cells = [i for i, v in enumerate(self.state.cell_voltages) if v > avg_voltage + threshold]
+        low_cells = [i for i, v in enumerate(self.state.cell_voltages) if v < avg_voltage - threshold]
+
+        if not high_cells or not low_cells:
+            self.state.balancing_active = False
+            self.state.cells_balancing = []
+            return
+
+        # Update balancing state
+        self.state.balancing_active = True
+        self.state.cells_balancing = high_cells + low_cells
+
+        # Simulate active balancing by transferring energy
+        # In real hardware, this would use switched capacitors or inductors
+        
+        # Calculate energy to transfer (from highest to lowest)
+        energy_transfer_ratio = min(0.1, dt * 0.5)  # Limit transfer rate
+        voltage_diff = max_voltage - min_voltage
+        
+        # Estimate cell capacity
+        cell_capacity_ah = (self.config.capacity_kwh * 1000.0) / (self.config.nominal_voltage * 3600.0) / self.config.cell_count
+        
+        # Calculate energy transfer (with efficiency loss)
+        energy_transfer_wh = (voltage_diff * cell_capacity_ah * energy_transfer_ratio * self.config.active_balance_efficiency) / 100.0
+        
+        # Apply balancing: reduce high cells, increase low cells
+        voltage_change_high = (energy_transfer_wh / (cell_capacity_ah * max_voltage / 100.0)) * (self.config.max_voltage - self.config.min_voltage) * 0.01
+        voltage_change_low = (energy_transfer_wh / (cell_capacity_ah * min_voltage / 100.0)) * (self.config.max_voltage - self.config.min_voltage) * 0.01
+        
+        # Balance highest cell
+        self.state.cell_voltages[max_idx] = max(
+            avg_voltage,
+            self.state.cell_voltages[max_idx] - voltage_change_high
+        )
+        
+        # Balance lowest cell
+        self.state.cell_voltages[min_idx] = min(
+            avg_voltage,
+            self.state.cell_voltages[min_idx] + voltage_change_low
+        )
+        
+        # Balance other high cells proportionally
+        for cell_idx in high_cells:
+            if cell_idx != max_idx:
+                excess_voltage = self.state.cell_voltages[cell_idx] - avg_voltage
+                if excess_voltage > threshold:
+                    self.state.cell_voltages[cell_idx] -= voltage_change_high * (excess_voltage / voltage_diff)
+        
+        # Balance other low cells proportionally
+        for cell_idx in low_cells:
+            if cell_idx != min_idx:
+                deficit_voltage = avg_voltage - self.state.cell_voltages[cell_idx]
+                if deficit_voltage > threshold:
+                    self.state.cell_voltages[cell_idx] += voltage_change_low * (deficit_voltage / voltage_diff)
+
+        # Update statistics
+        if not self.stats.get('last_balancing_time'):
+            self.stats['last_balancing_time'] = time.time()
+            self.stats['balancing_events'] += 1
+
+        # Recalculate pack voltage
+        self.state.voltage = sum(self.state.cell_voltages)
 
     def _determine_status(self) -> BatteryStatus:
         """Determine battery status based on current state."""
@@ -501,6 +739,11 @@ class BatteryManagementSystem:
 
     def get_statistics(self) -> Dict:
         """Get battery statistics."""
+        # Calculate current balancing duration if active
+        balancing_duration = 0.0
+        if self.state.balancing_active and self.stats.get('last_balancing_time'):
+            balancing_duration = time.time() - self.stats['last_balancing_time']
+        
         return {
             **self.stats,
             'current_soc': self.state.soc,
@@ -508,11 +751,21 @@ class BatteryManagementSystem:
             'status': self.state.status.value,
             'voltage': self.state.voltage,
             'current': self.state.current,
-            'temperature': self.state.temperature
+            'temperature': self.state.temperature,
+            'balancing_active': self.state.balancing_active,
+            'cells_balancing': self.state.cells_balancing,
+            'current_balancing_duration_s': balancing_duration
         }
 
     def get_health_status(self) -> Dict:
         """Get battery health status."""
+        # Calculate voltage imbalance
+        voltage_imbalance_mv = 0.0
+        if self.state.cell_voltages and len(self.state.cell_voltages) > 1:
+            max_voltage = max(self.state.cell_voltages)
+            min_voltage = min(self.state.cell_voltages)
+            voltage_imbalance_mv = (max_voltage - min_voltage) * 1000.0
+        
         return {
             'soh': self.state.soh,
             'soc': self.state.soc,
@@ -524,6 +777,14 @@ class BatteryManagementSystem:
                 'min': min(self.state.cell_voltages) if self.state.cell_voltages else 0,
                 'max': max(self.state.cell_voltages) if self.state.cell_voltages else 0,
                 'average': self.state.voltage / self.config.cell_count if self.config.cell_count > 0 else 0
+            },
+            'balancing': {
+                'active': self.state.balancing_active,
+                'algorithm': self.config.balancing_algorithm,
+                'cells_balancing': self.state.cells_balancing,
+                'voltage_imbalance_mv': voltage_imbalance_mv,
+                'balancing_events': self.stats.get('balancing_events', 0),
+                'total_balancing_time_s': self.stats.get('total_balancing_time_s', 0.0)
             }
         }
 

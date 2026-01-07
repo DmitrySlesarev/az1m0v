@@ -9,7 +9,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 ## Features
 
 ### Core Systems
-- **Battery Management System (BMS)**: Comprehensive battery monitoring with cell-level voltage and temperature tracking, SOC/SOH calculation, and safety fault detection
+- **Battery Management System (BMS)**: Comprehensive battery monitoring with cell-level voltage and temperature tracking, SOC/SOH calculation, cell balancing, and safety fault detection
   - Integrated temperature sensor support for cell groups and coolant monitoring
   - Cell group temperature tracking (one sensor per series group)
   - Coolant inlet/outlet temperature monitoring
@@ -21,6 +21,14 @@ az1m0v is a complete EV management platform featuring battery management, motor 
     - Calendar aging (age-based degradation with temperature adjustment)
     - Automatic charge cycle detection (SOC-based and energy-based)
     - Real-time SOH updates on every state change
+  - **Cell Balancing Algorithms**: Automatic cell voltage balancing to maximize pack capacity and lifespan:
+    - **Passive Balancing**: Dissipative balancing using bleed resistors (simple, cost-effective)
+    - **Active Balancing**: Redistributive balancing with energy transfer between cells (efficient, no energy waste)
+    - **Adaptive Balancing**: Automatically selects passive or active based on imbalance magnitude
+    - Configurable voltage threshold (default 50mV) to trigger balancing
+    - SOC range limits (20-95%) to prevent balancing during extreme charge states
+    - Real-time balancing state tracking and statistics
+    - Automatic balancing during charging and idle states
 - **Motor Controller**: VESC (Vedder Electronic Speed Controller) integration with support for:
   - RPM, current, and duty cycle control
   - Real-time status monitoring
@@ -296,7 +304,12 @@ The system uses JSON-based configuration with schema validation:
 
 Key configuration sections:
 - Vehicle specifications (speed limits, acceleration, efficiency)
-- Battery parameters (capacity, voltage, cell count)
+- Battery parameters (capacity, voltage, cell count, balancing settings):
+  - Balancing algorithm selection (none, passive, active, adaptive)
+  - Balancing threshold (voltage difference to trigger balancing)
+  - Passive balancing bleed current
+  - Active balancing efficiency
+  - SOC range limits for balancing
 - Motor controller settings (VESC serial port, limits)
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
@@ -425,7 +438,7 @@ See [LICENSE](LICENSE) for full license text.
 ## Status
 
 ✅ **Active Development** - Core systems implemented and tested
-- Battery Management System: ✅ Implemented (with temperature sensor integration, SOC/SOH calculation)
+- Battery Management System: ✅ Implemented (with temperature sensor integration, SOC/SOH calculation, cell balancing algorithms)
 - Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
 - Vehicle Controller: ✅ Implemented

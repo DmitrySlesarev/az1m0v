@@ -36,6 +36,12 @@ az1m0v/ (EV Management System)
 │   │                                #     * Age-based calendar aging
 │   │                                #     * Automatic charge cycle detection
 │   │                                #     * Temperature history tracking (30-day rolling window)
+│   │                                #   - Cell balancing algorithms:
+│   │                                #     * Passive balancing (dissipative, bleed resistors)
+│   │                                #     * Active balancing (redistributive, energy transfer)
+│   │                                #     * Adaptive balancing (automatic algorithm selection)
+│   │                                #     * Configurable thresholds and SOC range limits
+│   │                                #     * Real-time balancing state tracking
 │   ├── motor_controller.py          # VESC motor controller integration:
 │   │                                #   - Stator temperature monitoring
 │   ├── charging_system.py           # Charging system management:
