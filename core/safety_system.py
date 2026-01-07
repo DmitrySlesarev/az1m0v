@@ -4,10 +4,13 @@ Monitors system health, detects faults, and manages emergency shutdowns.
 
 import logging
 import time
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Any, Callable, TYPE_CHECKING
 from dataclasses import dataclass, field
 from enum import Enum
 from collections import deque
+
+if TYPE_CHECKING:
+    from core.diagnostics import DiagnosticsSystem
 
 
 class SafetyState(Enum):
@@ -117,6 +120,10 @@ class SafetySystem:
         
         # Shutdown callback (can be set externally)
         self.shutdown_callback: Optional[Callable[[str], None]] = None
+        
+        # Initialize diagnostics system (lazy import to avoid circular dependency)
+        self._diagnostics_log_dir = self.config.get('diagnostics_log_dir', None)
+        self._diagnostics = None
         
         self.logger.info("Safety System initialized")
 
@@ -268,13 +275,13 @@ class SafetySystem:
                     # Check overvoltage
                     if bms_state.voltage > self.voltage_max:
                         fault_detected = True
+                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.OVERVOLTAGE,
                             SafetyState.CRITICAL,
                             f"Battery overvoltage: {bms_state.voltage:.1f}V (max: {self.voltage_max}V)",
                             "battery"
                         )
-                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self.logger.critical(f"Battery overvoltage: {bms_state.voltage:.1f}V")
                     
                     # Check undervoltage
@@ -293,25 +300,25 @@ class SafetySystem:
                     # Check overcurrent
                     if abs(bms_state.current) > self.current_max:
                         fault_detected = True
+                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.OVERCURRENT,
                             SafetyState.CRITICAL,
                             f"Battery overcurrent: {bms_state.current:.1f}A (max: {self.current_max}A)",
                             "battery"
                         )
-                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self.logger.critical(f"Battery overcurrent: {abs(bms_state.current):.1f}A")
                     
                     # Check battery status
                     if bms_state.status.value == 'fault':
                         fault_detected = True
+                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.BATTERY_FAULT,
                             SafetyState.CRITICAL,
                             "Battery management system reported fault",
                             "battery"
                         )
-                        self.safety_states['electrical'] = SafetyState.CRITICAL
             except Exception as e:
                 self.logger.error(f"Error checking battery electrical safety: {e}")
         
@@ -323,35 +330,35 @@ class SafetySystem:
                     # Check motor voltage
                     if motor_status.voltage_v > self.voltage_max:
                         fault_detected = True
+                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.OVERVOLTAGE,
                             SafetyState.CRITICAL,
                             f"Motor overvoltage: {motor_status.voltage_v:.1f}V (max: {self.voltage_max}V)",
                             "motor"
                         )
-                        self.safety_states['electrical'] = SafetyState.CRITICAL
                     
                     # Check motor current
                     if abs(motor_status.current_a) > self.current_max:
                         fault_detected = True
+                        self.safety_states['electrical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.OVERCURRENT,
                             SafetyState.CRITICAL,
                             f"Motor overcurrent: {abs(motor_status.current_a):.1f}A (max: {self.current_max}A)",
                             "motor"
                         )
-                        self.safety_states['electrical'] = SafetyState.CRITICAL
                     
                     # Check motor state
                     if motor_status.state.value == 'error':
                         fault_detected = True
+                        self.safety_states['mechanical'] = SafetyState.CRITICAL
                         self._add_fault(
                             FaultType.MOTOR_FAULT,
                             SafetyState.CRITICAL,
                             "Motor controller reported error state",
                             "motor"
                         )
-                        self.safety_states['mechanical'] = SafetyState.CRITICAL
             except Exception as e:
                 self.logger.error(f"Error checking motor electrical safety: {e}")
         
@@ -515,6 +522,32 @@ class SafetySystem:
         # Keep only last 100 faults
         if len(self.faults) > 100:
             self.faults = self.faults[-100:]
+        
+        # Process fault through diagnostics system
+        try:
+            # Lazy initialization of diagnostics
+            if self._diagnostics is None:
+                from core.diagnostics import DiagnosticsSystem
+                from pathlib import Path
+                log_dir = self._diagnostics_log_dir
+                if log_dir:
+                    log_dir = Path(log_dir)
+                self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+            
+            # Create freeze frame with current system state
+            freeze_frame = self._create_freeze_frame()
+            
+            # Process through diagnostics (generates DTC, logs fault, updates limp-home mode)
+            self._diagnostics.process_fault(
+                fault_type=fault_type,
+                severity=severity,
+                description=description,
+                component=component,
+                safety_states=self.safety_states,
+                freeze_frame=freeze_frame
+            )
+        except Exception as e:
+            self.logger.error(f"Error processing fault through diagnostics: {e}")
 
     def clear_faults(self, component: Optional[str] = None) -> None:
         """
@@ -596,6 +629,57 @@ class SafetySystem:
         self.logger.info("Emergency shutdown state reset")
         return True
 
+    def _create_freeze_frame(self) -> Dict[str, Any]:
+        """
+        Create a freeze frame snapshot of current system conditions.
+        
+        Returns:
+            Dictionary with system state snapshot
+        """
+        freeze_frame = {
+            'timestamp': time.time(),
+            'safety_states': {k: v.value for k, v in self.safety_states.items()},
+            'emergency_shutdown_active': self.emergency_shutdown_active,
+        }
+        
+        # Add battery state if available
+        if self.battery_management:
+            try:
+                bms_state = self.battery_management.get_state()
+                if bms_state:
+                    freeze_frame['battery'] = {
+                        'voltage': bms_state.voltage,
+                        'current': bms_state.current,
+                        'temperature': bms_state.temperature,
+                        'soc': bms_state.soc,
+                        'status': bms_state.status.value
+                    }
+            except Exception:
+                pass
+        
+        # Add motor state if available
+        if self.motor_controller:
+            try:
+                motor_status = self.motor_controller.get_status()
+                if motor_status:
+                    freeze_frame['motor'] = {
+                        'voltage': motor_status.voltage_v,
+                        'current': motor_status.current_a,
+                        'temperature': motor_status.temperature_c,
+                        'speed_rpm': motor_status.speed_rpm,
+                        'state': motor_status.state.value
+                    }
+            except Exception:
+                pass
+        
+        # Add thermal history rates
+        freeze_frame['thermal_rates'] = {
+            'battery_max_rate_c_per_s': self.battery_thermal_history.max_rate_c_per_s,
+            'motor_max_rate_c_per_s': self.motor_thermal_history.max_rate_c_per_s
+        }
+        
+        return freeze_frame
+    
     def get_status(self) -> Dict[str, Any]:
         """
         Get current safety system status.
@@ -606,7 +690,7 @@ class SafetySystem:
         active_faults = self.get_active_faults()
         critical_faults = [f for f in active_faults if f.severity == SafetyState.EMERGENCY]
         
-        return {
+        status = {
             'safety_states': {k: v.value for k, v in self.safety_states.items()},
             'emergency_shutdown_active': self.emergency_shutdown_active,
             'emergency_shutdown_reason': self.emergency_shutdown_reason,
@@ -617,4 +701,35 @@ class SafetySystem:
             'battery_thermal_max_rate': self.battery_thermal_history.max_rate_c_per_s,
             'motor_thermal_max_rate': self.motor_thermal_history.max_rate_c_per_s,
         }
+        
+        # Add diagnostics information
+        try:
+            if self._diagnostics is None:
+                # Lazy initialization
+                from core.diagnostics import DiagnosticsSystem
+                from pathlib import Path
+                log_dir = self._diagnostics_log_dir
+                if log_dir:
+                    log_dir = Path(log_dir)
+                self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+            
+            diagnostics_status = self._diagnostics.get_diagnostics_status()
+            status['diagnostics'] = diagnostics_status
+        except Exception as e:
+            self.logger.error(f"Error getting diagnostics status: {e}")
+            status['diagnostics'] = None
+        
+        return status
+    
+    @property
+    def diagnostics(self):
+        """Get diagnostics system (lazy initialization)."""
+        if self._diagnostics is None:
+            from core.diagnostics import DiagnosticsSystem
+            from pathlib import Path
+            log_dir = self._diagnostics_log_dir
+            if log_dir:
+                log_dir = Path(log_dir)
+            self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+        return self._diagnostics
 

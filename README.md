@@ -37,6 +37,25 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Safety state management (NORMAL, WARNING, CRITICAL, EMERGENCY)
   - Monitors all core components (BMS, motor, charging, vehicle controller)
   - Configurable safety thresholds and thermal rate limits
+- **Diagnostics System** (OBD-II Style): Advanced fault detection and diagnostics:
+  - **DTC (Diagnostic Trouble Code) System**: Standardized fault codes (P0xxx format) with component-specific suffixes
+  - **Limp-Home Modes**: Automatic degraded operation modes:
+    - NORMAL: Full operation (120 km/h, 150 kW)
+    - REDUCED_POWER: 50% power limit (80 km/h, 75 kW) for warnings
+    - LIMITED_SPEED: 20% power limit (30 km/h, 30 kW) for critical faults
+    - EMERGENCY_ONLY: Minimal operation (10 km/h, 10 kW) for permanent DTCs
+    - DISABLED: Vehicle disabled for emergency conditions
+  - **Fault Logging**: Persistent logging with timestamps:
+    - Text logs for human-readable fault history
+    - JSON logs for programmatic access and analysis
+    - Automatic log rotation
+    - Freeze frame data capture (system state snapshots)
+  - **DTC Management**: 
+    - Automatic DTC generation from faults
+    - DTC occurrence counting and history tracking
+    - DTC clearing (permanent DTCs require manual intervention)
+    - DTC export to JSON format
+  - **Operation Restrictions**: Automatic restrictions on charging, autopilot, and driving based on limp-home mode
 
 ### Communication
 - **CAN Bus Interface**: Industry-standard CAN bus communication with EV-specific protocol
@@ -101,7 +120,8 @@ az1m0v/
 │   ├── motor_controller.py  # VESC integration
 │   ├── charging_system.py
 │   ├── vehicle_controller.py
-│   └── safety_system.py    # Safety monitoring and protection
+│   ├── safety_system.py    # Safety monitoring and protection
+│   └── diagnostics.py      # OBD-II style diagnostics (DTC, limp-home, fault logging)
 ├── sensors/                 # Sensor interfaces
 │   ├── temperature.py      # Comprehensive temperature sensor system
 ├── communication/           # CAN bus and telemetry
@@ -246,13 +266,15 @@ poetry run pytest tests/functional/ -v
 poetry run pytest tests/unit/test_motor_controller.py -v
 ```
 
-The project includes **409 tests** covering all major components:
+The project includes **600+ tests** covering all major components:
 - **45 unit tests** for vehicle controller
 - **14 functional/integration tests** for vehicle controller
 - **21 unit tests** for telemetry system
 - **10 functional/integration tests** for telemetry system
 - **24 unit tests** for temperature sensor system
 - **7 functional/integration tests** for temperature sensor integration
+- **33 unit tests** for diagnostics system (DTC, limp-home, fault logging)
+- **18 functional/integration tests** for safety system (including diagnostics integration)
 - Comprehensive test coverage for all core systems
 - All tests run automatically on every commit via GitHub Actions
 
@@ -271,6 +293,7 @@ Key configuration sections:
 - Charging system configuration
 - Vehicle controller settings (drive modes, power limits)
 - Safety system configuration (temperature thresholds, thermal runaway rates, voltage/current limits)
+- Diagnostics system configuration (log directory, DTC settings)
 - Telemetry settings (server URL, cellular APN, update intervals)
 - IMU sensor configuration:
   - Sensor type (MPU-6050 or MPU-9250)
@@ -399,6 +422,7 @@ See [LICENSE](LICENSE) for full license text.
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
 - Vehicle Controller: ✅ Implemented
 - Safety System: ✅ Implemented (thermal runaway detection, emergency shutdown, fault tracking)
+- Diagnostics System: ✅ Implemented (OBD-II style DTC system, limp-home modes, fault logging)
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)

@@ -430,3 +430,41 @@ class TestSafetySystemIntegration:
         # Both should trigger warnings (or emergency if rate triggers)
         assert safety_system.safety_states['thermal'] in [SafetyState.WARNING, SafetyState.EMERGENCY]
 
+    def test_safety_system_diagnostics_integration(self, safety_system, bms):
+        """Test safety system integration with diagnostics."""
+        # Trigger a fault
+        bms.update_state(voltage=550.0)  # Overvoltage
+        safety_system.check_electrical_safety()
+        
+        # Check that diagnostics system was initialized
+        assert hasattr(safety_system, 'diagnostics')
+        assert safety_system.diagnostics is not None
+        
+        # Check that DTC was generated
+        active_dtcs = safety_system.diagnostics.dtc_manager.get_active_dtcs()
+        assert len(active_dtcs) > 0
+        
+        # Check that fault was logged
+        status = safety_system.get_status()
+        assert 'diagnostics' in status
+        assert status['diagnostics'] is not None
+        assert status['diagnostics']['active_dtc_count'] > 0
+
+    def test_safety_system_limp_home_mode(self, safety_system, bms):
+        """Test limp-home mode activation."""
+        # Trigger warning-level fault
+        bms.update_state(voltage=250.0)  # Undervoltage (warning)
+        safety_system.check_electrical_safety()
+        
+        # Check limp-home mode
+        limp_home_mode = safety_system.diagnostics.limp_home_manager.get_mode()
+        assert limp_home_mode.value in ['normal', 'reduced_power']
+        
+        # Trigger critical fault
+        bms.update_state(voltage=550.0)  # Overvoltage (critical)
+        safety_system.check_electrical_safety()
+        
+        # Limp-home mode should be more restrictive
+        new_mode = safety_system.diagnostics.limp_home_manager.get_mode()
+        assert new_mode.value in ['limited_speed', 'emergency_only', 'disabled']
+

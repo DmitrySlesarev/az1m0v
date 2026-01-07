@@ -491,9 +491,11 @@ class EVSystem:
         if self.temperature_manager:
             self._update_temperature_data()
 
-        # Monitor safety system
+        # Monitor safety system (includes diagnostics system: DTC, limp-home modes, fault logging)
         if self.safety_system:
             self.safety_system.monitor_system()
+            # Diagnostics system is automatically integrated and processes faults
+            # Access via: safety_system.diagnostics (DTC manager, limp-home manager, fault logger)
 
         # Send telemetry data
         if self.telemetry and self.telemetry.is_enabled():

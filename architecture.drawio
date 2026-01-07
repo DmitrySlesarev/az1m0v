@@ -27,7 +27,10 @@
           <mxGeometry x="210" y="260" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="safety" value="Safety System&#xa;Thermal Runaway&#xa;Emergency Shutdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="340" width="280" height="60" as="geometry" />
+          <mxGeometry x="60" y="340" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="diagnostics" value="Diagnostics System&#xa;OBD-II Style&#xa;DTC, Limp-Home&#xa;Fault Logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="340" width="130" height="60" as="geometry" />
         </mxCell>
         
         <!-- Sensors -->
@@ -209,6 +212,14 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         <mxCell id="conn31" value="Temp Data" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#cc0000;" edge="1" parent="1" source="temp" target="safety">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Diagnostics System connections -->
+        <mxCell id="conn32" value="Fault Data" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#cc0000;" edge="1" parent="1" source="safety" target="diagnostics">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn33" value="Limp-Home&#xa;Limits" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=#cc0000;fontStyle=1;" edge="1" parent="1" source="diagnostics" target="vehicle">
           <mxGeometry width="50" height="50" relative="1" as="geometry" />
         </mxCell>
         

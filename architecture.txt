@@ -40,13 +40,22 @@ az1m0v/ (EV Management System)
 │   │                                #   - Drive mode control (ECO, NORMAL, SPORT, REVERSE)
 │   │                                #   - Range calculation and energy tracking
 │   │                                #   - Coordinates BMS, motor, and charging systems
-│   └── safety_system.py             # Safety System:
-│                                      #   - Thermal runaway detection (battery and motor)
-│                                      #   - Emergency shutdown coordination
-│                                      #   - Electrical safety monitoring (voltage, current)
-│                                      #   - Fault tracking and management
-│                                      #   - Safety state management (NORMAL, WARNING, CRITICAL, EMERGENCY)
-│                                      #   - Monitors all core components
+│   ├── safety_system.py             # Safety System:
+│   │                                #   - Thermal runaway detection (battery and motor)
+│   │                                #   - Emergency shutdown coordination
+│   │                                #   - Electrical safety monitoring (voltage, current)
+│   │                                #   - Fault tracking and management
+│   │                                #   - Safety state management (NORMAL, WARNING, CRITICAL, EMERGENCY)
+│   │                                #   - Monitors all core components
+│   │                                #   - Integrated with diagnostics system
+│   └── diagnostics.py               # Diagnostics System (OBD-II Style):
+│                                      #   - DTC (Diagnostic Trouble Code) system with standardized codes
+│                                      #   - DTC generation, tracking, and clearing
+│                                      #   - Limp-home mode management (NORMAL, REDUCED_POWER, LIMITED_SPEED, EMERGENCY_ONLY, DISABLED)
+│                                      #   - Persistent fault logging with timestamps (text and JSON)
+│                                      #   - Freeze frame data capture
+│                                      #   - Automatic limp-home mode activation based on fault severity
+│                                      #   - DTC export and history management
 ├── sensors/
 │   ├── __init__.py
 │   ├── imu.py                       # Inertial Measurement Unit (MPU-6050/MPU-9250):
@@ -114,6 +123,7 @@ az1m0v/ (EV Management System)
 │   │   ├── test_vehicle_controller.py
 │   │   ├── test_telemetry.py
 │   │   ├── test_temperature.py     # Temperature sensor unit tests
+│   │   ├── test_diagnostics.py     # Diagnostics system unit tests (DTC, limp-home, fault logging)
 │   │   ├── test_main.py            # Unit tests for main.py EVSystem
 │   │   ├── test_dashboard.py       # Unit tests for dashboard (including control commands)
 │   │   └── test_ui_main.py         # Unit tests for ui/__main__.py
@@ -126,6 +136,7 @@ az1m0v/ (EV Management System)
 │       ├── test_vehicle_controller_integration.py
 │       ├── test_telemetry_integration.py
 │       ├── test_temperature_integration.py  # Temperature sensor integration tests
+│       ├── test_safety_system_integration.py  # Safety system integration tests (includes diagnostics)
 │       └── test_main_integration.py         # Integration tests for main.py EVSystem
 └── scripts/
     ├── setup.sh                     # Setup script
