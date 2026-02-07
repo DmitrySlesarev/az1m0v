@@ -9,6 +9,8 @@ import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
+import argparse
+import sys
 
 try:
     import requests  # type: ignore
@@ -101,3 +103,69 @@ class MobileAppClient:
         except Exception as exc:
             self.logger.warning(f"Mobile app POST failed: {exc}")
             return None
+
+
+def _build_client_from_args(args: argparse.Namespace) -> MobileAppClient:
+    config = MobileAppConfig(
+        base_url=args.base_url,
+        timeout_s=args.timeout,
+        api_key=args.api_key
+    )
+    return MobileAppClient(config)
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(description="EV mobile client CLI")
+    parser.add_argument("--base-url", default="http://localhost:5000", help="Dashboard base URL")
+    parser.add_argument("--timeout", type=float, default=5.0, help="Request timeout in seconds")
+    parser.add_argument("--api-key", default=None, help="Optional API key")
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    subparsers.add_parser("status", help="Fetch current status")
+
+    accel = subparsers.add_parser("accelerate", help="Send accelerate command")
+    accel.add_argument("throttle_percent", type=float)
+
+    brake = subparsers.add_parser("brake", help="Send brake command")
+    brake.add_argument("brake_percent", type=float)
+
+    drive = subparsers.add_parser("drive-mode", help="Set drive mode")
+    drive.add_argument("mode", choices=["eco", "normal", "sport", "reverse"])
+
+    start_charge = subparsers.add_parser("start-charging", help="Start charging")
+    start_charge.add_argument("--power-kw", type=float, default=None)
+    start_charge.add_argument("--target-soc", type=float, default=100.0)
+
+    subparsers.add_parser("stop-charging", help="Stop charging")
+
+    args = parser.parse_args(argv)
+    client = _build_client_from_args(args)
+
+    if args.command == "status":
+        status = client.get_status()
+        if status is None:
+            return 1
+        print(json.dumps(status, indent=2))
+        return 0
+
+    if args.command == "accelerate":
+        return 0 if client.accelerate(args.throttle_percent) else 1
+
+    if args.command == "brake":
+        return 0 if client.brake(args.brake_percent) else 1
+
+    if args.command == "drive-mode":
+        return 0 if client.set_drive_mode(args.mode) else 1
+
+    if args.command == "start-charging":
+        return 0 if client.start_charging(power_kw=args.power_kw, target_soc=args.target_soc) else 1
+
+    if args.command == "stop-charging":
+        return 0 if client.stop_charging() else 1
+
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

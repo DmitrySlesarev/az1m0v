@@ -76,6 +76,23 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `update_interval_s` | number | GPS update interval | ≥ 0.1 s | 1.0 |
 | `simulation_mode` | boolean | Use simulated GPS | true/false | true |
 
+Example GPS configuration:
+
+```json
+{
+  "gps": {
+    "serial_port": "/dev/ttyUSB1",
+    "baudrate": 9600,
+    "update_interval_s": 1.0,
+    "simulation_mode": false
+  }
+}
+```
+
+For bench testing without hardware, set `simulation_mode` to `true` and leave
+`serial_port` as `null`. The simulator generates a smooth circular path around
+a reference point so downstream systems can be exercised.
+
 ### Communication Configuration
 
 | Parameter | Type | Description | Range/Units | Example |

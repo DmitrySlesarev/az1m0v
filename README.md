@@ -109,6 +109,15 @@ az1m0v is a complete EV management platform featuring battery management, motor 
 - **Mobile App**: Remote monitoring and control capabilities
   - Minimal REST client in `ui/mobile_app.py` for DIY apps
 
+### Mobile CLI (DIY)
+Use the minimal CLI to interact with the dashboard API:
+```bash
+python -m ui.mobile_app status --base-url http://localhost:5000
+python -m ui.mobile_app drive-mode eco --base-url http://localhost:5000
+python -m ui.mobile_app accelerate 25 --base-url http://localhost:5000
+python -m ui.mobile_app stop-charging --base-url http://localhost:5000
+```
+
 ### Integration & Build Tools
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
 - **SimpBMS Builder**: SimpBMS firmware build and integration support
