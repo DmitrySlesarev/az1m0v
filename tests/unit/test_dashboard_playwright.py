@@ -55,11 +55,20 @@ def mock_can_protocol(mock_can_bus):
 @pytest.fixture
 def dashboard_server(mock_can_bus, mock_can_protocol):
     """Create and start a dashboard server for testing."""
+    import socket
+
+    def _get_free_port() -> int:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+        sock.close()
+        return port
+
     dashboard = EVDashboard(
         can_bus=mock_can_bus,
         can_protocol=mock_can_protocol,
         host='127.0.0.1',
-        port=5002,
+        port=_get_free_port(),
         debug=False
     )
     
@@ -79,7 +88,6 @@ def dashboard_server(mock_can_bus, mock_can_protocol):
     server_thread.start()
     
     # Wait for server to start and be ready
-    import socket
     max_attempts = 20
     for i in range(max_attempts):
         try:

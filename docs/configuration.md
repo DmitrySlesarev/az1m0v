@@ -67,12 +67,37 @@ The EV system configuration is stored in JSON format and validated against a JSO
 | `temperature_sensors` | integer | Number of temperature sensors | ≥ 0 | 8 |
 | `sampling_rate_hz` | number | Sensor data sampling frequency | ≥ 0 Hz | 100 |
 
+### GPS Configuration (Optional)
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `serial_port` | string/null | Serial port for NMEA GPS | Device path or null | "/dev/ttyUSB1" |
+| `baudrate` | integer | Serial baud rate | ≥ 1200 | 9600 |
+| `update_interval_s` | number | GPS update interval | ≥ 0.1 s | 1.0 |
+| `simulation_mode` | boolean | Use simulated GPS | true/false | true |
+
+Example GPS configuration:
+
+```json
+{
+  "gps": {
+    "serial_port": "/dev/ttyUSB1",
+    "baudrate": 9600,
+    "update_interval_s": 1.0,
+    "simulation_mode": false
+  }
+}
+```
+
+For bench testing without hardware, set `simulation_mode` to `true` and leave
+`serial_port` as `null`. The simulator generates a smooth circular path around
+a reference point so downstream systems can be exercised.
+
 ### Communication Configuration
 
 | Parameter | Type | Description | Range/Units | Example |
 |-----------|------|-------------|-------------|---------|
 | `can_bus_enabled` | boolean | Enable CAN bus communication | true/false | true |
-| `telemetry_enabled` | boolean | Enable telemetry data transmission | true/false | true |
 | `update_interval_ms` | integer | Communication update interval | ≥ 1 ms | 1000 |
 
 ### Telemetry Configuration
@@ -153,17 +178,11 @@ The following sections are optional but may be included:
 ### Loading Configuration
 
 ```python
-import json
-from pathlib import Path
+from config.settings import Settings
 
-def load_config(config_path: str = "config/config.json") -> dict:
-    """Load and return configuration dictionary."""
-    with open(config_path, 'r') as f:
-        return json.load(f)
-
-# Load configuration
-config = load_config()
-battery_capacity = config['battery']['capacity_kwh']
+# Load configuration with schema validation
+settings = Settings()
+battery_capacity = settings.battery['capacity_kwh']
 ```
 
 ### Motor Controller Configuration Example

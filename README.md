@@ -43,6 +43,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Coordinates between BMS, motor controller, and charging system
   - Enforces safety rules (e.g., prevents driving while charging)
   - Provides unified interface for vehicle operations (accelerate, brake, drive modes)
+  - Applies drive mode limits derived from base configuration (no cumulative scaling)
   - Calculates range and tracks energy consumption
   - Integrates with CAN bus for status reporting
 - **Safety System**: Comprehensive safety monitoring and protection:
@@ -92,6 +93,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Configurable sampling rates and calibration
   - Simulation mode for development
 - **GPS**: Positioning and navigation data
+  - NMEA serial input or simulation mode for bench setups
 - **Temperature Sensors**: Comprehensive multi-point thermal monitoring system:
   - Battery cell group sensors (one per series group, configurable)
   - Coolant inlet and outlet sensors
@@ -99,6 +101,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Charging port and connector sensors
   - Configurable thresholds (warning, fault)
   - Real-time status monitoring and CAN bus integration
+  - TemperatureSensorManager feeds BMS, motor, and charging subsystems
   - Automatic fault detection and reporting
 - **Computer Vision**: Environmental perception and lane detection
 
@@ -120,6 +123,16 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Responsive design for desktop and mobile
   - Raspberry Pi 4 optimized
 - **Mobile App**: Remote monitoring and control capabilities
+  - Minimal REST client in `ui/mobile_app.py` for DIY apps
+
+### Mobile CLI (DIY)
+Use the minimal CLI to interact with the dashboard API:
+```bash
+python -m ui.mobile_app status --base-url http://localhost:5000
+python -m ui.mobile_app drive-mode eco --base-url http://localhost:5000
+python -m ui.mobile_app accelerate 25 --base-url http://localhost:5000
+python -m ui.mobile_app stop-charging --base-url http://localhost:5000
+```
 
 ### Integration & Build Tools
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
@@ -424,6 +437,9 @@ Optional (for IMU):
 - `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
 - `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
 - `smbus2` - I2C communication library (installed via integration script)
+
+Optional (for GPS):
+- `pyserial` - Serial communication for NMEA GPS receivers
 
 ## License
 

@@ -41,7 +41,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -75,7 +75,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': True, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': True,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -103,7 +103,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -130,7 +130,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -158,7 +158,7 @@ class TestEVSystemUnit:
                 'motor_controller': {'type': 'vesc', 'serial_port': None, 'can_enabled': False},
                 'charging': {'invalid': 'config'},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
@@ -185,7 +185,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': True, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'telemetry': {'enabled': True, 'simulation_mode': True},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
@@ -215,7 +215,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': True, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'telemetry': {'enabled': True, 'simulation_mode': True},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': True},
@@ -250,7 +250,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': True},
                 'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
@@ -279,7 +279,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': True},
                 'imu': {'sensor_type': 'mpu6050', 'simulation_mode': True},
@@ -309,7 +309,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': False, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': True},
                 'ui': {'dashboard_enabled': False},
@@ -325,6 +325,39 @@ class TestEVSystemUnit:
         finally:
             Path(temp_path).unlink()
 
+    def test_temperature_manager_injected_into_core_components(self):
+        """Test temperature manager wiring to core components."""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            config = {
+                'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
+                'battery': {'capacity_kwh': 50.0, 'max_charge_rate_kw': 100.0,
+                           'max_discharge_rate_kw': 150.0, 'nominal_voltage': 400.0, 'cell_count': 96},
+                'motor': {'max_power_kw': 100.0, 'max_torque_nm': 250.0, 'efficiency': 0.9, 'type': 'permanent_magnet'},
+                'motor_controller': {'type': 'vesc', 'serial_port': None, 'can_enabled': False},
+                'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0,
+                           'connector_type': 'CCS2', 'fast_charge_enabled': True},
+                'sensors': {'imu_enabled': False, 'gps_enabled': False, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
+                'temperature_sensors': {'enabled': True},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
+                'ui': {'dashboard_enabled': False, 'mobile_app_enabled': True, 'theme': 'dark'},
+                'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
+                'logging': {'level': 'INFO', 'file_path': '/tmp/test.log', 'max_file_size_mb': 100, 'backup_count': 5}
+            }
+            json.dump(config, f)
+            temp_path = f.name
+
+        try:
+            system = EVSystem(config_path=temp_path)
+            assert system.temperature_manager is not None
+            assert system.bms is not None
+            assert system.motor_controller is not None
+            assert system.charging_system is not None
+            assert system.bms.temperature_sensor_manager is system.temperature_manager
+            assert system.motor_controller.temperature_sensor_manager is system.temperature_manager
+            assert system.charging_system.temperature_sensor_manager is system.temperature_manager
+        finally:
+            Path(temp_path).unlink()
+
     def test_initialize_autopilot(self):
         """Test autopilot initialization."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
@@ -337,7 +370,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': False, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': False},
                 'ui': {'dashboard_enabled': False},
@@ -365,7 +398,7 @@ class TestEVSystemUnit:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': False, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'vehicle_controller': {'max_speed_kmh': 120.0, 'max_power_kw': 150.0},
                 'temperature_sensors': {'enabled': False},
                 'ui': {'dashboard_enabled': True, 'dashboard_host': '127.0.0.1', 'dashboard_port': 5001},
