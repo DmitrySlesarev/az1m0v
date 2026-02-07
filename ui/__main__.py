@@ -10,14 +10,14 @@ sys.path.insert(0, str(project_root))
 
 from ui.dashboard import EVDashboard
 from communication.can_bus import CANBusInterface, EVCANProtocol
-import json
+from config.settings import Settings
 
-def load_config(config_path: str = "config/config.json"):
+def load_config(config_path: str = "config/config.json") -> dict:
     """Load and validate configuration."""
     try:
-        with open(config_path, 'r') as f:
-            config = json.load(f)
-        return config
+        schema_path = Path(config_path).parent / "config_schema.json"
+        settings = Settings(config_path=config_path, schema_path=str(schema_path))
+        return settings.config
     except Exception as e:
         logging.warning(f"Failed to load config: {e}, using defaults")
         return {}

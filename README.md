@@ -77,6 +77,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Configurable sampling rates and calibration
   - Simulation mode for development
 - **GPS**: Positioning and navigation data
+  - NMEA serial input or simulation mode for bench setups
 - **Temperature Sensors**: Comprehensive multi-point thermal monitoring system:
   - Battery cell group sensors (one per series group, configurable)
   - Coolant inlet and outlet sensors
@@ -106,6 +107,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Responsive design for desktop and mobile
   - Raspberry Pi 4 optimized
 - **Mobile App**: Remote monitoring and control capabilities
+  - Minimal REST client in `ui/mobile_app.py` for DIY apps
 
 ### Integration & Build Tools
 - **VESC Builder**: Automated download, build, and integration of VESC motor controller
@@ -405,6 +407,9 @@ Optional (for IMU):
 - `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
 - `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
 - `smbus2` - I2C communication library (installed via integration script)
+
+Optional (for GPS):
+- `pyserial` - Serial communication for NMEA GPS receivers
 
 ## License
 

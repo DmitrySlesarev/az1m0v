@@ -16,7 +16,7 @@ class TestUIMain:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             config = {
                 'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'}
             }
             json.dump(config, f)
@@ -56,7 +56,7 @@ class TestUIMain:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             config = {
                 'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
-                'communication': {'can_bus_enabled': True, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': True,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark',
                        'dashboard_host': '127.0.0.1', 'dashboard_port': 5000}
             }
@@ -87,7 +87,7 @@ class TestUIMain:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             config = {
                 'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
-                'communication': {'can_bus_enabled': False, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': False,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark',
                        'dashboard_host': '127.0.0.1', 'dashboard_port': 5000}
             }
@@ -110,7 +110,7 @@ class TestUIMain:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             config = {
                 'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
-                'communication': {'can_bus_enabled': True, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': True,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'}
             }
             json.dump(config, f)
@@ -134,7 +134,7 @@ class TestUIMain:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             config = {
                 'vehicle': {'model': 'test', 'serial_number': 'TEST001', 'manufacturer': 'test'},
-                'communication': {'can_bus_enabled': True, 'telemetry_enabled': False, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': True,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'}
             }
             json.dump(config, f)

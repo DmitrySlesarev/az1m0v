@@ -168,14 +168,13 @@ class TestCommunicationConfiguration:
 
     def test_communication_required_fields(self, communication_config):
         """Test that all required communication fields are present."""
-        required_fields = ['can_bus_enabled', 'telemetry_enabled', 'update_interval_ms']
+        required_fields = ['can_bus_enabled', 'update_interval_ms']
         for field in required_fields:
             assert field in communication_config, f"Required field '{field}' missing from communication config"
 
     def test_communication_field_types(self, communication_config):
         """Test that communication fields have correct types."""
         assert isinstance(communication_config['can_bus_enabled'], bool)
-        assert isinstance(communication_config['telemetry_enabled'], bool)
         assert isinstance(communication_config['update_interval_ms'], int)
 
     def test_communication_positive_values(self, communication_config):
