@@ -536,7 +536,7 @@ class VehicleController:
             speed_ms += self.current_status.acceleration_ms2 * dt
 
             # Limit speed
-        speed_limit = max_speed_kmh if max_speed_kmh is not None else self.get_drive_mode_limits().max_speed_kmh
+            speed_limit = max_speed_kmh if max_speed_kmh is not None else self.get_drive_mode_limits().max_speed_kmh
             max_speed_ms = speed_limit / 3.6
             speed_ms = max(0.0, min(max_speed_ms, speed_ms))
 
