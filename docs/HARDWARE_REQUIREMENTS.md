@@ -4,6 +4,7 @@ This document provides a comprehensive list of all hardware components required 
 
 ## Table of Contents
 
+0. [Minimal Bench Build (Low Cost)](#minimal-bench-build-low-cost)
 1. [Computing Platform](#computing-platform)
 2. [Motor Controller](#motor-controller)
 3. [Battery Management System](#battery-management-system)
@@ -14,6 +15,27 @@ This document provides a comprehensive list of all hardware components required 
 8. [Power Supply & Distribution](#power-supply--distribution)
 9. [Cables & Connectors](#cables--connectors)
 10. [Optional Components](#optional-components)
+
+---
+
+## Minimal Bench Build (Low Cost)
+
+This build targets a live hardware bench with minimal cost while staying on open source and mainstream components.
+
+Recommended minimum set:
+- Raspberry Pi 4 (4GB) or similar Linux SBC
+- CAN interface (USB-CAN adapter or MCP2515 CAN HAT)
+- VESC-compatible motor controller (open source firmware)
+- SimpBMS (open source BMS) or compatible CAN BMS
+- Basic temperature sensor set (battery group, motor stator, charging port)
+- 12V-to-5V DC-DC converter for SBC power
+- Standard automotive wiring, connectors, and fuses
+
+Optional for bench bring-up:
+- IMU in simulation mode (no hardware required)
+- GPS and camera systems can be deferred to reduce cost
+
+This minimal build keeps the system testable on real hardware while leaving advanced autonomy hardware optional.
 
 ---
 

@@ -434,6 +434,30 @@ class TestVehicleController:
 
         assert result is False
 
+    def test_drive_mode_limits_do_not_stack(self, vehicle_controller):
+        """Test drive mode limits are derived from base config only."""
+        base_power = vehicle_controller.config.max_power_kw
+        base_accel = vehicle_controller.config.max_acceleration_ms2
+        base_speed = vehicle_controller.config.max_speed_kmh
+
+        eco_limits = vehicle_controller.get_drive_mode_limits(DriveMode.ECO)
+        sport_limits = vehicle_controller.get_drive_mode_limits(DriveMode.SPORT)
+
+        assert eco_limits.max_power_kw == pytest.approx(base_power * 0.7)
+        assert eco_limits.max_acceleration_ms2 == pytest.approx(base_accel * 0.7)
+        assert eco_limits.max_speed_kmh == pytest.approx(base_speed * 0.7)
+
+        assert sport_limits.max_power_kw == pytest.approx(base_power * 1.2)
+        assert sport_limits.max_acceleration_ms2 == pytest.approx(base_accel * 1.2)
+        assert sport_limits.max_speed_kmh == pytest.approx(base_speed * 1.2)
+
+        vehicle_controller.set_drive_mode(DriveMode.ECO)
+        vehicle_controller.set_drive_mode(DriveMode.SPORT)
+        active_limits = vehicle_controller.get_drive_mode_limits()
+
+        assert vehicle_controller.config.max_power_kw == base_power
+        assert active_limits.max_power_kw == pytest.approx(base_power * 1.2)
+
     def test_start_charging_success(self, vehicle_controller, mock_charging_system):
         """Test starting charging successfully."""
         vehicle_controller.current_status.state = VehicleState.PARKED

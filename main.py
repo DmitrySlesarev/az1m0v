@@ -120,6 +120,9 @@ class EVSystem:
         if self.config.get('communication', {}).get('can_bus_enabled', False):
             self._initialize_can_bus()
 
+        # Initialize Sensors early so core components can consume readings
+        self._initialize_sensors()
+
         # Initialize Battery Management System
         self._initialize_bms()
 
@@ -137,9 +140,6 @@ class EVSystem:
 
         # Initialize Safety System
         self._initialize_safety_system()
-
-        # Initialize Sensors
-        self._initialize_sensors()
 
         # Initialize Autopilot (if enabled)
         self._initialize_autopilot()
@@ -177,7 +177,8 @@ class EVSystem:
             battery_config = self.config.get('battery', {})
             self.bms = BatteryManagementSystem(
                 config=battery_config,
-                can_protocol=self.can_protocol
+                can_protocol=self.can_protocol,
+                temperature_sensor_manager=self.temperature_manager
             )
             self.logger.info("Battery Management System initialized")
         except Exception as e:
@@ -201,7 +202,8 @@ class EVSystem:
                 serial_port=serial_port,
                 can_bus=self.can_bus,
                 can_protocol=self.can_protocol,
-                config=vesc_config
+                config=vesc_config,
+                temperature_sensor_manager=self.temperature_manager
             )
 
             # Connect to motor controller if serial port is configured
@@ -225,7 +227,8 @@ class EVSystem:
                 config=charging_config,
                 bms=self.bms,
                 motor_controller=self.motor_controller,
-                can_protocol=self.can_protocol
+                can_protocol=self.can_protocol,
+                temperature_sensor_manager=self.temperature_manager
             )
             self.logger.info("Charging System initialized")
         except Exception as e:
@@ -285,19 +288,22 @@ class EVSystem:
 
     def _initialize_sensors(self) -> None:
         """Initialize sensor systems."""
-        try:
-            # Initialize IMU if enabled
-            sensors_config = self.config.get('sensors', {})
-            if sensors_config.get('imu_enabled', False):
+        sensors_config = self.config.get('sensors', {})
+
+        # Initialize IMU if enabled
+        if sensors_config.get('imu_enabled', False):
+            try:
                 self._initialize_imu()
-            
-            # Initialize temperature sensors if enabled
-            temp_config = self.config.get('temperature_sensors', {})
-            if temp_config.get('enabled', True):
+            except Exception as e:
+                self.logger.error(f"Failed to initialize IMU: {e}")
+
+        # Initialize temperature sensors if enabled
+        temp_config = self.config.get('temperature_sensors', {})
+        if temp_config.get('enabled', True):
+            try:
                 self._initialize_temperature_sensors()
-                
-        except Exception as e:
-            self.logger.error(f"Failed to initialize sensors: {e}")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize temperature sensors: {e}")
 
     def _initialize_imu(self) -> None:
         """Initialize IMU sensor."""
@@ -343,6 +349,13 @@ class EVSystem:
             # Temperature manager needs full config to access battery config
             self.temperature_manager = TemperatureSensorManager(config=self.config)
             self.logger.info("Temperature Sensor Manager initialized")
+            # Attach to core components if already initialized
+            if self.bms:
+                self.bms.temperature_sensor_manager = self.temperature_manager
+            if self.motor_controller:
+                self.motor_controller.temperature_sensor_manager = self.temperature_manager
+            if self.charging_system:
+                self.charging_system.temperature_sensor_manager = self.temperature_manager
         except Exception as e:
             self.logger.error(f"Failed to initialize temperature sensors: {e}")
 

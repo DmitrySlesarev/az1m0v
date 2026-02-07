@@ -29,10 +29,13 @@ az1m0v/ (EV Management System)
 │   ├── battery_management.py        # Battery Management System (BMS):
 │   │                                #   - Cell group temperature integration
 │   │                                #   - Coolant temperature monitoring
+│   │                                #   - Uses TemperatureSensorManager for readings
 │   ├── motor_controller.py          # VESC motor controller integration:
 │   │                                #   - Stator temperature monitoring
+│   │                                #   - Uses TemperatureSensorManager for readings
 │   ├── charging_system.py           # Charging system management:
 │   │                                #   - Port/connector temperature monitoring
+│   │                                #   - Uses TemperatureSensorManager for readings
 │   │                                #   - Overtemperature safety shutdown
 │   ├── vehicle_controller.py        # High-level vehicle coordination:
 │   │                                #   - State management (PARKED, READY, DRIVING, CHARGING, etc.)
@@ -72,6 +75,7 @@ az1m0v/ (EV Management System)
 │   │                                #   - Charging port/connector sensors
 │   │                                #   - Configurable thresholds and fault detection
 │   │                                #   - CAN bus integration
+│   │                                #   - Feeds BMS, motor controller, and charging system
 │   └── computer_vision.py           # Camera/vision processing
 ├── communication/
 │   ├── __init__.py

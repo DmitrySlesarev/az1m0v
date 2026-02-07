@@ -37,7 +37,7 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 ### Sensors & Communication
 - **IMU**: Inertial measurement for vehicle dynamics
 - **GPS**: Positioning and navigation data
-- **Temperature Sensors**: Thermal monitoring
+- **Temperature Sensors**: Thermal monitoring (feeds BMS, motor, charging)
 - **CAN Bus**: Vehicle network communication
 - **Telemetry**: Remote data transmission
 

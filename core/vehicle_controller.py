@@ -54,11 +54,26 @@ class VehicleConfig:
     weight_kg: float = 1500.0
 
 
+@dataclass
+class DriveModeLimits:
+    """Effective vehicle limits derived from drive mode."""
+    max_speed_kmh: float
+    max_acceleration_ms2: float
+    max_power_kw: float
+
+
 class VehicleController:
     """
     High-level vehicle controller that coordinates BMS, motor controller, and charging system.
     Manages overall vehicle state and provides unified interface for vehicle operations.
     """
+
+    DRIVE_MODE_MULTIPLIERS = {
+        DriveMode.ECO: 0.7,
+        DriveMode.NORMAL: 1.0,
+        DriveMode.SPORT: 1.2,
+        DriveMode.REVERSE: 1.0
+    }
 
     def __init__(
         self,
@@ -112,6 +127,16 @@ class VehicleController:
         self.logger.info(
             f"Vehicle controller initialized: max_speed={self.config.max_speed_kmh}km/h, "
             f"max_power={self.config.max_power_kw}kW"
+        )
+
+    def get_drive_mode_limits(self, mode: Optional[DriveMode] = None) -> DriveModeLimits:
+        """Get effective limits based on current or provided drive mode."""
+        active_mode = mode or self.current_status.drive_mode
+        multiplier = self.DRIVE_MODE_MULTIPLIERS.get(active_mode, 1.0)
+        return DriveModeLimits(
+            max_speed_kmh=self.config.max_speed_kmh * multiplier,
+            max_acceleration_ms2=self.config.max_acceleration_ms2 * multiplier,
+            max_power_kw=self.config.max_power_kw * multiplier
         )
 
     def set_state(self, state: VehicleState) -> bool:
@@ -259,9 +284,10 @@ class VehicleController:
         throttle_percent = max(0.0, min(100.0, throttle_percent))
 
         # Apply limp-home mode limits if available
-        max_power_kw = self.config.max_power_kw
-        max_acceleration_ms2 = self.config.max_acceleration_ms2
-        max_speed_kmh = self.config.max_speed_kmh
+        drive_limits = self.get_drive_mode_limits()
+        max_power_kw = drive_limits.max_power_kw
+        max_acceleration_ms2 = drive_limits.max_acceleration_ms2
+        max_speed_kmh = drive_limits.max_speed_kmh
         
         if safety_system and hasattr(safety_system, 'diagnostics'):
             try:
@@ -362,18 +388,12 @@ class VehicleController:
 
         self.current_status.drive_mode = mode
 
-        # Adjust limits based on mode
-        if mode == DriveMode.ECO:
-            self.config.max_power_kw = self.config.max_power_kw * 0.7
-            self.config.max_acceleration_ms2 = self.config.max_acceleration_ms2 * 0.7
-        elif mode == DriveMode.SPORT:
-            self.config.max_power_kw = self.config.max_power_kw * 1.2
-            self.config.max_acceleration_ms2 = self.config.max_acceleration_ms2 * 1.2
-        else:  # NORMAL
-            # Reset to defaults (would need to store original values)
-            pass
-
-        self.logger.info(f"Drive mode set to {mode.value}")
+        limits = self.get_drive_mode_limits(mode)
+        self.logger.info(
+            f"Drive mode set to {mode.value} "
+            f"(max_speed={limits.max_speed_kmh:.1f}km/h, "
+            f"max_power={limits.max_power_kw:.1f}kW)"
+        )
         return True
 
     def start_charging(self, power_kw: Optional[float] = None, target_soc: float = 100.0,
@@ -516,7 +536,7 @@ class VehicleController:
             speed_ms += self.current_status.acceleration_ms2 * dt
 
             # Limit speed
-            speed_limit = max_speed_kmh if max_speed_kmh is not None else self.config.max_speed_kmh
+        speed_limit = max_speed_kmh if max_speed_kmh is not None else self.get_drive_mode_limits().max_speed_kmh
             max_speed_ms = speed_limit / 3.6
             speed_ms = max(0.0, min(max_speed_ms, speed_ms))
 

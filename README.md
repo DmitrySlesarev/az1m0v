@@ -27,6 +27,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Coordinates between BMS, motor controller, and charging system
   - Enforces safety rules (e.g., prevents driving while charging)
   - Provides unified interface for vehicle operations (accelerate, brake, drive modes)
+  - Applies drive mode limits derived from base configuration (no cumulative scaling)
   - Calculates range and tracks energy consumption
   - Integrates with CAN bus for status reporting
 - **Safety System**: Comprehensive safety monitoring and protection:
@@ -83,6 +84,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Charging port and connector sensors
   - Configurable thresholds (warning, fault)
   - Real-time status monitoring and CAN bus integration
+  - TemperatureSensorManager feeds BMS, motor, and charging subsystems
   - Automatic fault detection and reporting
 - **Computer Vision**: Environmental perception and lane detection
 
