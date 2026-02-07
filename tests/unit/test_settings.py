@@ -64,7 +64,7 @@ class TestSettings:
                 'charging': {'ac_max_power_kw': 11.0, 'dc_max_power_kw': 150.0, 
                            'connector_type': 'CCS2', 'fast_charge_enabled': True},
                 'sensors': {'imu_enabled': True, 'gps_enabled': True, 'temperature_sensors': 8, 'sampling_rate_hz': 100},
-                'communication': {'can_bus_enabled': True, 'telemetry_enabled': True, 'update_interval_ms': 1000},
+                'communication': {'can_bus_enabled': True,'update_interval_ms': 1000},
                 'ui': {'dashboard_enabled': True, 'mobile_app_enabled': True, 'theme': 'dark'},
                 'ai': {'autopilot_enabled': False, 'computer_vision_enabled': False, 'model_path': '/models/'},
                 'logging': {'level': 'INFO', 'file_path': '/var/log/test.log', 'max_file_size_mb': 100, 'backup_count': 5}

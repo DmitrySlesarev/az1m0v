@@ -66,6 +66,12 @@
     "mag_offset_y": 0.0,
     "mag_offset_z": 0.0
   },
+  "gps": {
+    "serial_port": null,
+    "baudrate": 9600,
+    "update_interval_s": 1.0,
+    "simulation_mode": true
+  },
   "temperature_sensors": {
     "enabled": true,
     "cells_per_group": 12,
@@ -81,7 +87,6 @@
   },
   "communication": {
     "can_bus_enabled": true,
-    "telemetry_enabled": true,
     "update_interval_ms": 1000
   },
   "can_bus": {

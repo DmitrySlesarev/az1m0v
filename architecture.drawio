@@ -43,7 +43,7 @@
         <mxCell id="gps" value="GPS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="520" y="180" width="80" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="temp" value="Temperature&#xa;Sensors&#xa;(Multi-point)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+        <mxCell id="temp" value="Temperature&#xa;Sensors + Manager&#xa;(Multi-point)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="420" y="250" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="vision" value="Computer Vision" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">

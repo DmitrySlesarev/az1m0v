@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-import jsonschema
+from config.settings import Settings
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
 from communication.telemetry import TelemetrySystem
@@ -19,6 +19,7 @@ from core.charging_system import ChargingSystem
 from core.vehicle_controller import VehicleController
 from core.safety_system import SafetySystem
 from sensors.imu import IMU, IMUConfig, IMUType
+from sensors.gps import GPS, GPSConfig
 from sensors.temperature import TemperatureSensorManager
 from ai.autopilot import AutopilotSystem
 from ui.dashboard import EVDashboard
@@ -35,6 +36,7 @@ class EVSystem:
         """
         self.config_path = Path(config_path)
         self.config: Dict[str, Any] = {}
+        self.settings: Optional[Settings] = None
         self.running = False
 
         # Core components
@@ -50,6 +52,7 @@ class EVSystem:
         # Sensors
         self.imu: Optional[IMU] = None
         self.temperature_manager: Optional[TemperatureSensorManager] = None
+        self.gps: Optional[GPS] = None
         
         # AI systems
         self.autopilot: Optional[AutopilotSystem] = None
@@ -83,22 +86,15 @@ class EVSystem:
     def _load_config(self) -> None:
         """Load and validate configuration."""
         try:
-            # Load configuration
-            with open(self.config_path, 'r') as f:
-                self.config = json.load(f)
-
-            # Validate against schema
             schema_path = self.config_path.parent / "config_schema.json"
-            if schema_path.exists():
-                with open(schema_path, 'r') as f:
-                    schema = json.load(f)
-                jsonschema.validate(self.config, schema)
-                self.logger.info("Configuration validated successfully")
-            else:
-                self.logger.warning("Configuration schema not found, skipping validation")
+            self.settings = Settings(
+                config_path=str(self.config_path),
+                schema_path=str(schema_path)
+            )
+            self.config = self.settings.config
 
             # Update logging level from config
-            log_level = getattr(logging, self.config.get('logging', {}).get('level', 'INFO'))
+            log_level = getattr(logging, self.settings.logging_config.get('level', 'INFO'))
             logging.getLogger().setLevel(log_level)
             self.logger.info(f"Logging level set to {log_level}")
 
@@ -108,7 +104,7 @@ class EVSystem:
         except json.JSONDecodeError as e:
             self.logger.error(f"Invalid JSON in configuration file: {e}")
             sys.exit(1)
-        except jsonschema.ValidationError as e:
+        except Exception as e:
             self.logger.error(f"Configuration validation error: {e}")
             sys.exit(1)
 
@@ -119,6 +115,9 @@ class EVSystem:
         # Initialize CAN bus if enabled
         if self.config.get('communication', {}).get('can_bus_enabled', False):
             self._initialize_can_bus()
+
+        # Initialize Sensors early so core components can consume readings
+        self._initialize_sensors()
 
         # Initialize Battery Management System
         self._initialize_bms()
@@ -137,9 +136,6 @@ class EVSystem:
 
         # Initialize Safety System
         self._initialize_safety_system()
-
-        # Initialize Sensors
-        self._initialize_sensors()
 
         # Initialize Autopilot (if enabled)
         self._initialize_autopilot()
@@ -177,7 +173,8 @@ class EVSystem:
             battery_config = self.config.get('battery', {})
             self.bms = BatteryManagementSystem(
                 config=battery_config,
-                can_protocol=self.can_protocol
+                can_protocol=self.can_protocol,
+                temperature_sensor_manager=self.temperature_manager
             )
             self.logger.info("Battery Management System initialized")
         except Exception as e:
@@ -201,7 +198,8 @@ class EVSystem:
                 serial_port=serial_port,
                 can_bus=self.can_bus,
                 can_protocol=self.can_protocol,
-                config=vesc_config
+                config=vesc_config,
+                temperature_sensor_manager=self.temperature_manager
             )
 
             # Connect to motor controller if serial port is configured
@@ -225,7 +223,8 @@ class EVSystem:
                 config=charging_config,
                 bms=self.bms,
                 motor_controller=self.motor_controller,
-                can_protocol=self.can_protocol
+                can_protocol=self.can_protocol,
+                temperature_sensor_manager=self.temperature_manager
             )
             self.logger.info("Charging System initialized")
         except Exception as e:
@@ -285,19 +284,29 @@ class EVSystem:
 
     def _initialize_sensors(self) -> None:
         """Initialize sensor systems."""
-        try:
-            # Initialize IMU if enabled
-            sensors_config = self.config.get('sensors', {})
-            if sensors_config.get('imu_enabled', False):
+        sensors_config = self.config.get('sensors', {})
+
+        # Initialize IMU if enabled
+        if sensors_config.get('imu_enabled', False):
+            try:
                 self._initialize_imu()
-            
-            # Initialize temperature sensors if enabled
-            temp_config = self.config.get('temperature_sensors', {})
-            if temp_config.get('enabled', True):
+            except Exception as e:
+                self.logger.error(f"Failed to initialize IMU: {e}")
+
+        # Initialize GPS if enabled
+        if sensors_config.get('gps_enabled', False):
+            try:
+                self._initialize_gps()
+            except Exception as e:
+                self.logger.error(f"Failed to initialize GPS: {e}")
+
+        # Initialize temperature sensors if enabled
+        temp_config = self.config.get('temperature_sensors', {})
+        if temp_config.get('enabled', True):
+            try:
                 self._initialize_temperature_sensors()
-                
-        except Exception as e:
-            self.logger.error(f"Failed to initialize sensors: {e}")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize temperature sensors: {e}")
 
     def _initialize_imu(self) -> None:
         """Initialize IMU sensor."""
@@ -337,12 +346,37 @@ class EVSystem:
         except Exception as e:
             self.logger.error(f"Failed to initialize IMU: {e}")
 
+    def _initialize_gps(self) -> None:
+        """Initialize GPS sensor."""
+        try:
+            gps_config = self.config.get('gps', {})
+            gps_config_obj = GPSConfig(
+                serial_port=gps_config.get('serial_port'),
+                baudrate=gps_config.get('baudrate', 9600),
+                update_interval_s=gps_config.get('update_interval_s', 1.0),
+                simulation_mode=gps_config.get('simulation_mode', True)
+            )
+            self.gps = GPS(gps_config_obj)
+            if self.gps.is_connected:
+                self.logger.info("GPS initialized")
+            else:
+                self.logger.warning("GPS initialization failed")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize GPS: {e}")
+
     def _initialize_temperature_sensors(self) -> None:
         """Initialize temperature sensor manager."""
         try:
             # Temperature manager needs full config to access battery config
             self.temperature_manager = TemperatureSensorManager(config=self.config)
             self.logger.info("Temperature Sensor Manager initialized")
+            # Attach to core components if already initialized
+            if self.bms:
+                self.bms.temperature_sensor_manager = self.temperature_manager
+            if self.motor_controller:
+                self.motor_controller.temperature_sensor_manager = self.temperature_manager
+            if self.charging_system:
+                self.charging_system.temperature_sensor_manager = self.temperature_manager
         except Exception as e:
             self.logger.error(f"Failed to initialize temperature sensors: {e}")
 
@@ -508,50 +542,68 @@ class EVSystem:
         
         try:
             temp_data = {}
-            
-            # Battery cell group temperatures
+            def _sort_by_suffix(sensor_id: str) -> int:
+                parts = sensor_id.rsplit("_", 1)
+                if len(parts) == 2 and parts[1].isdigit():
+                    return int(parts[1])
+                return 0
+
+            # Battery cell group temperatures (configurable count)
+            battery_group_ids = self.temperature_manager.sensor_groups.get('battery_cell_groups', [])
+            if not battery_group_ids:
+                battery_group_ids = [
+                    sid for sid in self.temperature_manager.sensors
+                    if sid.startswith("battery_cell_group_")
+                ]
             battery_temps = []
-            for i in range(8):  # Assuming 8 cell groups
-                sensor_id = f"battery_cell_group_{i+1}"
-                if sensor_id in self.temperature_manager.sensors:
-                    sensor = self.temperature_manager.sensors[sensor_id]
-                    reading = sensor.get_reading()
-                    if reading:
-                        battery_temps.append(reading.temperature)
+            for sensor_id in sorted(battery_group_ids, key=_sort_by_suffix):
+                sensor = self.temperature_manager.sensors.get(sensor_id)
+                if not sensor:
+                    continue
+                reading = sensor.read_temperature()
+                if reading:
+                    battery_temps.append(reading.temperature_c)
             if battery_temps:
                 temp_data['battery_cell_groups'] = battery_temps
-            
+
             # Coolant temperatures
-            if 'coolant_inlet' in self.temperature_manager.sensors:
-                inlet_reading = self.temperature_manager.sensors['coolant_inlet'].get_reading()
-                if inlet_reading:
-                    temp_data.setdefault('coolant', {})['inlet'] = inlet_reading.temperature
-            if 'coolant_outlet' in self.temperature_manager.sensors:
-                outlet_reading = self.temperature_manager.sensors['coolant_outlet'].get_reading()
-                if outlet_reading:
-                    temp_data.setdefault('coolant', {})['outlet'] = outlet_reading.temperature
-            
-            # Motor stator temperatures
+            coolant_ids = self.temperature_manager.sensor_groups.get('coolant', [])
+            for sensor_id in coolant_ids:
+                sensor = self.temperature_manager.sensors.get(sensor_id)
+                if not sensor:
+                    continue
+                reading = sensor.read_temperature()
+                if reading:
+                    if 'inlet' in sensor_id:
+                        temp_data.setdefault('coolant', {})['inlet'] = reading.temperature_c
+                    elif 'outlet' in sensor_id:
+                        temp_data.setdefault('coolant', {})['outlet'] = reading.temperature_c
+
+            # Motor stator temperatures (configurable count)
+            motor_ids = self.temperature_manager.sensor_groups.get('motor', [])
             motor_temps = []
-            for i in range(3):  # 3 phases
-                sensor_id = f"motor_stator_{i+1}"
-                if sensor_id in self.temperature_manager.sensors:
-                    sensor = self.temperature_manager.sensors[sensor_id]
-                    reading = sensor.get_reading()
-                    if reading:
-                        motor_temps.append(reading.temperature)
+            for sensor_id in sorted(motor_ids, key=_sort_by_suffix):
+                sensor = self.temperature_manager.sensors.get(sensor_id)
+                if not sensor:
+                    continue
+                reading = sensor.read_temperature()
+                if reading:
+                    motor_temps.append(reading.temperature_c)
             if motor_temps:
                 temp_data['motor_stator'] = motor_temps
-            
+
             # Charging temperatures
-            if 'charging_port' in self.temperature_manager.sensors:
-                port_reading = self.temperature_manager.sensors['charging_port'].get_reading()
-                if port_reading:
-                    temp_data.setdefault('charging', {})['port'] = port_reading.temperature
-            if 'charging_connector' in self.temperature_manager.sensors:
-                connector_reading = self.temperature_manager.sensors['charging_connector'].get_reading()
-                if connector_reading:
-                    temp_data.setdefault('charging', {})['connector'] = connector_reading.temperature
+            charging_ids = self.temperature_manager.sensor_groups.get('charging', [])
+            for sensor_id in charging_ids:
+                sensor = self.temperature_manager.sensors.get(sensor_id)
+                if not sensor:
+                    continue
+                reading = sensor.read_temperature()
+                if reading:
+                    if 'port' in sensor_id:
+                        temp_data.setdefault('charging', {})['port'] = reading.temperature_c
+                    elif 'connector' in sensor_id:
+                        temp_data.setdefault('charging', {})['connector'] = reading.temperature_c
             
             if temp_data:
                 self.dashboard.update_data('temperature', temp_data)
@@ -597,6 +649,19 @@ class EVSystem:
                 if bms_state and hasattr(bms_state, 'temperature'):
                     temperature = bms_state.temperature
 
+            # Get GPS location if available
+            location = None
+            if self.gps:
+                gps_fix = self.gps.read_fix()
+                if gps_fix:
+                    location = {
+                        'latitude': gps_fix.latitude,
+                        'longitude': gps_fix.longitude,
+                        'altitude_m': gps_fix.altitude_m,
+                        'speed_kmh': gps_fix.speed_kmh,
+                        'heading_deg': gps_fix.heading_deg
+                    }
+
             # Send telemetry data
             self.telemetry.send_data(
                 battery_soc=battery_soc,
@@ -607,6 +672,7 @@ class EVSystem:
                 vehicle_speed_kmh=0.0,  # Would come from vehicle controller
                 charging_power_kw=charging_power_kw,
                 temperature=temperature,
+                location=location,
                 state=vehicle_state
             )
         except Exception as e:

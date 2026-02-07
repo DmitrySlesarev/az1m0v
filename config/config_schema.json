@@ -112,12 +112,20 @@
         "mag_offset_z": {"type": "number"}
       }
     },
+    "gps": {
+      "type": "object",
+      "properties": {
+        "serial_port": {"type": ["string", "null"]},
+        "baudrate": {"type": "integer", "minimum": 1200},
+        "update_interval_s": {"type": "number", "minimum": 0.1},
+        "simulation_mode": {"type": "boolean"}
+      }
+    },
     "communication": {
       "type": "object",
-      "required": ["can_bus_enabled", "telemetry_enabled", "update_interval_ms"],
+      "required": ["can_bus_enabled", "update_interval_ms"],
       "properties": {
         "can_bus_enabled": {"type": "boolean"},
-        "telemetry_enabled": {"type": "boolean"},
         "update_interval_ms": {"type": "integer", "minimum": 1}
       }
     },
