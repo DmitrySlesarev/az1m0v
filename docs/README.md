@@ -47,7 +47,7 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 - **Mobile App**: Remote monitoring and control
 
 ### AI Features
-- **Autopilot**: Autonomous driving capabilities
+- **Autopilot**: Autonomous driving capabilities with rule-based and Alpamayo-backed provider modes
 - **Computer Vision**: Environmental perception
 
 ## Configuration Management

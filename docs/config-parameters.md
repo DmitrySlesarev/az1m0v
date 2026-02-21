@@ -190,6 +190,8 @@ Core flags:
 - `autopilot_enabled`
 - `computer_vision_enabled`
 - `model_path`
+- `autonomy_provider`
+- `vehicle_profile`
 
 Autopilot safety/tuning:
 - `min_following_distance`
@@ -204,6 +206,17 @@ Autopilot safety/tuning:
 - `lane_steering_gain`
 - `adaptive_cruise_follow_distance_multiplier`
 - `adaptive_cruise_vehicle_classes`
+
+Provider integration and command envelopes:
+- `alpamayo_enabled`
+- `alpamayo_fallback_to_rule_based`
+- `alpamayo_adapter_module`
+- `alpamayo_adapter_class`
+- `alpamayo_import_candidates`
+- `max_steering_angle`
+- `max_throttle`
+- `max_brake`
+- `vehicle_profiles`
 
 ## 15) safety_system
 

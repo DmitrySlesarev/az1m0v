@@ -119,7 +119,10 @@ az1m0v/ (EV Management System)
 │   └── mobile_app.py                # Mobile application interface
 ├── ai/
 │   ├── __init__.py
-│   └── autopilot.py                  # Autonomous driving AI
+│   └── autopilot.py                  # Autonomous driving AI:
+│                                    #   - Rule-based assist/autopilot controller
+│                                    #   - Optional NVIDIA Alpamayo provider integration
+│                                    #   - Vehicle-profile command envelopes for generic platforms
 ├── utils/
 │   ├── __init__.py
 │   ├── helpers.py                   # Utility functions
