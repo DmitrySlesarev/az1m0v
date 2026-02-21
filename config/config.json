@@ -212,6 +212,11 @@
     "autopilot_enabled": false,
     "computer_vision_enabled": false,
     "model_path": "/models/",
+    "autonomy_provider": "rule_based",
+    "vehicle_profile": "general",
+    "max_steering_angle": 0.7,
+    "max_throttle": 1.0,
+    "max_brake": 1.0,
     "min_following_distance": 2.0,
     "max_speed": 30.0,
     "emergency_brake_threshold": 1.5,
@@ -227,7 +232,27 @@
       "car",
       "truck",
       "bus"
-    ]
+    ],
+    "alpamayo_enabled": false,
+    "alpamayo_fallback_to_rule_based": true,
+    "alpamayo_adapter_module": null,
+    "alpamayo_adapter_class": null,
+    "alpamayo_import_candidates": [
+      "alpamayo",
+      "alpamayo_tools"
+    ],
+    "vehicle_profiles": {
+      "general": {
+        "max_steering_angle": 0.7,
+        "max_throttle": 1.0,
+        "max_brake": 1.0
+      },
+      "truck": {
+        "max_steering_angle": 0.45,
+        "max_throttle": 0.7,
+        "max_brake": 1.0
+      }
+    }
   },
   "safety_system": {
     "battery_temp_max": 60.0,

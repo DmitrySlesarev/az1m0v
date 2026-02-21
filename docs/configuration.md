@@ -135,6 +135,16 @@ a reference point so downstream systems can be exercised.
 | `autopilot_enabled` | boolean | Enable autopilot functionality | true/false | false |
 | `computer_vision_enabled` | boolean | Enable computer vision features | true/false | false |
 | `model_path` | string | Path to AI model files | Valid file path | "/models/" |
+| `autonomy_provider` | string | Select autopilot provider backend | rule_based, alpamayo | "rule_based" |
+| `vehicle_profile` | string | Vehicle dynamics profile used for command envelopes | Free-form profile key | "general" |
+| `max_steering_angle` | number | Max steering command magnitude | ≥ 0 | 0.7 |
+| `max_throttle` | number | Max throttle command | 0.0 - 1.0 | 1.0 |
+| `max_brake` | number | Max brake command | 0.0 - 1.0 | 1.0 |
+| `alpamayo_enabled` | boolean | Enable Alpamayo backend discovery/use | true/false | false |
+| `alpamayo_fallback_to_rule_based` | boolean | If Alpamayo backend fails, fallback to rule-based planner | true/false | true |
+| `alpamayo_adapter_module` | string/null | Optional import path for project-specific Alpamayo adapter module | Python module path or null | null |
+| `alpamayo_adapter_class` | string/null | Optional class name inside adapter module | Class name or null | null |
+| `alpamayo_import_candidates` | array[string] | Candidate modules to probe for Alpamayo predictors | Non-empty string array | ["alpamayo","alpamayo_tools"] |
 
 ### Logging Configuration
 

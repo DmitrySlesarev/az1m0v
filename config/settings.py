@@ -205,6 +205,26 @@ class Settings:
     def ai(self) -> Dict[str, Any]:
         """Get AI configuration."""
         return self.get_section('ai')
+
+    @property
+    def autopilot(self) -> Dict[str, Any]:
+        """Get autopilot configuration (backward-compatible alias for AI section)."""
+        return self.get_section('ai')
+
+    @property
+    def alpamayo(self) -> Dict[str, Any]:
+        """Get Alpamayo-specific AI provider configuration."""
+        ai = self.get_section('ai')
+        return {
+            'autonomy_provider': ai.get('autonomy_provider', 'rule_based'),
+            'alpamayo_enabled': ai.get('alpamayo_enabled', False),
+            'alpamayo_fallback_to_rule_based': ai.get('alpamayo_fallback_to_rule_based', True),
+            'alpamayo_adapter_module': ai.get('alpamayo_adapter_module'),
+            'alpamayo_adapter_class': ai.get('alpamayo_adapter_class'),
+            'alpamayo_import_candidates': ai.get(
+                'alpamayo_import_candidates', ['alpamayo', 'alpamayo_tools']
+            ),
+        }
     
     @property
     def logging_config(self) -> Dict[str, Any]:
