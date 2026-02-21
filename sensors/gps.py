@@ -51,6 +51,15 @@ class GPSConfig:
     baudrate: int = 9600
     update_interval_s: float = 1.0
     simulation_mode: bool = True
+    simulation_base_latitude: float = 37.4219999
+    simulation_base_longitude: float = -122.0840575
+    simulation_radius_deg: float = 0.0003
+    simulation_angle_rate: float = 0.1
+    simulation_speed_base_kmh: float = 10.0
+    simulation_speed_amplitude_kmh: float = 2.0
+    simulation_altitude_m: float = 5.0
+    simulation_satellites: int = 8
+    simulation_hdop: float = 0.9
 
 
 class GPS:
@@ -107,23 +116,25 @@ class GPS:
 
     def _simulate_fix(self, timestamp: float) -> GPSFix:
         """Generate a simple circular path around a reference point."""
-        base_lat = 37.4219999
-        base_lon = -122.0840575
-        radius_deg = 0.0003
-        angle = timestamp * 0.1
+        base_lat = self.config.simulation_base_latitude
+        base_lon = self.config.simulation_base_longitude
+        radius_deg = self.config.simulation_radius_deg
+        angle = timestamp * self.config.simulation_angle_rate
         lat = base_lat + radius_deg * math.cos(angle)
         lon = base_lon + radius_deg * math.sin(angle)
-        speed_kmh = 10.0 + 2.0 * math.sin(angle)
+        speed_kmh = self.config.simulation_speed_base_kmh + (
+            self.config.simulation_speed_amplitude_kmh * math.sin(angle)
+        )
         heading = (math.degrees(angle) % 360.0)
         return GPSFix(
             latitude=lat,
             longitude=lon,
-            altitude_m=5.0,
+            altitude_m=self.config.simulation_altitude_m,
             speed_kmh=speed_kmh,
             heading_deg=heading,
             timestamp=timestamp,
-            satellites=8,
-            hdop=0.9,
+            satellites=self.config.simulation_satellites,
+            hdop=self.config.simulation_hdop,
         )
 
     def _read_serial_fix(self) -> Optional[GPSFix]:

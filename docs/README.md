@@ -6,6 +6,7 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 
 ### Configuration Documentation
 - **[Configuration Guide](configuration.md)** - Complete reference for all configuration parameters, validation rules, and usage examples
+- **[Configuration Parameters Reference](config-parameters.md)** - Runtime-focused explanation of each key used by code modules
 
 ### System Architecture
 - **[Architecture Overview](../architecture.txt)** - High-level system structure and component organization

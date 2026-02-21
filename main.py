@@ -38,6 +38,9 @@ class EVSystem:
         self.config: Dict[str, Any] = {}
         self.settings: Optional[Settings] = None
         self.running = False
+        self.main_loop_interval_s = 0.1
+        self.dashboard_thread_join_timeout_s = 2.0
+        self.default_temperature_c = 25.0
 
         # Core components
         self.can_bus: Optional[CANBusInterface] = None
@@ -97,6 +100,13 @@ class EVSystem:
             log_level = getattr(logging, self.settings.logging_config.get('level', 'INFO'))
             logging.getLogger().setLevel(log_level)
             self.logger.info(f"Logging level set to {log_level}")
+
+            runtime_config = self.config.get('runtime', {})
+            self.main_loop_interval_s = runtime_config.get('main_loop_interval_s', 0.1)
+            self.dashboard_thread_join_timeout_s = runtime_config.get(
+                'dashboard_thread_join_timeout_s', 2.0
+            )
+            self.default_temperature_c = runtime_config.get('default_temperature_c', 25.0)
 
         except FileNotFoundError:
             self.logger.error(f"Configuration file not found: {self.config_path}")
@@ -269,7 +279,10 @@ class EVSystem:
     def _initialize_safety_system(self) -> None:
         """Initialize Safety System."""
         try:
-            safety_config = self.config.get('safety_system', {})
+            safety_config = dict(self.config.get('safety_system', {}))
+            diagnostics_config = self.config.get('diagnostics', {})
+            if diagnostics_config:
+                safety_config['diagnostics'] = diagnostics_config
             
             self.safety_system = SafetySystem(
                 battery_management=self.bms,
@@ -354,7 +367,16 @@ class EVSystem:
                 serial_port=gps_config.get('serial_port'),
                 baudrate=gps_config.get('baudrate', 9600),
                 update_interval_s=gps_config.get('update_interval_s', 1.0),
-                simulation_mode=gps_config.get('simulation_mode', True)
+                simulation_mode=gps_config.get('simulation_mode', True),
+                simulation_base_latitude=gps_config.get('simulation_base_latitude', 37.4219999),
+                simulation_base_longitude=gps_config.get('simulation_base_longitude', -122.0840575),
+                simulation_radius_deg=gps_config.get('simulation_radius_deg', 0.0003),
+                simulation_angle_rate=gps_config.get('simulation_angle_rate', 0.1),
+                simulation_speed_base_kmh=gps_config.get('simulation_speed_base_kmh', 10.0),
+                simulation_speed_amplitude_kmh=gps_config.get('simulation_speed_amplitude_kmh', 2.0),
+                simulation_altitude_m=gps_config.get('simulation_altitude_m', 5.0),
+                simulation_satellites=gps_config.get('simulation_satellites', 8),
+                simulation_hdop=gps_config.get('simulation_hdop', 0.9),
             )
             self.gps = GPS(gps_config_obj)
             if self.gps.is_connected:
@@ -400,13 +422,19 @@ class EVSystem:
                 dashboard_host = ui_config.get('dashboard_host', '0.0.0.0')
                 dashboard_port = ui_config.get('dashboard_port', 5000)
                 dashboard_debug = ui_config.get('dashboard_debug', False)
+                dashboard_secret_key = ui_config.get('dashboard_secret_key', 'ev-dashboard-secret-key')
+                dashboard_update_interval_s = ui_config.get('dashboard_update_interval_s', 1.0)
+                dashboard_socketio_cors = ui_config.get('dashboard_socketio_cors', '*')
                 
                 self.dashboard = EVDashboard(
                     can_bus=self.can_bus,
                     can_protocol=self.can_protocol,
                     host=dashboard_host,
                     port=dashboard_port,
-                    debug=dashboard_debug
+                    debug=dashboard_debug,
+                    secret_key=dashboard_secret_key,
+                    update_interval_s=dashboard_update_interval_s,
+                    socketio_cors=dashboard_socketio_cors
                 )
                 
                 # Store references to system components for dashboard control
@@ -457,7 +485,7 @@ class EVSystem:
         try:
             while self.running:
                 self._update_loop()
-                time.sleep(0.1)  # 100ms update interval
+                time.sleep(self.main_loop_interval_s)
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt received")
         finally:
@@ -477,7 +505,11 @@ class EVSystem:
                     self.dashboard.update_data('battery', {
                         'voltage': bms_state.voltage,
                         'current': bms_state.current,
-                        'temperature': bms_state.temperature if hasattr(bms_state, 'temperature') else 25.0,
+                        'temperature': (
+                            bms_state.temperature
+                            if hasattr(bms_state, 'temperature')
+                            else self.default_temperature_c
+                        ),
                         'soc': bms_state.soc
                     })
 
@@ -643,7 +675,7 @@ class EVSystem:
                     vehicle_state = charging_status.state.value
 
             # Get temperature (from BMS if available)
-            temperature = 25.0
+            temperature = self.default_temperature_c
             if self.bms:
                 bms_state = self.bms.get_state()
                 if bms_state and hasattr(bms_state, 'temperature'):
@@ -707,7 +739,7 @@ class EVSystem:
         if self.dashboard:
             self.dashboard.stop()
             if self.dashboard_thread:
-                self.dashboard_thread.join(timeout=2.0)
+                self.dashboard_thread.join(timeout=self.dashboard_thread_join_timeout_s)
             self.logger.info("Dashboard stopped")
 
         # Disconnect CAN bus

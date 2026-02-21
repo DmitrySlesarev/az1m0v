@@ -18,7 +18,8 @@ az1m0v/ (EV Management System)
 │       └── python-package.yml       # CI/CD workflow (runs tests on every commit)
 ├── docs/
 │   ├── README.md
-│   └── configuration.md
+│   ├── configuration.md
+│   └── config-parameters.md         # Runtime parameter reference for config/config.json
 ├── config/
 │   ├── __init__.py
 │   ├── config.json                  # System configuration

@@ -40,7 +40,11 @@ if __name__ == "__main__":
     
     if config.get('communication', {}).get('can_bus_enabled', False):
         try:
-            can_bus = CANBusInterface("can0", 500000)
+            can_config = config.get('can_bus', {})
+            can_channel = can_config.get('channel', 'can0')
+            can_bitrate = can_config.get('bitrate', 500000)
+            can_interface = can_config.get('interface', 'socketcan')
+            can_bus = CANBusInterface(can_channel, can_bitrate, can_interface)
             if can_bus.connect():
                 can_protocol = EVCANProtocol(can_bus)
                 logger.info("CAN bus initialized for dashboard")
@@ -53,6 +57,10 @@ if __name__ == "__main__":
     dashboard_config = config.get('ui', {})
     host = dashboard_config.get('dashboard_host', '0.0.0.0')
     port = dashboard_config.get('dashboard_port', 5000)
+    debug = dashboard_config.get('dashboard_debug', False)
+    secret_key = dashboard_config.get('dashboard_secret_key', 'ev-dashboard-secret-key')
+    update_interval_s = dashboard_config.get('dashboard_update_interval_s', 1.0)
+    socketio_cors = dashboard_config.get('dashboard_socketio_cors', '*')
     
     # Create and start dashboard
     dashboard = EVDashboard(
@@ -60,7 +68,10 @@ if __name__ == "__main__":
         can_protocol=can_protocol,
         host=host,
         port=port,
-        debug=False
+        debug=debug,
+        secret_key=secret_key,
+        update_interval_s=update_interval_s,
+        socketio_cors=socketio_cors
     )
     
     logger.info(f"Starting EV Dashboard on http://{host}:{port}")

@@ -180,6 +180,11 @@ class Settings:
     def temperature_sensors(self) -> Dict[str, Any]:
         """Get temperature sensors configuration."""
         return self.get_section('temperature_sensors')
+
+    @property
+    def gps(self) -> Dict[str, Any]:
+        """Get GPS configuration."""
+        return self.get_section('gps')
     
     @property
     def communication(self) -> Dict[str, Any]:
@@ -210,6 +215,21 @@ class Settings:
     def can_bus(self) -> Dict[str, Any]:
         """Get CAN bus configuration."""
         return self.get_section('can_bus')
+
+    @property
+    def safety_system(self) -> Dict[str, Any]:
+        """Get safety system configuration."""
+        return self.get_section('safety_system')
+
+    @property
+    def diagnostics(self) -> Dict[str, Any]:
+        """Get diagnostics configuration."""
+        return self.get_section('diagnostics')
+
+    @property
+    def runtime(self) -> Dict[str, Any]:
+        """Get runtime configuration."""
+        return self.get_section('runtime')
 
 
 # Global settings instance

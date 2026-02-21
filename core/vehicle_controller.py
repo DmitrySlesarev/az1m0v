@@ -68,7 +68,7 @@ class VehicleController:
     Manages overall vehicle state and provides unified interface for vehicle operations.
     """
 
-    DRIVE_MODE_MULTIPLIERS = {
+    DEFAULT_DRIVE_MODE_MULTIPLIERS = {
         DriveMode.ECO: 0.7,
         DriveMode.NORMAL: 1.0,
         DriveMode.SPORT: 1.2,
@@ -109,6 +109,28 @@ class VehicleController:
 
         self.logger = logging.getLogger(__name__)
         self.current_status = VehicleStatus()
+        self.drive_mode_multipliers = {
+            DriveMode.ECO: config.get(
+                'drive_mode_multiplier_eco',
+                self.DEFAULT_DRIVE_MODE_MULTIPLIERS[DriveMode.ECO]
+            ),
+            DriveMode.NORMAL: config.get(
+                'drive_mode_multiplier_normal',
+                self.DEFAULT_DRIVE_MODE_MULTIPLIERS[DriveMode.NORMAL]
+            ),
+            DriveMode.SPORT: config.get(
+                'drive_mode_multiplier_sport',
+                self.DEFAULT_DRIVE_MODE_MULTIPLIERS[DriveMode.SPORT]
+            ),
+            DriveMode.REVERSE: config.get(
+                'drive_mode_multiplier_reverse',
+                self.DEFAULT_DRIVE_MODE_MULTIPLIERS[DriveMode.REVERSE]
+            ),
+        }
+        self.min_soc_to_drive = config.get('min_soc_to_drive', 5.0)
+        self.regen_max_current_a = config.get('regen_max_current_a', 50.0)
+        self.rpm_to_speed_factor_kmh = config.get('rpm_to_speed_factor_kmh', 0.1)
+        self.speed_zero_threshold_kmh = config.get('speed_zero_threshold_kmh', 0.1)
 
         # Driving state
         self.driving_start_time: Optional[float] = None
@@ -132,7 +154,7 @@ class VehicleController:
     def get_drive_mode_limits(self, mode: Optional[DriveMode] = None) -> DriveModeLimits:
         """Get effective limits based on current or provided drive mode."""
         active_mode = mode or self.current_status.drive_mode
-        multiplier = self.DRIVE_MODE_MULTIPLIERS.get(active_mode, 1.0)
+        multiplier = self.drive_mode_multipliers.get(active_mode, 1.0)
         return DriveModeLimits(
             max_speed_kmh=self.config.max_speed_kmh * multiplier,
             max_acceleration_ms2=self.config.max_acceleration_ms2 * multiplier,
@@ -225,7 +247,7 @@ class VehicleController:
                 self.set_state(VehicleState.ERROR)
                 return False
 
-            if bms_state.soc < 5.0:
+            if bms_state.soc < self.min_soc_to_drive:
                 self.logger.error("Battery SOC too low, cannot start driving")
                 self.set_state(VehicleState.ERROR)
                 return False
@@ -360,7 +382,7 @@ class VehicleController:
         # Apply regenerative braking if motor controller supports it
         if self.motor_controller:
             # Negative current for regenerative braking
-            regen_current = -(brake_percent / 100.0) * 50.0  # Max 50A regen
+            regen_current = -(brake_percent / 100.0) * self.regen_max_current_a
             self.motor_controller.set_current(regen_current)
 
         # Update speed
@@ -467,8 +489,7 @@ class VehicleController:
         if self.motor_controller and self.motor_controller.is_connected:
             motor_status = self.motor_controller.get_status()
             # Convert RPM to km/h (simplified, would need gear ratio and wheel size)
-            # Assuming 1 RPM = 0.1 km/h (example conversion)
-            self.current_status.speed_kmh = abs(motor_status.speed_rpm) * 0.1
+            self.current_status.speed_kmh = abs(motor_status.speed_rpm) * self.rpm_to_speed_factor_kmh
             self.current_status.power_kw = abs(motor_status.power_w) / 1000.0
 
         # Update from BMS
@@ -544,7 +565,7 @@ class VehicleController:
             self.current_status.speed_kmh = speed_ms * 3.6
 
             # If speed is very low, set to zero
-            if self.current_status.speed_kmh < 0.1:
+            if self.current_status.speed_kmh < self.speed_zero_threshold_kmh:
                 self.current_status.speed_kmh = 0.0
                 self.current_status.acceleration_ms2 = 0.0
 

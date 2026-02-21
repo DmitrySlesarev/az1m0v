@@ -22,7 +22,10 @@ class EVDashboard:
         can_protocol: Optional[EVCANProtocol] = None,
         host: str = "0.0.0.0",
         port: int = 5000,
-        debug: bool = False
+        debug: bool = False,
+        secret_key: str = "ev-dashboard-secret-key",
+        update_interval_s: float = 1.0,
+        socketio_cors: str = "*"
     ):
         """Initialize the EV dashboard.
         
@@ -38,6 +41,9 @@ class EVDashboard:
         self.host = host
         self.port = port
         self.debug = debug
+        self.secret_key = secret_key
+        self.update_interval_s = update_interval_s
+        self.socketio_cors = socketio_cors
         self.logger = logging.getLogger(__name__)
         
         # Dashboard state
@@ -63,10 +69,10 @@ class EVDashboard:
         
         # Initialize Flask app
         self.app = Flask(__name__, template_folder=str(Path(__file__).parent / 'templates'))
-        self.app.config['SECRET_KEY'] = 'ev-dashboard-secret-key'
+        self.app.config['SECRET_KEY'] = self.secret_key
         self.socketio = SocketIO(
             self.app,
-            cors_allowed_origins="*",
+            cors_allowed_origins=self.socketio_cors,
             async_mode='threading',  # Use threading for Raspberry Pi compatibility
             logger=False,
             engineio_logger=False
@@ -398,10 +404,10 @@ class EVDashboard:
                 self._update_can_stats()
                 if self.clients:
                     self._broadcast_update()
-                time.sleep(1.0)  # Update every second
+                time.sleep(self.update_interval_s)
             except Exception as e:
                 self.logger.error(f"Error in update loop: {e}")
-                time.sleep(1.0)
+                time.sleep(self.update_interval_s)
 
     def start(self) -> None:
         """Start the dashboard server."""

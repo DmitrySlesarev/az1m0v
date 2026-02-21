@@ -15,7 +15,38 @@
     "min_temperature": 0.0,
     "max_temperature": 45.0,
     "min_soc": 0.0,
-    "max_soc": 100.0
+    "max_soc": 100.0,
+    "balancing_enabled": true,
+    "balancing_algorithm": "adaptive",
+    "balancing_threshold_mv": 50.0,
+    "passive_bleed_current_ma": 100.0,
+    "active_balance_efficiency": 0.85,
+    "balancing_min_soc": 20.0,
+    "balancing_max_soc": 95.0,
+    "adaptive_active_balance_threshold_mv": 200.0,
+    "active_balance_transfer_rate_per_s": 0.5,
+    "active_balance_transfer_cap_ratio": 0.1,
+    "status_critical_soc_low": 5.0,
+    "status_critical_soc_high": 95.0,
+    "status_warning_soc_low": 10.0,
+    "status_warning_soc_high": 90.0,
+    "status_voltage_imbalance_fault_v": 0.5,
+    "status_uniform_temperature_spread_c": 1.0,
+    "status_charge_current_threshold_a": 0.1,
+    "status_warning_temp_high_ratio": 0.9,
+    "status_warning_temp_low_ratio": 1.1,
+    "charge_cycle_soc_low_threshold": 20.0,
+    "charge_cycle_soc_high_threshold": 80.0,
+    "charge_cycle_partial_energy_ratio": 0.8,
+    "charge_cycle_full_energy_ratio": 1.6,
+    "soh_temperature_history_days": 30.0,
+    "soh_high_temperature_threshold_c": 40.0,
+    "soh_cycle_degradation_per_cycle_pct": 0.05,
+    "soh_high_temp_degradation_per_hour_pct": 0.00417,
+    "soh_fault_degradation_per_fault_pct": 0.1,
+    "soh_calendar_degradation_per_year_pct": 2.5,
+    "soh_calendar_temperature_reference_c": 25.0,
+    "soh_calendar_temp_factor_per_10c": 0.5
   },
   "motor": {
     "max_power_kw": 150.0,
@@ -70,7 +101,16 @@
     "serial_port": null,
     "baudrate": 9600,
     "update_interval_s": 1.0,
-    "simulation_mode": true
+    "simulation_mode": true,
+    "simulation_base_latitude": 37.4219999,
+    "simulation_base_longitude": -122.0840575,
+    "simulation_radius_deg": 0.0003,
+    "simulation_angle_rate": 0.1,
+    "simulation_speed_base_kmh": 10.0,
+    "simulation_speed_amplitude_kmh": 2.0,
+    "simulation_altitude_m": 5.0,
+    "simulation_satellites": 8,
+    "simulation_hdop": 0.9
   },
   "temperature_sensors": {
     "enabled": true,
@@ -80,6 +120,38 @@
     "motor_stator_enabled": true,
     "motor_stator_sensors": 3,
     "charging_enabled": true,
+    "battery_cell_group": {
+      "min_temperature": 0.0,
+      "max_temperature": 45.0,
+      "warning_threshold_low": 5.0,
+      "warning_threshold_high": 40.0,
+      "fault_threshold_low": -10.0,
+      "fault_threshold_high": 50.0
+    },
+    "coolant": {
+      "min_temperature": -20.0,
+      "max_temperature": 80.0,
+      "warning_threshold_low": 0.0,
+      "warning_threshold_high": 60.0,
+      "fault_threshold_low": -30.0,
+      "fault_threshold_high": 90.0
+    },
+    "motor_stator": {
+      "min_temperature": -20.0,
+      "max_temperature": 120.0,
+      "warning_threshold_low": 0.0,
+      "warning_threshold_high": 80.0,
+      "fault_threshold_low": -30.0,
+      "fault_threshold_high": 150.0
+    },
+    "charging": {
+      "min_temperature": -20.0,
+      "max_temperature": 80.0,
+      "warning_threshold_low": 0.0,
+      "warning_threshold_high": 60.0,
+      "fault_threshold_low": -30.0,
+      "fault_threshold_high": 100.0
+    },
     "battery": {
       "min_temperature": 0.0,
       "max_temperature": 45.0
@@ -100,7 +172,15 @@
     "max_deceleration_ms2": -5.0,
     "max_power_kw": 150.0,
     "efficiency_wh_per_km": 200.0,
-    "weight_kg": 1500.0
+    "weight_kg": 1500.0,
+    "drive_mode_multiplier_eco": 0.7,
+    "drive_mode_multiplier_normal": 1.0,
+    "drive_mode_multiplier_sport": 1.2,
+    "drive_mode_multiplier_reverse": 1.0,
+    "min_soc_to_drive": 5.0,
+    "regen_max_current_a": 50.0,
+    "rpm_to_speed_factor_kmh": 0.1,
+    "speed_zero_threshold_kmh": 0.1
   },
   "telemetry": {
     "enabled": true,
@@ -123,7 +203,10 @@
     "theme": "dark",
     "dashboard_host": "0.0.0.0",
     "dashboard_port": 5000,
-    "dashboard_debug": false
+    "dashboard_debug": false,
+    "dashboard_secret_key": "ev-dashboard-secret-key",
+    "dashboard_update_interval_s": 1.0,
+    "dashboard_socketio_cors": "*"
   },
   "ai": {
     "autopilot_enabled": false,
@@ -131,7 +214,89 @@
     "model_path": "/models/",
     "min_following_distance": 2.0,
     "max_speed": 30.0,
-    "emergency_brake_threshold": 1.5
+    "emergency_brake_threshold": 1.5,
+    "autopilot_activation_max_speed": 25.0,
+    "assist_target_speed": 25.0,
+    "speed_control_deadband": 0.5,
+    "speed_control_throttle_gain": 0.2,
+    "speed_control_brake_gain": 0.3,
+    "speed_control_hold_throttle": 0.1,
+    "lane_steering_gain": 0.1,
+    "adaptive_cruise_follow_distance_multiplier": 3.0,
+    "adaptive_cruise_vehicle_classes": [
+      "car",
+      "truck",
+      "bus"
+    ]
+  },
+  "safety_system": {
+    "battery_temp_max": 60.0,
+    "battery_temp_warning": 50.0,
+    "motor_temp_max": 100.0,
+    "motor_temp_warning": 80.0,
+    "thermal_runaway_rate": 2.0,
+    "thermal_runaway_threshold": 5.0,
+    "thermal_history_max_samples": 60,
+    "thermal_runaway_window_samples": 10,
+    "voltage_max": 500.0,
+    "voltage_min": 300.0,
+    "current_max": 500.0,
+    "max_fault_history": 100,
+    "diagnostics_log_dir": null
+  },
+  "diagnostics": {
+    "dtc_max_history_size": 1000,
+    "dtc_export_history_limit": 100,
+    "mode_history_limit": 100,
+    "fault_log_max_file_size_mb": 10.0,
+    "fault_json_max_entries": 10000,
+    "limp_home_profiles": {
+      "normal": {
+        "max_speed_kmh": 120.0,
+        "max_power_kw": 150.0,
+        "max_acceleration_ms2": 3.0,
+        "max_current_a": 500.0,
+        "charging_allowed": true,
+        "autopilot_allowed": true
+      },
+      "reduced_power": {
+        "max_speed_kmh": 80.0,
+        "max_power_kw": 75.0,
+        "max_acceleration_ms2": 1.5,
+        "max_current_a": 250.0,
+        "charging_allowed": true,
+        "autopilot_allowed": false
+      },
+      "limited_speed": {
+        "max_speed_kmh": 30.0,
+        "max_power_kw": 30.0,
+        "max_acceleration_ms2": 0.6,
+        "max_current_a": 100.0,
+        "charging_allowed": true,
+        "autopilot_allowed": false
+      },
+      "emergency_only": {
+        "max_speed_kmh": 10.0,
+        "max_power_kw": 10.0,
+        "max_acceleration_ms2": 0.3,
+        "max_current_a": 50.0,
+        "charging_allowed": false,
+        "autopilot_allowed": false
+      },
+      "disabled": {
+        "max_speed_kmh": 0.0,
+        "max_power_kw": 0.0,
+        "max_acceleration_ms2": 0.0,
+        "max_current_a": 0.0,
+        "charging_allowed": false,
+        "autopilot_allowed": false
+      }
+    }
+  },
+  "runtime": {
+    "main_loop_interval_s": 0.1,
+    "dashboard_thread_join_timeout_s": 2.0,
+    "default_temperature_c": 25.0
   },
   "logging": {
     "level": "INFO",

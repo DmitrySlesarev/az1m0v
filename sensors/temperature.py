@@ -195,10 +195,27 @@ class TemperatureSensorManager:
 
     def _initialize_sensors(self) -> None:
         """Initialize all sensors from configuration."""
+        temperature_config = self.config.get('temperature_sensors', {})
+
         # Battery cell group sensors
         cell_count = self.config.get('battery', {}).get('cell_count', 96)
-        cells_per_group = self.config.get('temperature_sensors', {}).get('cells_per_group', 12)
+        cells_per_group = temperature_config.get('cells_per_group', 12)
         num_cell_groups = max(1, (cell_count + cells_per_group - 1) // cells_per_group)
+        battery_sensor_cfg = temperature_config.get('battery_cell_group', {})
+        battery_legacy_cfg = temperature_config.get('battery', {})
+        battery_min_temp = battery_sensor_cfg.get(
+            'min_temperature',
+            battery_legacy_cfg.get('min_temperature', self.config.get('battery', {}).get('min_temperature', 0.0))
+        )
+        battery_max_temp = battery_sensor_cfg.get(
+            'max_temperature',
+            battery_legacy_cfg.get('max_temperature', self.config.get('battery', {}).get('max_temperature', 45.0))
+        )
+        battery_warning_low = battery_sensor_cfg.get('warning_threshold_low', 5.0)
+        battery_warning_high = battery_sensor_cfg.get('warning_threshold_high', 40.0)
+        battery_fault_low = battery_sensor_cfg.get('fault_threshold_low', -10.0)
+        battery_fault_high = battery_sensor_cfg.get('fault_threshold_high', 50.0)
+        update_interval_s = temperature_config.get('update_interval_s', 0.1)
 
         for i in range(num_cell_groups):
             sensor_id = f"battery_cell_group_{i+1}"
@@ -206,29 +223,30 @@ class TemperatureSensorManager:
                 sensor_id=sensor_id,
                 sensor_type=TemperatureSensorType.BATTERY_CELL_GROUP,
                 location=f"cell_group_{i+1}",
-                min_temperature=self.config.get('battery', {}).get('min_temperature', 0.0),
-                max_temperature=self.config.get('battery', {}).get('max_temperature', 45.0),
-                warning_threshold_low=5.0,
-                warning_threshold_high=40.0,
-                fault_threshold_low=-10.0,
-                fault_threshold_high=50.0,
-                update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                min_temperature=battery_min_temp,
+                max_temperature=battery_max_temp,
+                warning_threshold_low=battery_warning_low,
+                warning_threshold_high=battery_warning_high,
+                fault_threshold_low=battery_fault_low,
+                fault_threshold_high=battery_fault_high,
+                update_interval_s=update_interval_s
             )
             self.sensors[sensor_id] = TemperatureSensor(sensor_config)
 
         # Coolant sensors
-        if self.config.get('temperature_sensors', {}).get('coolant_enabled', True):
+        if temperature_config.get('coolant_enabled', True):
+            coolant_cfg = temperature_config.get('coolant', {})
             inlet_config = TemperatureSensorConfig(
                 sensor_id="coolant_inlet",
                 sensor_type=TemperatureSensorType.COOLANT_INLET,
                 location="coolant_inlet",
-                min_temperature=-20.0,
-                max_temperature=80.0,
-                warning_threshold_low=0.0,
-                warning_threshold_high=60.0,
-                fault_threshold_low=-30.0,
-                fault_threshold_high=90.0,
-                update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                min_temperature=coolant_cfg.get('min_temperature', -20.0),
+                max_temperature=coolant_cfg.get('max_temperature', 80.0),
+                warning_threshold_low=coolant_cfg.get('warning_threshold_low', 0.0),
+                warning_threshold_high=coolant_cfg.get('warning_threshold_high', 60.0),
+                fault_threshold_low=coolant_cfg.get('fault_threshold_low', -30.0),
+                fault_threshold_high=coolant_cfg.get('fault_threshold_high', 90.0),
+                update_interval_s=update_interval_s
             )
             self.sensors["coolant_inlet"] = TemperatureSensor(inlet_config)
 
@@ -236,48 +254,50 @@ class TemperatureSensorManager:
                 sensor_id="coolant_outlet",
                 sensor_type=TemperatureSensorType.COOLANT_OUTLET,
                 location="coolant_outlet",
-                min_temperature=-20.0,
-                max_temperature=80.0,
-                warning_threshold_low=0.0,
-                warning_threshold_high=60.0,
-                fault_threshold_low=-30.0,
-                fault_threshold_high=90.0,
-                update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                min_temperature=coolant_cfg.get('min_temperature', -20.0),
+                max_temperature=coolant_cfg.get('max_temperature', 80.0),
+                warning_threshold_low=coolant_cfg.get('warning_threshold_low', 0.0),
+                warning_threshold_high=coolant_cfg.get('warning_threshold_high', 60.0),
+                fault_threshold_low=coolant_cfg.get('fault_threshold_low', -30.0),
+                fault_threshold_high=coolant_cfg.get('fault_threshold_high', 90.0),
+                update_interval_s=update_interval_s
             )
             self.sensors["coolant_outlet"] = TemperatureSensor(outlet_config)
 
         # Motor stator sensors
-        if self.config.get('temperature_sensors', {}).get('motor_stator_enabled', True):
-            num_stator_sensors = self.config.get('temperature_sensors', {}).get('motor_stator_sensors', 3)
+        if temperature_config.get('motor_stator_enabled', True):
+            motor_stator_cfg = temperature_config.get('motor_stator', {})
+            num_stator_sensors = temperature_config.get('motor_stator_sensors', 3)
             for i in range(num_stator_sensors):
                 sensor_id = f"motor_stator_{i+1}"
                 sensor_config = TemperatureSensorConfig(
                     sensor_id=sensor_id,
                     sensor_type=TemperatureSensorType.MOTOR_STATOR,
                     location=f"stator_phase_{chr(65+i)}",  # A, B, C
-                    min_temperature=-20.0,
-                    max_temperature=120.0,
-                    warning_threshold_low=0.0,
-                    warning_threshold_high=80.0,
-                    fault_threshold_low=-30.0,
-                    fault_threshold_high=150.0,
-                    update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                    min_temperature=motor_stator_cfg.get('min_temperature', -20.0),
+                    max_temperature=motor_stator_cfg.get('max_temperature', 120.0),
+                    warning_threshold_low=motor_stator_cfg.get('warning_threshold_low', 0.0),
+                    warning_threshold_high=motor_stator_cfg.get('warning_threshold_high', 80.0),
+                    fault_threshold_low=motor_stator_cfg.get('fault_threshold_low', -30.0),
+                    fault_threshold_high=motor_stator_cfg.get('fault_threshold_high', 150.0),
+                    update_interval_s=update_interval_s
                 )
                 self.sensors[sensor_id] = TemperatureSensor(sensor_config)
 
         # Charging port/connector sensors
-        if self.config.get('temperature_sensors', {}).get('charging_enabled', True):
+        if temperature_config.get('charging_enabled', True):
+            charging_cfg = temperature_config.get('charging', {})
             port_config = TemperatureSensorConfig(
                 sensor_id="charging_port",
                 sensor_type=TemperatureSensorType.CHARGING_PORT,
                 location="charging_port",
-                min_temperature=-20.0,
-                max_temperature=80.0,
-                warning_threshold_low=0.0,
-                warning_threshold_high=60.0,
-                fault_threshold_low=-30.0,
-                fault_threshold_high=100.0,
-                update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                min_temperature=charging_cfg.get('min_temperature', -20.0),
+                max_temperature=charging_cfg.get('max_temperature', 80.0),
+                warning_threshold_low=charging_cfg.get('warning_threshold_low', 0.0),
+                warning_threshold_high=charging_cfg.get('warning_threshold_high', 60.0),
+                fault_threshold_low=charging_cfg.get('fault_threshold_low', -30.0),
+                fault_threshold_high=charging_cfg.get('fault_threshold_high', 100.0),
+                update_interval_s=update_interval_s
             )
             self.sensors["charging_port"] = TemperatureSensor(port_config)
 
@@ -285,13 +305,13 @@ class TemperatureSensorManager:
                 sensor_id="charging_connector",
                 sensor_type=TemperatureSensorType.CHARGING_CONNECTOR,
                 location="charging_connector",
-                min_temperature=-20.0,
-                max_temperature=80.0,
-                warning_threshold_low=0.0,
-                warning_threshold_high=60.0,
-                fault_threshold_low=-30.0,
-                fault_threshold_high=100.0,
-                update_interval_s=self.config.get('temperature_sensors', {}).get('update_interval_s', 0.1)
+                min_temperature=charging_cfg.get('min_temperature', -20.0),
+                max_temperature=charging_cfg.get('max_temperature', 80.0),
+                warning_threshold_low=charging_cfg.get('warning_threshold_low', 0.0),
+                warning_threshold_high=charging_cfg.get('warning_threshold_high', 60.0),
+                fault_threshold_low=charging_cfg.get('fault_threshold_low', -30.0),
+                fault_threshold_high=charging_cfg.get('fault_threshold_high', 100.0),
+                update_interval_s=update_interval_s
             )
             self.sensors["charging_connector"] = TemperatureSensor(connector_config)
 

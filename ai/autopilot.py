@@ -55,6 +55,19 @@ class AutopilotSystem:
         self.min_following_distance = config.get('min_following_distance', 2.0)
         self.max_speed = config.get('max_speed', 30.0)
         self.emergency_brake_threshold = config.get('emergency_brake_threshold', 1.5)
+        self.autopilot_activation_max_speed = config.get('autopilot_activation_max_speed', 25.0)
+        self.assist_target_speed = config.get('assist_target_speed', 25.0)
+        self.speed_control_deadband = config.get('speed_control_deadband', 0.5)
+        self.speed_control_throttle_gain = config.get('speed_control_throttle_gain', 0.2)
+        self.speed_control_brake_gain = config.get('speed_control_brake_gain', 0.3)
+        self.speed_control_hold_throttle = config.get('speed_control_hold_throttle', 0.1)
+        self.lane_steering_gain = config.get('lane_steering_gain', 0.1)
+        self.adaptive_cruise_follow_distance_multiplier = config.get(
+            'adaptive_cruise_follow_distance_multiplier', 3.0
+        )
+        self.adaptive_cruise_vehicle_classes = config.get(
+            'adaptive_cruise_vehicle_classes', ['car', 'truck', 'bus']
+        )
 
     def activate(self, mode: DrivingMode) -> bool:
         """Activate autopilot in specified mode."""
@@ -75,7 +88,7 @@ class AutopilotSystem:
         if not self.vehicle_state or not self.environment_state:
             return False
 
-        if mode == DrivingMode.AUTOPILOT and self.vehicle_state.speed > 25.0:
+        if mode == DrivingMode.AUTOPILOT and self.vehicle_state.speed > self.autopilot_activation_max_speed:
             return False
 
         if self.environment_state.road_conditions in ['snow', 'ice']:
@@ -154,7 +167,7 @@ class AutopilotSystem:
                           key=lambda lane: abs(lane.get('distance_to_lane', 0)))
 
         distance_to_center = closest_lane.get('distance_to_lane', 0)
-        steering_gain = 0.1
+        steering_gain = self.lane_steering_gain
 
         return -distance_to_center * steering_gain
 
@@ -164,17 +177,19 @@ class AutopilotSystem:
         min_distance = float('inf')
 
         for obj in self.environment_state.detected_objects:
-            if obj.get('class_name') in ['car', 'truck', 'bus']:
+            if obj.get('class_name') in self.adaptive_cruise_vehicle_classes:
                 distance = obj.get('distance', float('inf'))
                 if distance < min_distance:
                     min_distance = distance
                     closest_vehicle = obj
 
-        if closest_vehicle and min_distance < self.min_following_distance * 3:
-            target_speed = min(25.0, closest_vehicle.get('speed', 0))
+        if closest_vehicle and min_distance < (
+            self.min_following_distance * self.adaptive_cruise_follow_distance_multiplier
+        ):
+            target_speed = min(self.assist_target_speed, closest_vehicle.get('speed', 0))
             return self._calculate_speed_control(target_speed)
         else:
-            return self._calculate_speed_control(25.0)
+            return self._calculate_speed_control(self.assist_target_speed)
 
     def _calculate_path_following_steering(self) -> float:
         """Calculate steering angle for path following."""
@@ -185,14 +200,14 @@ class AutopilotSystem:
         current_speed = self.vehicle_state.speed
         speed_error = target_speed - current_speed
 
-        if speed_error > 0.5:
-            throttle = min(1.0, speed_error * 0.2)
+        if speed_error > self.speed_control_deadband:
+            throttle = min(1.0, speed_error * self.speed_control_throttle_gain)
             brake = 0.0
-        elif speed_error < -0.5:
+        elif speed_error < -self.speed_control_deadband:
             throttle = 0.0
-            brake = min(1.0, abs(speed_error) * 0.3)
+            brake = min(1.0, abs(speed_error) * self.speed_control_brake_gain)
         else:
-            throttle = 0.1
+            throttle = self.speed_control_hold_throttle
             brake = 0.0
 
         return throttle, brake
@@ -225,6 +240,14 @@ class AutopilotSystem:
             'safety_parameters': {
                 'min_following_distance': self.min_following_distance,
                 'max_speed': self.max_speed,
-                'emergency_brake_threshold': self.emergency_brake_threshold
+                'emergency_brake_threshold': self.emergency_brake_threshold,
+                'autopilot_activation_max_speed': self.autopilot_activation_max_speed,
+                'assist_target_speed': self.assist_target_speed,
+                'speed_control_deadband': self.speed_control_deadband,
+                'speed_control_throttle_gain': self.speed_control_throttle_gain,
+                'speed_control_brake_gain': self.speed_control_brake_gain,
+                'speed_control_hold_throttle': self.speed_control_hold_throttle,
+                'lane_steering_gain': self.lane_steering_gain,
+                'adaptive_cruise_follow_distance_multiplier': self.adaptive_cruise_follow_distance_multiplier
             }
         }

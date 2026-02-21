@@ -40,7 +40,38 @@
         "min_temperature": {"type": "number"},
         "max_temperature": {"type": "number"},
         "min_soc": {"type": "number", "minimum": 0, "maximum": 100},
-        "max_soc": {"type": "number", "minimum": 0, "maximum": 100}
+        "max_soc": {"type": "number", "minimum": 0, "maximum": 100},
+        "balancing_enabled": {"type": "boolean"},
+        "balancing_algorithm": {"type": "string", "enum": ["none", "passive", "active", "adaptive"]},
+        "balancing_threshold_mv": {"type": "number", "minimum": 0},
+        "passive_bleed_current_ma": {"type": "number", "minimum": 0},
+        "active_balance_efficiency": {"type": "number", "minimum": 0, "maximum": 1},
+        "balancing_min_soc": {"type": "number", "minimum": 0, "maximum": 100},
+        "balancing_max_soc": {"type": "number", "minimum": 0, "maximum": 100},
+        "adaptive_active_balance_threshold_mv": {"type": "number", "minimum": 0},
+        "active_balance_transfer_rate_per_s": {"type": "number", "minimum": 0},
+        "active_balance_transfer_cap_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "status_critical_soc_low": {"type": "number", "minimum": 0, "maximum": 100},
+        "status_critical_soc_high": {"type": "number", "minimum": 0, "maximum": 100},
+        "status_warning_soc_low": {"type": "number", "minimum": 0, "maximum": 100},
+        "status_warning_soc_high": {"type": "number", "minimum": 0, "maximum": 100},
+        "status_voltage_imbalance_fault_v": {"type": "number", "minimum": 0},
+        "status_uniform_temperature_spread_c": {"type": "number", "minimum": 0},
+        "status_charge_current_threshold_a": {"type": "number", "minimum": 0},
+        "status_warning_temp_high_ratio": {"type": "number", "minimum": 0},
+        "status_warning_temp_low_ratio": {"type": "number", "minimum": 0},
+        "charge_cycle_soc_low_threshold": {"type": "number", "minimum": 0, "maximum": 100},
+        "charge_cycle_soc_high_threshold": {"type": "number", "minimum": 0, "maximum": 100},
+        "charge_cycle_partial_energy_ratio": {"type": "number", "minimum": 0},
+        "charge_cycle_full_energy_ratio": {"type": "number", "minimum": 0},
+        "soh_temperature_history_days": {"type": "number", "minimum": 0},
+        "soh_high_temperature_threshold_c": {"type": "number"},
+        "soh_cycle_degradation_per_cycle_pct": {"type": "number", "minimum": 0},
+        "soh_high_temp_degradation_per_hour_pct": {"type": "number", "minimum": 0},
+        "soh_fault_degradation_per_fault_pct": {"type": "number", "minimum": 0},
+        "soh_calendar_degradation_per_year_pct": {"type": "number", "minimum": 0},
+        "soh_calendar_temperature_reference_c": {"type": "number"},
+        "soh_calendar_temp_factor_per_10c": {"type": "number", "minimum": 0}
       }
     },
     "motor": {
@@ -112,13 +143,78 @@
         "mag_offset_z": {"type": "number"}
       }
     },
+    "temperature_sensors": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "cells_per_group": {"type": "integer", "minimum": 1},
+        "update_interval_s": {"type": "number", "minimum": 0.01},
+        "coolant_enabled": {"type": "boolean"},
+        "motor_stator_enabled": {"type": "boolean"},
+        "motor_stator_sensors": {"type": "integer", "minimum": 1},
+        "charging_enabled": {"type": "boolean"},
+        "battery_cell_group": {
+          "type": "object",
+          "properties": {
+            "min_temperature": {"type": "number"},
+            "max_temperature": {"type": "number"},
+            "warning_threshold_low": {"type": "number"},
+            "warning_threshold_high": {"type": "number"},
+            "fault_threshold_low": {"type": "number"},
+            "fault_threshold_high": {"type": "number"}
+          }
+        },
+        "coolant": {
+          "type": "object",
+          "properties": {
+            "min_temperature": {"type": "number"},
+            "max_temperature": {"type": "number"},
+            "warning_threshold_low": {"type": "number"},
+            "warning_threshold_high": {"type": "number"},
+            "fault_threshold_low": {"type": "number"},
+            "fault_threshold_high": {"type": "number"}
+          }
+        },
+        "motor_stator": {
+          "type": "object",
+          "properties": {
+            "min_temperature": {"type": "number"},
+            "max_temperature": {"type": "number"},
+            "warning_threshold_low": {"type": "number"},
+            "warning_threshold_high": {"type": "number"},
+            "fault_threshold_low": {"type": "number"},
+            "fault_threshold_high": {"type": "number"}
+          }
+        },
+        "charging": {
+          "type": "object",
+          "properties": {
+            "min_temperature": {"type": "number"},
+            "max_temperature": {"type": "number"},
+            "warning_threshold_low": {"type": "number"},
+            "warning_threshold_high": {"type": "number"},
+            "fault_threshold_low": {"type": "number"},
+            "fault_threshold_high": {"type": "number"}
+          }
+        }
+      }
+    },
     "gps": {
       "type": "object",
       "properties": {
         "serial_port": {"type": ["string", "null"]},
         "baudrate": {"type": "integer", "minimum": 1200},
         "update_interval_s": {"type": "number", "minimum": 0.1},
-        "simulation_mode": {"type": "boolean"}
+        "simulation_mode": {"type": "boolean"},
+        "simulation_base_latitude": {"type": "number", "minimum": -90, "maximum": 90},
+        "simulation_base_longitude": {"type": "number", "minimum": -180, "maximum": 180},
+        "simulation_radius_deg": {"type": "number", "minimum": 0},
+        "simulation_angle_rate": {"type": "number"},
+        "simulation_speed_base_kmh": {"type": "number", "minimum": 0},
+        "simulation_speed_amplitude_kmh": {"type": "number", "minimum": 0},
+        "simulation_altitude_m": {"type": "number"},
+        "simulation_satellites": {"type": "integer", "minimum": 0},
+        "simulation_hdop": {"type": "number", "minimum": 0}
       }
     },
     "communication": {
@@ -147,7 +243,15 @@
         "max_deceleration_ms2": {"type": "number", "maximum": 0},
         "max_power_kw": {"type": "number", "minimum": 0},
         "efficiency_wh_per_km": {"type": "number", "minimum": 0},
-        "weight_kg": {"type": "number", "minimum": 0}
+        "weight_kg": {"type": "number", "minimum": 0},
+        "drive_mode_multiplier_eco": {"type": "number", "minimum": 0},
+        "drive_mode_multiplier_normal": {"type": "number", "minimum": 0},
+        "drive_mode_multiplier_sport": {"type": "number", "minimum": 0},
+        "drive_mode_multiplier_reverse": {"type": "number", "minimum": 0},
+        "min_soc_to_drive": {"type": "number", "minimum": 0, "maximum": 100},
+        "regen_max_current_a": {"type": "number", "minimum": 0},
+        "rpm_to_speed_factor_kmh": {"type": "number", "minimum": 0},
+        "speed_zero_threshold_kmh": {"type": "number", "minimum": 0}
       }
     },
     "telemetry": {
@@ -178,7 +282,10 @@
         "theme": {"type": "string", "enum": ["light", "dark", "auto"]},
         "dashboard_host": {"type": "string"},
         "dashboard_port": {"type": "integer", "minimum": 1, "maximum": 65535},
-        "dashboard_debug": {"type": "boolean"}
+        "dashboard_debug": {"type": "boolean"},
+        "dashboard_secret_key": {"type": "string", "minLength": 1},
+        "dashboard_update_interval_s": {"type": "number", "minimum": 0.01},
+        "dashboard_socketio_cors": {"type": "string"}
       }
     },
     "ai": {
@@ -190,7 +297,70 @@
         "model_path": {"type": "string", "minLength": 1},
         "min_following_distance": {"type": "number", "minimum": 0},
         "max_speed": {"type": "number", "minimum": 0},
-        "emergency_brake_threshold": {"type": "number", "minimum": 0}
+        "emergency_brake_threshold": {"type": "number", "minimum": 0},
+        "autopilot_activation_max_speed": {"type": "number", "minimum": 0},
+        "assist_target_speed": {"type": "number", "minimum": 0},
+        "speed_control_deadband": {"type": "number", "minimum": 0},
+        "speed_control_throttle_gain": {"type": "number", "minimum": 0},
+        "speed_control_brake_gain": {"type": "number", "minimum": 0},
+        "speed_control_hold_throttle": {"type": "number", "minimum": 0},
+        "lane_steering_gain": {"type": "number", "minimum": 0},
+        "adaptive_cruise_follow_distance_multiplier": {"type": "number", "minimum": 0},
+        "adaptive_cruise_vehicle_classes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1
+        }
+      }
+    },
+    "safety_system": {
+      "type": "object",
+      "properties": {
+        "battery_temp_max": {"type": "number"},
+        "battery_temp_warning": {"type": "number"},
+        "motor_temp_max": {"type": "number"},
+        "motor_temp_warning": {"type": "number"},
+        "thermal_runaway_rate": {"type": "number", "minimum": 0},
+        "thermal_runaway_threshold": {"type": "number", "minimum": 0},
+        "thermal_history_max_samples": {"type": "integer", "minimum": 10},
+        "thermal_runaway_window_samples": {"type": "integer", "minimum": 2},
+        "voltage_max": {"type": "number"},
+        "voltage_min": {"type": "number"},
+        "current_max": {"type": "number", "minimum": 0},
+        "max_fault_history": {"type": "integer", "minimum": 1},
+        "diagnostics_log_dir": {"type": ["string", "null"]}
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "dtc_max_history_size": {"type": "integer", "minimum": 1},
+        "dtc_export_history_limit": {"type": "integer", "minimum": 1},
+        "mode_history_limit": {"type": "integer", "minimum": 1},
+        "fault_log_max_file_size_mb": {"type": "number", "minimum": 0.1},
+        "fault_json_max_entries": {"type": "integer", "minimum": 1},
+        "limp_home_profiles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "max_speed_kmh": {"type": "number", "minimum": 0},
+              "max_power_kw": {"type": "number", "minimum": 0},
+              "max_acceleration_ms2": {"type": "number", "minimum": 0},
+              "max_current_a": {"type": "number", "minimum": 0},
+              "charging_allowed": {"type": "boolean"},
+              "autopilot_allowed": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "main_loop_interval_s": {"type": "number", "minimum": 0.01},
+        "dashboard_thread_join_timeout_s": {"type": "number", "minimum": 0.0},
+        "default_temperature_c": {"type": "number"}
       }
     },
     "logging": {
