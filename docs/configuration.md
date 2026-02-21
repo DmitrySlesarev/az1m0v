@@ -1,6 +1,8 @@
 # EV System Configuration Documentation
 
 This document describes all configuration parameters available in the EV system configuration file (`config/config.json`).
+For a runtime-focused key-by-key reference (including newer tuning and safety
+coefficients), see [config-parameters.md](config-parameters.md).
 
 ## Overview
 

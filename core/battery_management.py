@@ -144,8 +144,52 @@ class BatteryManagementSystem:
         self._cycle_energy_charged_wh = 0.0  # Energy charged in current cycle
         self._cycle_energy_discharged_wh = 0.0  # Energy discharged in current cycle
         self._temperature_history: List[tuple] = []  # List of (timestamp, temperature) tuples
-        self._max_temperature_history_duration = 86400.0 * 30  # 30 days in seconds
-        self._high_temperature_threshold = 40.0  # °C - temperatures above this accelerate degradation
+        self._max_temperature_history_duration = (
+            config.get('soh_temperature_history_days', 30.0) * 86400.0
+        )
+        self._high_temperature_threshold = config.get('soh_high_temperature_threshold_c', 40.0)
+        self._soh_cycle_degradation_per_cycle_pct = config.get(
+            'soh_cycle_degradation_per_cycle_pct', 0.05
+        )
+        self._soh_high_temp_degradation_per_hour_pct = config.get(
+            'soh_high_temp_degradation_per_hour_pct', 0.00417
+        )
+        self._soh_fault_degradation_per_fault_pct = config.get(
+            'soh_fault_degradation_per_fault_pct', 0.1
+        )
+        self._soh_calendar_degradation_per_year_pct = config.get(
+            'soh_calendar_degradation_per_year_pct', 2.5
+        )
+        self._soh_calendar_temperature_reference_c = config.get(
+            'soh_calendar_temperature_reference_c', 25.0
+        )
+        self._soh_calendar_temp_factor_per_10c = config.get(
+            'soh_calendar_temp_factor_per_10c', 0.5
+        )
+        self._status_critical_soc_low = config.get('status_critical_soc_low', 5.0)
+        self._status_critical_soc_high = config.get('status_critical_soc_high', 95.0)
+        self._status_warning_soc_low = config.get('status_warning_soc_low', 10.0)
+        self._status_warning_soc_high = config.get('status_warning_soc_high', 90.0)
+        self._status_warning_temp_high_ratio = config.get('status_warning_temp_high_ratio', 0.9)
+        self._status_warning_temp_low_ratio = config.get('status_warning_temp_low_ratio', 1.1)
+        self._status_voltage_imbalance_fault_v = config.get('status_voltage_imbalance_fault_v', 0.5)
+        self._status_uniform_temperature_spread_c = config.get(
+            'status_uniform_temperature_spread_c', 1.0
+        )
+        self._status_charge_current_threshold_a = config.get('status_charge_current_threshold_a', 0.1)
+        self._charge_cycle_soc_low_threshold = config.get('charge_cycle_soc_low_threshold', 20.0)
+        self._charge_cycle_soc_high_threshold = config.get('charge_cycle_soc_high_threshold', 80.0)
+        self._charge_cycle_partial_energy_ratio = config.get('charge_cycle_partial_energy_ratio', 0.8)
+        self._charge_cycle_full_energy_ratio = config.get('charge_cycle_full_energy_ratio', 1.6)
+        self._adaptive_active_balance_threshold_mv = config.get(
+            'adaptive_active_balance_threshold_mv', 200.0
+        )
+        self._active_balance_transfer_rate_per_s = config.get(
+            'active_balance_transfer_rate_per_s', 0.5
+        )
+        self._active_balance_transfer_cap_ratio = config.get(
+            'active_balance_transfer_cap_ratio', 0.1
+        )
         self._initialization_time = time.time()
 
         self.logger.info(f"BMS initialized: {self.config.capacity_kwh}kWh, {self.config.cell_count} cells")
@@ -280,15 +324,15 @@ class BatteryManagementSystem:
         
         # Check for cycle completion based on SOC swing
         # Cycle: low -> high -> low (or high -> low -> high)
-        cycle_threshold_high = 80.0
-        cycle_threshold_low = 20.0
+        cycle_threshold_high = self._charge_cycle_soc_high_threshold
+        cycle_threshold_low = self._charge_cycle_soc_low_threshold
         
         # Detect cycle completion: went from low to high and back to low, or vice versa
         if (previous_soc < cycle_threshold_low and current_soc > cycle_threshold_high) or \
            (previous_soc > cycle_threshold_high and current_soc < cycle_threshold_low):
             # Check if we've completed a full cycle (charged and discharged)
             total_cycle_energy_kwh = (self._cycle_energy_charged_wh + self._cycle_energy_discharged_wh) / 1000.0
-            if total_cycle_energy_kwh >= self.config.capacity_kwh * 0.8:  # 80% of capacity
+            if total_cycle_energy_kwh >= self.config.capacity_kwh * self._charge_cycle_partial_energy_ratio:
                 self.stats['charge_cycles'] += 1
                 self._cycle_energy_charged_wh = 0.0
                 self._cycle_energy_discharged_wh = 0.0
@@ -296,7 +340,7 @@ class BatteryManagementSystem:
         
         # Alternative: cycle based on energy throughput
         total_cycle_energy_kwh = (self._cycle_energy_charged_wh + self._cycle_energy_discharged_wh) / 1000.0
-        if total_cycle_energy_kwh >= self.config.capacity_kwh * 1.6:  # Full charge + full discharge
+        if total_cycle_energy_kwh >= self.config.capacity_kwh * self._charge_cycle_full_energy_ratio:
             self.stats['charge_cycles'] += 1
             self._cycle_energy_charged_wh = 0.0
             self._cycle_energy_discharged_wh = 0.0
@@ -334,7 +378,7 @@ class BatteryManagementSystem:
         # 1. Cycle-based degradation
         # Typical Li-ion batteries lose ~0.05% capacity per cycle
         # This can vary: 0.03-0.1% depending on depth of discharge and usage
-        cycle_degradation = self.stats['charge_cycles'] * 0.05
+        cycle_degradation = self.stats['charge_cycles'] * self._soh_cycle_degradation_per_cycle_pct
         base_soh -= cycle_degradation
         
         # 2. Temperature-based degradation
@@ -355,27 +399,25 @@ class BatteryManagementSystem:
             
             if total_time > 0:
                 high_temp_ratio = high_temp_time / total_time
-                # Degradation: 0.1% per day spent above threshold (scaled)
-                # Convert to degradation per hour: 0.1 / 24 = 0.00417% per hour
                 hours_at_high_temp = high_temp_time / 3600.0
-                temp_degradation = hours_at_high_temp * 0.00417
+                temp_degradation = hours_at_high_temp * self._soh_high_temp_degradation_per_hour_pct
                 base_soh -= temp_degradation
         
         # 3. Fault-based degradation
         # Each fault indicates stress and reduces SOH
         # Assume 0.1% degradation per fault
-        fault_degradation = self.stats['fault_count'] * 0.1
+        fault_degradation = self.stats['fault_count'] * self._soh_fault_degradation_per_fault_pct
         base_soh -= fault_degradation
         
         # 4. Age-based degradation (calendar aging)
         # Li-ion batteries degrade over time even without use
         # Typical: ~2-3% per year at 25°C, accelerated at higher temperatures
         age_years = (time.time() - self._initialization_time) / (365.25 * 24 * 3600)
-        # Base calendar aging: 2.5% per year
-        # Adjust for average temperature (higher temp = faster aging)
         avg_temp = self.state.temperature
-        temp_factor = 1.0 + max(0, (avg_temp - 25.0) / 10.0) * 0.5  # 50% increase per 10°C above 25°C
-        calendar_degradation = age_years * 2.5 * temp_factor
+        temp_factor = 1.0 + max(
+            0, (avg_temp - self._soh_calendar_temperature_reference_c) / 10.0
+        ) * self._soh_calendar_temp_factor_per_10c
+        calendar_degradation = age_years * self._soh_calendar_degradation_per_year_pct * temp_factor
         base_soh -= calendar_degradation
         
         # 5. Capacity-based SOH (if we have capacity measurements)
@@ -419,7 +461,7 @@ class BatteryManagementSystem:
         
         if algorithm == BalancingAlgorithm.ADAPTIVE:
             # Adaptive: use active balancing for large imbalances, passive for small
-            if voltage_imbalance_mv > 200.0:  # >200mV use active
+            if voltage_imbalance_mv > self._adaptive_active_balance_threshold_mv:
                 algorithm = BalancingAlgorithm.ACTIVE
             else:
                 algorithm = BalancingAlgorithm.PASSIVE
@@ -537,7 +579,10 @@ class BatteryManagementSystem:
         # In real hardware, this would use switched capacitors or inductors
         
         # Calculate energy to transfer (from highest to lowest)
-        energy_transfer_ratio = min(0.1, dt * 0.5)  # Limit transfer rate
+        energy_transfer_ratio = min(
+            self._active_balance_transfer_cap_ratio,
+            dt * self._active_balance_transfer_rate_per_s,
+        )
         voltage_diff = max_voltage - min_voltage
         
         # Estimate cell capacity
@@ -587,7 +632,10 @@ class BatteryManagementSystem:
     def _determine_status(self) -> BatteryStatus:
         """Determine battery status based on current state."""
         # Check for pack-level critical conditions (SOC extremes)
-        if (self.state.soc < 5.0 or self.state.soc > 95.0):
+        if (
+            self.state.soc < self._status_critical_soc_low
+            or self.state.soc > self._status_critical_soc_high
+        ):
             return BatteryStatus.CRITICAL
 
         # Check for pack-level temperature critical conditions
@@ -600,7 +648,7 @@ class BatteryManagementSystem:
             min_cell_voltage = min(self.state.cell_voltages)
             voltage_imbalance = max_cell_voltage - min_cell_voltage
 
-            if voltage_imbalance > 0.5:
+            if voltage_imbalance > self._status_voltage_imbalance_fault_v:
                 return BatteryStatus.FAULT
 
             for cell_voltage in self.state.cell_voltages:
@@ -619,7 +667,7 @@ class BatteryManagementSystem:
                 )
 
                 # If all cells are uniformly out of range with small spread, it's a pack-level CRITICAL issue
-                if all_cells_out_of_range and temp_spread <= 1.0:
+                if all_cells_out_of_range and temp_spread <= self._status_uniform_temperature_spread_c:
                     return BatteryStatus.CRITICAL
 
                 # Check if only some cells are out of range (individual cell issue = FAULT)
@@ -643,16 +691,18 @@ class BatteryManagementSystem:
                 return BatteryStatus.FAULT
 
         # Check warning conditions
-        if (self.state.temperature > self.config.max_temperature * 0.9 or
-            self.state.temperature < self.config.min_temperature * 1.1 or
-            self.state.soc < 10.0 or
-            self.state.soc > 90.0):
+        if (
+            self.state.temperature > self.config.max_temperature * self._status_warning_temp_high_ratio
+            or self.state.temperature < self.config.min_temperature * self._status_warning_temp_low_ratio
+            or self.state.soc < self._status_warning_soc_low
+            or self.state.soc > self._status_warning_soc_high
+        ):
             return BatteryStatus.WARNING
 
         # Check charging/discharging
-        if self.state.current > 0.1:
+        if self.state.current > self._status_charge_current_threshold_a:
             return BatteryStatus.CHARGING
-        elif self.state.current < -0.1:
+        elif self.state.current < -self._status_charge_current_threshold_a:
             return BatteryStatus.DISCHARGING
 
         return BatteryStatus.HEALTHY
@@ -665,7 +715,7 @@ class BatteryManagementSystem:
             min_cell_voltage = min(self.state.cell_voltages)
             voltage_imbalance = max_cell_voltage - min_cell_voltage
 
-            if voltage_imbalance > 0.5:  # 500mV imbalance threshold
+            if voltage_imbalance > self._status_voltage_imbalance_fault_v:
                 self.logger.warning(f"Cell voltage imbalance detected: {voltage_imbalance:.3f}V")
                 self.stats['fault_count'] += 1
                 return True

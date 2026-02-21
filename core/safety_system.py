@@ -108,10 +108,19 @@ class SafetySystem:
         self.voltage_max = self.config.get('voltage_max', 500.0)  # V
         self.voltage_min = self.config.get('voltage_min', 300.0)  # V
         self.current_max = self.config.get('current_max', 500.0)  # A
+        self.thermal_history_max_samples = self.config.get('thermal_history_max_samples', 60)
+        self.thermal_runaway_window_samples = self.config.get('thermal_runaway_window_samples', 10)
+        self.max_fault_history = self.config.get('max_fault_history', 100)
         
         # Thermal history tracking
-        self.battery_thermal_history = ThermalHistory()
-        self.motor_thermal_history = ThermalHistory()
+        self.battery_thermal_history = ThermalHistory(
+            temperatures=deque(maxlen=self.thermal_history_max_samples),
+            timestamps=deque(maxlen=self.thermal_history_max_samples)
+        )
+        self.motor_thermal_history = ThermalHistory(
+            temperatures=deque(maxlen=self.thermal_history_max_samples),
+            timestamps=deque(maxlen=self.thermal_history_max_samples)
+        )
         
         # Emergency shutdown state
         self.emergency_shutdown_active = False
@@ -123,6 +132,7 @@ class SafetySystem:
         
         # Initialize diagnostics system (lazy import to avoid circular dependency)
         self._diagnostics_log_dir = self.config.get('diagnostics_log_dir', None)
+        self._diagnostics_config = self.config.get('diagnostics', {})
         self._diagnostics = None
         
         self.logger.info("Safety System initialized")
@@ -151,10 +161,10 @@ class SafetySystem:
             self.battery_thermal_history.temperatures.append(battery_temp)
             self.battery_thermal_history.timestamps.append(current_time)
             
-            if len(self.battery_thermal_history.temperatures) >= 10:
-                # Calculate temperature rise rate over last 10 seconds
-                recent_temps = list(self.battery_thermal_history.temperatures)[-10:]
-                recent_times = list(self.battery_thermal_history.timestamps)[-10:]
+            if len(self.battery_thermal_history.temperatures) >= self.thermal_runaway_window_samples:
+                # Calculate temperature rise rate over configured thermal window
+                recent_temps = list(self.battery_thermal_history.temperatures)[-self.thermal_runaway_window_samples:]
+                recent_times = list(self.battery_thermal_history.timestamps)[-self.thermal_runaway_window_samples:]
                 
                 temp_rise = recent_temps[-1] - recent_temps[0]
                 time_span = recent_times[-1] - recent_times[0]
@@ -206,10 +216,10 @@ class SafetySystem:
             self.motor_thermal_history.temperatures.append(motor_temp)
             self.motor_thermal_history.timestamps.append(current_time)
             
-            if len(self.motor_thermal_history.temperatures) >= 10:
-                # Calculate temperature rise rate over last 10 seconds
-                recent_temps = list(self.motor_thermal_history.temperatures)[-10:]
-                recent_times = list(self.motor_thermal_history.timestamps)[-10:]
+            if len(self.motor_thermal_history.temperatures) >= self.thermal_runaway_window_samples:
+                # Calculate temperature rise rate over configured thermal window
+                recent_temps = list(self.motor_thermal_history.temperatures)[-self.thermal_runaway_window_samples:]
+                recent_times = list(self.motor_thermal_history.timestamps)[-self.thermal_runaway_window_samples:]
                 
                 temp_rise = recent_temps[-1] - recent_temps[0]
                 time_span = recent_times[-1] - recent_times[0]
@@ -519,9 +529,9 @@ class SafetySystem:
         )
         self.faults.append(fault)
         
-        # Keep only last 100 faults
-        if len(self.faults) > 100:
-            self.faults = self.faults[-100:]
+        # Keep only configured number of recent faults
+        if len(self.faults) > self.max_fault_history:
+            self.faults = self.faults[-self.max_fault_history:]
         
         # Process fault through diagnostics system
         try:
@@ -532,7 +542,10 @@ class SafetySystem:
                 log_dir = self._diagnostics_log_dir
                 if log_dir:
                     log_dir = Path(log_dir)
-                self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+                self._diagnostics = DiagnosticsSystem(
+                    log_dir=log_dir,
+                    config=self._diagnostics_config
+                )
             
             # Create freeze frame with current system state
             freeze_frame = self._create_freeze_frame()
@@ -711,7 +724,10 @@ class SafetySystem:
                 log_dir = self._diagnostics_log_dir
                 if log_dir:
                     log_dir = Path(log_dir)
-                self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+                self._diagnostics = DiagnosticsSystem(
+                    log_dir=log_dir,
+                    config=self._diagnostics_config
+                )
             
             diagnostics_status = self._diagnostics.get_diagnostics_status()
             status['diagnostics'] = diagnostics_status
@@ -730,6 +746,9 @@ class SafetySystem:
             log_dir = self._diagnostics_log_dir
             if log_dir:
                 log_dir = Path(log_dir)
-            self._diagnostics = DiagnosticsSystem(log_dir=log_dir)
+            self._diagnostics = DiagnosticsSystem(
+                log_dir=log_dir,
+                config=self._diagnostics_config
+            )
         return self._diagnostics
 

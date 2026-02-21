@@ -81,7 +81,7 @@ class DTCManager:
         FaultType.UNKNOWN: ("P0999", "Unknown System Fault"),
     }
     
-    def __init__(self, log_dir: Optional[Path] = None):
+    def __init__(self, log_dir: Optional[Path] = None, config: Optional[Dict[str, Any]] = None):
         """
         Initialize DTC Manager.
         
@@ -89,6 +89,7 @@ class DTCManager:
             log_dir: Directory for storing DTC logs (default: ./logs)
         """
         self.logger = logging.getLogger(__name__)
+        self.config = config or {}
         self.log_dir = log_dir or Path("./logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
         
@@ -99,7 +100,8 @@ class DTCManager:
         self.dtc_history: List[DiagnosticTroubleCode] = []
         
         # Maximum history size
-        self.max_history_size = 1000
+        self.max_history_size = self.config.get('dtc_max_history_size', 1000)
+        self.export_history_limit = self.config.get('dtc_export_history_limit', 100)
         
         self.logger.info("DTC Manager initialized")
     
@@ -269,7 +271,7 @@ class DTCManager:
         export_data = {
             'export_timestamp': time.time(),
             'active_dtcs': [asdict(dtc) for dtc in self.active_dtcs.values()],
-            'history': [asdict(dtc) for dtc in self.dtc_history[-100:]]  # Last 100
+            'history': [asdict(dtc) for dtc in self.dtc_history[-self.export_history_limit:]]
         }
         
         with open(filepath, 'w') as f:
@@ -283,7 +285,7 @@ class LimpHomeManager:
     """Manages limp-home modes for degraded operation."""
     
     # Limp-home mode configurations
-    LIMP_HOME_CONFIGS: Dict[LimpHomeMode, LimpHomeLimits] = {
+    DEFAULT_LIMP_HOME_CONFIGS: Dict[LimpHomeMode, LimpHomeLimits] = {
         LimpHomeMode.NORMAL: LimpHomeLimits(
             max_speed_kmh=120.0,
             max_power_kw=150.0,
@@ -326,13 +328,35 @@ class LimpHomeManager:
         ),
     }
     
-    def __init__(self):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """Initialize Limp-Home Manager."""
         self.logger = logging.getLogger(__name__)
+        self.config = config or {}
         self.current_mode = LimpHomeMode.NORMAL
-        self.mode_history: deque = deque(maxlen=100)  # Track mode changes
+        self.mode_history: deque = deque(maxlen=self.config.get('mode_history_limit', 100))
+        self.limp_home_configs = self._load_limp_home_configs()
         
         self.logger.info("Limp-Home Manager initialized")
+
+    def _load_limp_home_configs(self) -> Dict[LimpHomeMode, LimpHomeLimits]:
+        """Load limp-home mode limits from config with defaults fallback."""
+        configured_profiles = self.config.get('limp_home_profiles', {})
+        profile_by_name: Dict[str, Dict[str, Any]] = (
+            configured_profiles if isinstance(configured_profiles, dict) else {}
+        )
+
+        result: Dict[LimpHomeMode, LimpHomeLimits] = {}
+        for mode, defaults in self.DEFAULT_LIMP_HOME_CONFIGS.items():
+            profile = profile_by_name.get(mode.value, {})
+            result[mode] = LimpHomeLimits(
+                max_speed_kmh=profile.get('max_speed_kmh', defaults.max_speed_kmh),
+                max_power_kw=profile.get('max_power_kw', defaults.max_power_kw),
+                max_acceleration_ms2=profile.get('max_acceleration_ms2', defaults.max_acceleration_ms2),
+                max_current_a=profile.get('max_current_a', defaults.max_current_a),
+                charging_allowed=profile.get('charging_allowed', defaults.charging_allowed),
+                autopilot_allowed=profile.get('autopilot_allowed', defaults.autopilot_allowed),
+            )
+        return result
     
     def determine_mode(self, safety_states: Dict[str, SafetyState], 
                       active_dtcs: List[DiagnosticTroubleCode]) -> LimpHomeMode:
@@ -401,7 +425,7 @@ class LimpHomeManager:
     
     def get_limits(self) -> LimpHomeLimits:
         """Get current limp-home mode limits."""
-        return self.LIMP_HOME_CONFIGS[self.current_mode]
+        return self.limp_home_configs[self.current_mode]
     
     def get_mode(self) -> LimpHomeMode:
         """Get current limp-home mode."""
@@ -432,7 +456,12 @@ class LimpHomeManager:
 class FaultLogger:
     """Persistent fault logging with timestamps."""
     
-    def __init__(self, log_dir: Optional[Path] = None, max_file_size_mb: float = 10.0):
+    def __init__(
+        self,
+        log_dir: Optional[Path] = None,
+        max_file_size_mb: float = 10.0,
+        max_json_entries: int = 10000
+    ):
         """
         Initialize Fault Logger.
         
@@ -444,6 +473,7 @@ class FaultLogger:
         self.log_dir = log_dir or Path("./logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.max_file_size_bytes = max_file_size_mb * 1024 * 1024
+        self.max_json_entries = max_json_entries
         
         # Current log file
         self.current_log_file = self.log_dir / "faults.log"
@@ -531,9 +561,9 @@ class FaultLogger:
             # Append new entry
             data['faults'].append(entry)
             
-            # Keep only last 10000 entries
-            if len(data['faults']) > 10000:
-                data['faults'] = data['faults'][-10000:]
+            # Keep only configured number of entries
+            if len(data['faults']) > self.max_json_entries:
+                data['faults'] = data['faults'][-self.max_json_entries:]
             
             # Write back
             with open(self.json_log_file, 'w') as f:
@@ -619,7 +649,7 @@ class DiagnosticsSystem:
     Integrated diagnostics system combining DTC management, limp-home modes, and fault logging.
     """
     
-    def __init__(self, log_dir: Optional[Path] = None):
+    def __init__(self, log_dir: Optional[Path] = None, config: Optional[Dict[str, Any]] = None):
         """
         Initialize Diagnostics System.
         
@@ -627,12 +657,17 @@ class DiagnosticsSystem:
             log_dir: Directory for storing diagnostic logs
         """
         self.logger = logging.getLogger(__name__)
+        self.config = config or {}
         self.log_dir = log_dir or Path("./logs")
         
         # Initialize subsystems
-        self.dtc_manager = DTCManager(log_dir=self.log_dir)
-        self.limp_home_manager = LimpHomeManager()
-        self.fault_logger = FaultLogger(log_dir=self.log_dir)
+        self.dtc_manager = DTCManager(log_dir=self.log_dir, config=self.config)
+        self.limp_home_manager = LimpHomeManager(config=self.config)
+        self.fault_logger = FaultLogger(
+            log_dir=self.log_dir,
+            max_file_size_mb=self.config.get('fault_log_max_file_size_mb', 10.0),
+            max_json_entries=self.config.get('fault_json_max_entries', 10000),
+        )
         
         self.logger.info("Diagnostics System initialized")
     
