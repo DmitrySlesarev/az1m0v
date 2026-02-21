@@ -1,16 +1,18 @@
 """Web-based dashboard for EV management system with CAN bus integration."""
 
-import json
 import logging
 import struct
 import threading
 import time
+from dataclasses import asdict, is_dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Dict, Any, Optional, List
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 
 from communication.can_bus import CANBusInterface, EVCANProtocol, CANFrame, CANMessage
+from ui.deployment import DeploymentManager
 
 
 class EVDashboard:
@@ -25,7 +27,9 @@ class EVDashboard:
         debug: bool = False,
         secret_key: str = "ev-dashboard-secret-key",
         update_interval_s: float = 1.0,
-        socketio_cors: str = "*"
+        socketio_cors: str = "*",
+        project_root: Optional[Path] = None,
+        deployment_manager: Optional[DeploymentManager] = None,
     ):
         """Initialize the EV dashboard.
         
@@ -44,6 +48,8 @@ class EVDashboard:
         self.secret_key = secret_key
         self.update_interval_s = update_interval_s
         self.socketio_cors = socketio_cors
+        self.project_root = (project_root or Path(__file__).resolve().parent.parent).resolve()
+        self.deployment_manager = deployment_manager or DeploymentManager(self.project_root)
         self.logger = logging.getLogger(__name__)
         
         # Dashboard state
@@ -64,6 +70,13 @@ class EVDashboard:
                 'charging': {'port': None, 'connector': None}
             },
             'can_stats': {},
+            'autopilot': {},
+            'telemetry': {},
+            'safety': {},
+            'deployment': self.deployment_manager.get_status(),
+            'system': {
+                'project_root': str(self.project_root)
+            },
             'timestamp': time.time()
         }
         
@@ -97,7 +110,74 @@ class EVDashboard:
         @self.app.route('/api/status')
         def api_status():
             """REST API endpoint for current status."""
-            return json.dumps(self.latest_data, indent=2)
+            return jsonify(self._sanitize_data(self.latest_data))
+
+        @self.app.route('/api/control', methods=['POST'])
+        def api_control():
+            """REST API endpoint for control commands."""
+            try:
+                data = request.get_json(silent=True) or {}
+                command = data.get('command')
+                params = data.get('params')
+                if params is None:
+                    params = data.get('payload', {})
+
+                if not command:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Missing command',
+                    }), 400
+
+                result = self._handle_control_command(str(command), params or {})
+                return jsonify({
+                    'success': result,
+                    'command': command,
+                })
+            except Exception as e:
+                self.logger.error(f"Error in /api/control: {e}")
+                return jsonify({
+                    'success': False,
+                    'error': str(e),
+                }), 500
+
+        @self.app.route('/api/deploy/start', methods=['POST'])
+        def api_deploy_start():
+            """Start a background deployment run from the web interface."""
+            payload = request.get_json(silent=True) or {}
+            integrations = payload.get('integrations', [])
+            if not isinstance(integrations, list):
+                return jsonify({
+                    'success': False,
+                    'error': 'integrations must be a list',
+                }), 400
+
+            normalized_integrations = [
+                str(name).strip().lower()
+                for name in integrations
+                if str(name).strip()
+            ]
+            started, message = self.deployment_manager.start_deployment(
+                integrations=normalized_integrations
+            )
+            deployment_status = self.deployment_manager.get_status()
+            self.latest_data['deployment'] = deployment_status
+
+            status_code = 202 if started else 409
+            if not started and message.lower().startswith("unsupported integration"):
+                status_code = 400
+
+            return jsonify({
+                'success': started,
+                'message': message,
+                'deployment': deployment_status,
+            }), status_code
+
+        @self.app.route('/api/deploy/status')
+        def api_deploy_status():
+            """Return current deployment progress and latest logs."""
+            deployment_status = self.deployment_manager.get_status()
+            self.latest_data['deployment'] = deployment_status
+            return jsonify(deployment_status)
 
     def _setup_socket_handlers(self) -> None:
         """Setup WebSocket event handlers."""
@@ -110,7 +190,7 @@ class EVDashboard:
                 self.clients.append(client_id)
             self.logger.info(f"Client connected: {client_id}")
             # Send current state to new client
-            emit('data_update', self.latest_data)
+            emit('data_update', self._sanitize_data(self.latest_data))
         
         @self.socketio.on('disconnect')
         def handle_disconnect():
@@ -123,7 +203,8 @@ class EVDashboard:
         @self.socketio.on('request_update')
         def handle_request_update():
             """Handle client request for data update."""
-            emit('data_update', self.latest_data)
+            self._refresh_extended_status_data()
+            emit('data_update', self._sanitize_data(self.latest_data))
         
         @self.socketio.on('control_command')
         def handle_control_command(data: Dict[str, Any]):
@@ -138,7 +219,7 @@ class EVDashboard:
             """
             try:
                 command = data.get('command')
-                params = data.get('params', {})
+                params = data.get('params', data.get('payload', {}))
                 result = self._handle_control_command(command, params)
                 emit('control_response', {'success': result, 'command': command})
             except Exception as e:
@@ -372,6 +453,60 @@ class EVDashboard:
         self.latest_data['timestamp'] = time.time()
         self._broadcast_update()
 
+    def _sanitize_data(self, data: Any) -> Any:
+        """Convert nested objects (Enum/dataclass/Path) to JSON-safe values."""
+        if isinstance(data, Enum):
+            return data.value
+        if isinstance(data, Path):
+            return str(data)
+        if is_dataclass(data):
+            return self._sanitize_data(asdict(data))
+        if isinstance(data, dict):
+            return {str(key): self._sanitize_data(value) for key, value in data.items()}
+        if isinstance(data, (list, tuple, set)):
+            return [self._sanitize_data(value) for value in data]
+        return data
+
+    def _refresh_extended_status_data(self) -> None:
+        """Refresh dashboard data from optional system components."""
+        autopilot = getattr(self, 'autopilot', None)
+        if autopilot and hasattr(autopilot, 'get_system_status'):
+            try:
+                self.latest_data['autopilot'] = self._sanitize_data(autopilot.get_system_status())
+            except Exception as e:
+                self.logger.warning(f"Failed to collect autopilot status: {e}")
+
+        telemetry = getattr(self, 'telemetry', None)
+        if telemetry and hasattr(telemetry, 'get_status'):
+            try:
+                self.latest_data['telemetry'] = self._sanitize_data(telemetry.get_status())
+            except Exception as e:
+                self.logger.warning(f"Failed to collect telemetry status: {e}")
+
+        safety_system = getattr(self, 'safety_system', None)
+        if safety_system and hasattr(safety_system, 'get_status'):
+            try:
+                self.latest_data['safety'] = self._sanitize_data(safety_system.get_status())
+            except Exception as e:
+                self.logger.warning(f"Failed to collect safety status: {e}")
+
+        vehicle_controller = getattr(self, 'vehicle_controller', None)
+        if vehicle_controller and hasattr(vehicle_controller, 'get_statistics'):
+            try:
+                stats = self._sanitize_data(vehicle_controller.get_statistics())
+                self.latest_data['vehicle'].update({
+                    'speed': round(float(stats.get('current_speed_kmh', 0.0)), 1),
+                    'range_km': round(float(stats.get('current_range_km', 0.0)), 1),
+                    'power_kw': round(float(stats.get('power_kw', 0.0)), 2),
+                    'drive_mode': stats.get('drive_mode', self.latest_data['vehicle'].get('drive_mode', 'normal')),
+                    'healthy': bool(vehicle_controller.is_healthy()) if hasattr(vehicle_controller, 'is_healthy') else True,
+                })
+            except Exception as e:
+                self.logger.warning(f"Failed to collect vehicle statistics: {e}")
+
+        self.latest_data['deployment'] = self.deployment_manager.get_status()
+        self.latest_data['timestamp'] = time.time()
+
     def _update_can_stats(self) -> None:
         """Update CAN bus statistics."""
         if self.can_bus:
@@ -388,12 +523,13 @@ class EVDashboard:
     def _broadcast_update(self) -> None:
         """Broadcast data update to all connected clients."""
         try:
+            payload = self._sanitize_data(self.latest_data)
             if self.clients:
-                self.socketio.emit('data_update', self.latest_data)
+                self.socketio.emit('data_update', payload)
             else:
                 # Broadcast to all namespaces if no specific clients tracked
                 # This helps with tests where clients might not be in self.clients
-                self.socketio.emit('data_update', self.latest_data, namespace='/')
+                self.socketio.emit('data_update', payload, namespace='/')
         except Exception as e:
             self.logger.warning(f"Failed to broadcast update: {e}")
 
@@ -402,6 +538,7 @@ class EVDashboard:
         while self.running:
             try:
                 self._update_can_stats()
+                self._refresh_extended_status_data()
                 if self.clients:
                     self._broadcast_update()
                 time.sleep(self.update_interval_s)
@@ -460,13 +597,13 @@ class EVDashboard:
         try:
             if command == 'accelerate':
                 if vehicle_controller:
-                    throttle = params.get('throttle', 0.0)
+                    throttle = params.get('throttle', params.get('throttle_percent', 0.0))
                     return vehicle_controller.accelerate(throttle)
                 return False
             
             elif command == 'brake':
                 if vehicle_controller:
-                    brake_percent = params.get('brake', 0.0)
+                    brake_percent = params.get('brake', params.get('brake_percent', 0.0))
                     return vehicle_controller.brake(brake_percent)
                 return False
             
@@ -494,7 +631,8 @@ class EVDashboard:
             elif command == 'start_charging':
                 if charging_system:
                     power_kw = params.get('power_kw', None)
-                    return charging_system.start_charging(power_kw=power_kw)
+                    target_soc = params.get('target_soc', 100.0)
+                    return charging_system.start_charging(power_kw=power_kw, target_soc=target_soc)
                 return False
             
             elif command == 'stop_charging':
@@ -549,7 +687,8 @@ class EVDashboard:
         """Manually update dashboard data (for testing or external updates).
         
         Args:
-            data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature')
+            data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature',
+                       'autopilot', 'telemetry', 'safety', 'deployment', 'system')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:

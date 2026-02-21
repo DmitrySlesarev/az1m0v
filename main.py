@@ -443,6 +443,8 @@ class EVSystem:
                 self.dashboard.motor_controller = self.motor_controller
                 self.dashboard.charging_system = self.charging_system
                 self.dashboard.vehicle_controller = self.vehicle_controller
+                self.dashboard.safety_system = self.safety_system
+                self.dashboard.telemetry = self.telemetry
                 self.dashboard.imu = self.imu
                 self.dashboard.temperature_manager = self.temperature_manager
                 self.dashboard.autopilot = self.autopilot

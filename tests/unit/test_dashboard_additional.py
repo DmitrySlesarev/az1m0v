@@ -236,3 +236,48 @@ class TestEVDashboardAdditional:
         # Verify temperature handlers were registered
         assert mock_can_bus.register_message_handler.call_count >= 6  # At least 6 handlers
 
+    def test_refresh_extended_status_data(self, dashboard):
+        """Test collecting extended status data from optional subsystems."""
+        dashboard.autopilot = Mock()
+        dashboard.autopilot.get_system_status.return_value = {
+            "is_active": True,
+            "current_mode": "assist",
+            "autonomy": {"provider": "rule_based"},
+        }
+        dashboard.telemetry = Mock()
+        dashboard.telemetry.get_status.return_value = {
+            "state": "connected",
+            "connected": True,
+            "stats": {"packets_sent": 3, "packets_failed": 1, "last_successful_send": 1.0},
+        }
+        dashboard.safety_system = Mock()
+        dashboard.safety_system.get_status.return_value = {
+            "safety_states": {"thermal": "NORMAL"},
+            "active_fault_count": 0,
+            "critical_fault_count": 0,
+        }
+        dashboard.vehicle_controller = Mock()
+        dashboard.vehicle_controller.get_statistics.return_value = {
+            "current_speed_kmh": 12.34,
+            "current_range_km": 56.78,
+            "power_kw": 8.12,
+            "drive_mode": "eco",
+        }
+        dashboard.vehicle_controller.is_healthy.return_value = True
+        dashboard.deployment_manager = Mock()
+        dashboard.deployment_manager.get_status.return_value = {
+            "state": "idle",
+            "progress": {"current": 0, "total": 0},
+            "logs": [],
+        }
+
+        dashboard._refresh_extended_status_data()
+
+        assert dashboard.latest_data["autopilot"]["current_mode"] == "assist"
+        assert dashboard.latest_data["telemetry"]["state"] == "connected"
+        assert dashboard.latest_data["safety"]["active_fault_count"] == 0
+        assert dashboard.latest_data["vehicle"]["speed"] == 12.3
+        assert dashboard.latest_data["vehicle"]["range_km"] == 56.8
+        assert dashboard.latest_data["vehicle"]["power_kw"] == 8.12
+        assert dashboard.latest_data["deployment"]["state"] == "idle"
+

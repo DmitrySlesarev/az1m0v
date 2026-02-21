@@ -65,6 +65,11 @@ class TestEVDashboard:
         assert 'motor' in dashboard.latest_data
         assert 'charging' in dashboard.latest_data
         assert 'vehicle' in dashboard.latest_data
+        assert 'autopilot' in dashboard.latest_data
+        assert 'telemetry' in dashboard.latest_data
+        assert 'safety' in dashboard.latest_data
+        assert 'deployment' in dashboard.latest_data
+        assert 'system' in dashboard.latest_data
 
     def test_dashboard_initialization_without_can(self):
         """Test dashboard initialization without CAN bus."""
@@ -213,6 +218,17 @@ class TestEVDashboard:
         assert result is True
         mock_vc.accelerate.assert_called_once_with(50.0)
 
+    def test_handle_control_command_accelerate_payload_alias(self, dashboard):
+        """Test control command: accelerate with throttle_percent payload alias."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.accelerate.return_value = True
+        dashboard.vehicle_controller = mock_vc
+
+        result = dashboard._handle_control_command('accelerate', {'throttle_percent': 35.0})
+        assert result is True
+        mock_vc.accelerate.assert_called_once_with(35.0)
+
     def test_handle_control_command_brake(self, dashboard):
         """Test control command: brake."""
         from core.vehicle_controller import VehicleController
@@ -223,6 +239,17 @@ class TestEVDashboard:
         result = dashboard._handle_control_command('brake', {'brake': 30.0})
         assert result is True
         mock_vc.brake.assert_called_once_with(30.0)
+
+    def test_handle_control_command_brake_payload_alias(self, dashboard):
+        """Test control command: brake with brake_percent payload alias."""
+        from core.vehicle_controller import VehicleController
+        mock_vc = Mock(spec=VehicleController)
+        mock_vc.brake.return_value = True
+        dashboard.vehicle_controller = mock_vc
+
+        result = dashboard._handle_control_command('brake', {'brake_percent': 45.0})
+        assert result is True
+        mock_vc.brake.assert_called_once_with(45.0)
 
     def test_handle_control_command_stop(self, dashboard):
         """Test control command: stop."""
@@ -267,7 +294,21 @@ class TestEVDashboard:
         
         result = dashboard._handle_control_command('start_charging', {'power_kw': 50.0})
         assert result is True
-        mock_cs.start_charging.assert_called_once_with(power_kw=50.0)
+        mock_cs.start_charging.assert_called_once_with(power_kw=50.0, target_soc=100.0)
+
+    def test_handle_control_command_start_charging_with_target_soc(self, dashboard):
+        """Test control command: start charging with explicit target SOC."""
+        from core.charging_system import ChargingSystem
+        mock_cs = Mock(spec=ChargingSystem)
+        mock_cs.start_charging.return_value = True
+        dashboard.charging_system = mock_cs
+
+        result = dashboard._handle_control_command(
+            'start_charging',
+            {'power_kw': 45.0, 'target_soc': 80.0}
+        )
+        assert result is True
+        mock_cs.start_charging.assert_called_once_with(power_kw=45.0, target_soc=80.0)
 
     def test_handle_control_command_stop_charging(self, dashboard):
         """Test control command: stop charging."""
