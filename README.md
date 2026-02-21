@@ -110,6 +110,8 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Full autopilot
   - Assist mode
   - Emergency mode
+  - Optional NVIDIA Alpamayo provider integration with safe rule-based fallback
+  - Vehicle-profile command envelopes for generic vehicle platforms
 - **Computer Vision**: Real-time lane detection and object recognition
 
 ### User Interfaces
@@ -342,6 +344,9 @@ Key configuration sections:
 - Sensor enablement
 - CAN bus settings
 - AI/autopilot configuration
+  - Provider selection (`autonomy_provider`: `rule_based` or `alpamayo`)
+  - Alpamayo adapter configuration (`alpamayo_*` keys)
+  - Vehicle profile and command limits (`vehicle_profile`, `vehicle_profiles`)
 - Logging preferences
 
 ## Documentation
@@ -422,6 +427,7 @@ The system implements standard EV CAN protocols:
   - `numpy` - Numerical computations
   - `flask` - Web framework for dashboard
   - `flask-socketio` - WebSocket support for real-time updates
+  - `alpamayo-tools` - NVIDIA Alpamayo ecosystem integration utilities
   - `pytest` - Testing framework (dev)
   - `pytest-cov` - Test coverage (dev)
 

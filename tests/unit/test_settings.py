@@ -50,6 +50,8 @@ class TestSettings:
         assert isinstance(settings.telemetry, dict)
         assert isinstance(settings.ui, dict)
         assert isinstance(settings.ai, dict)
+        assert isinstance(settings.autopilot, dict)
+        assert isinstance(settings.alpamayo, dict)
         assert isinstance(settings.logging_config, dict)
 
     def test_settings_set_and_save(self):

@@ -222,6 +222,29 @@ class TestAIConfiguration:
         """Test that model path is not empty."""
         assert len(ai_config['model_path']) > 0, "Model path cannot be empty"
 
+    def test_autonomy_provider_enum(self, ai_config):
+        """Test that autonomy provider is from supported values when configured."""
+        provider = ai_config.get('autonomy_provider', 'rule_based')
+        assert provider in ['rule_based', 'alpamayo']
+
+    def test_ai_command_limit_ranges(self, ai_config):
+        """Test that AI command limit values are in valid ranges when configured."""
+        if 'max_steering_angle' in ai_config:
+            assert ai_config['max_steering_angle'] >= 0
+        if 'max_throttle' in ai_config:
+            assert 0 <= ai_config['max_throttle'] <= 1
+        if 'max_brake' in ai_config:
+            assert 0 <= ai_config['max_brake'] <= 1
+
+    def test_alpamayo_import_candidates(self, ai_config):
+        """Test Alpamayo import candidate list shape when configured."""
+        candidates = ai_config.get('alpamayo_import_candidates')
+        if candidates is None:
+            return
+        assert isinstance(candidates, list)
+        assert len(candidates) >= 1
+        assert all(isinstance(name, str) and len(name) > 0 for name in candidates)
+
 
 class TestLoggingConfiguration:
     """Test logging configuration parameters."""

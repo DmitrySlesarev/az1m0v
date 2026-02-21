@@ -295,6 +295,14 @@
         "autopilot_enabled": {"type": "boolean"},
         "computer_vision_enabled": {"type": "boolean"},
         "model_path": {"type": "string", "minLength": 1},
+        "autonomy_provider": {
+          "type": "string",
+          "enum": ["rule_based", "alpamayo"]
+        },
+        "vehicle_profile": {"type": "string", "minLength": 1},
+        "max_steering_angle": {"type": "number", "minimum": 0},
+        "max_throttle": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_brake": {"type": "number", "minimum": 0, "maximum": 1},
         "min_following_distance": {"type": "number", "minimum": 0},
         "max_speed": {"type": "number", "minimum": 0},
         "emergency_brake_threshold": {"type": "number", "minimum": 0},
@@ -310,6 +318,26 @@
           "type": "array",
           "items": {"type": "string"},
           "minItems": 1
+        },
+        "alpamayo_enabled": {"type": "boolean"},
+        "alpamayo_fallback_to_rule_based": {"type": "boolean"},
+        "alpamayo_adapter_module": {"type": ["string", "null"]},
+        "alpamayo_adapter_class": {"type": ["string", "null"]},
+        "alpamayo_import_candidates": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1
+        },
+        "vehicle_profiles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "max_steering_angle": {"type": "number", "minimum": 0},
+              "max_throttle": {"type": "number", "minimum": 0, "maximum": 1},
+              "max_brake": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
         }
       }
     },
