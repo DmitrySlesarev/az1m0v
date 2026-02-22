@@ -144,6 +144,16 @@
         .state-ready { background-color: #4CAF50; }
         .state-driving { background-color: #2196F3; }
         .state-charging { background-color: #FF9800; }
+        .state-standby { background-color: #607D8B; }
+        .state-connected { background-color: #4CAF50; }
+        .state-disconnected { background-color: #9E9E9E; }
+        .state-running { background-color: #2196F3; }
+        .state-succeeded { background-color: #4CAF50; }
+        .state-failed { background-color: #f44336; }
+        .state-idle { background-color: #607D8B; }
+        .state-warning { background-color: #FFC107; color: #111; }
+        .state-critical { background-color: #f44336; }
+        .state-normal { background-color: #4CAF50; }
         .state-error { background-color: #f44336; }
         .state-emergency { background-color: #f44336; animation: blink 1s infinite; }
 
@@ -180,6 +190,51 @@
 
         .temp-normal {
             color: #4CAF50;
+        }
+
+        .action-btn {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: rgba(33, 150, 243, 0.9);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .action-btn:disabled {
+            background: rgba(120, 120, 120, 0.6);
+            cursor: not-allowed;
+        }
+
+        .checkbox-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .checkbox-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .log-box {
+            margin-top: 10px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            max-height: 160px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.8em;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         @media (max-width: 768px) {
@@ -302,6 +357,146 @@
                         <span class="state-badge" id="vehicle-state">--</span>
                     </span>
                 </div>
+                <div class="metric">
+                    <span class="metric-label">Speed</span>
+                    <span class="metric-value">
+                        <span id="vehicle-speed">--</span>
+                        <span class="metric-unit">km/h</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Drive Mode</span>
+                    <span class="metric-value">
+                        <span id="vehicle-drive-mode">--</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Range</span>
+                    <span class="metric-value">
+                        <span id="vehicle-range">--</span>
+                        <span class="metric-unit">km</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Power</span>
+                    <span class="metric-value">
+                        <span id="vehicle-power">--</span>
+                        <span class="metric-unit">kW</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Autopilot Card -->
+            <div class="card">
+                <h2>🤖 Autopilot</h2>
+                <div class="metric">
+                    <span class="metric-label">Mode</span>
+                    <span class="metric-value"><span id="autopilot-mode">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active</span>
+                    <span class="metric-value"><span id="autopilot-active">No</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Provider</span>
+                    <span class="metric-value"><span id="autopilot-provider">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Alpamayo Ready</span>
+                    <span class="metric-value"><span id="autopilot-alpamayo-ready">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Fallback Active</span>
+                    <span class="metric-value"><span id="autopilot-fallback">--</span></span>
+                </div>
+            </div>
+
+            <!-- Safety & Diagnostics Card -->
+            <div class="card">
+                <h2>🛡️ Safety & Diagnostics</h2>
+                <div class="metric">
+                    <span class="metric-label">Thermal</span>
+                    <span class="metric-value"><span class="state-badge" id="safety-thermal">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Electrical</span>
+                    <span class="metric-value"><span class="state-badge" id="safety-electrical">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Mechanical</span>
+                    <span class="metric-value"><span class="state-badge" id="safety-mechanical">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active Faults</span>
+                    <span class="metric-value"><span id="safety-active-faults">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Critical Faults</span>
+                    <span class="metric-value"><span id="safety-critical-faults">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Limp-Home Mode</span>
+                    <span class="metric-value"><span id="diag-limp-mode">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Active DTCs</span>
+                    <span class="metric-value"><span id="diag-active-dtcs">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Emergency Shutdown</span>
+                    <span class="metric-value"><span id="safety-emergency">No</span></span>
+                </div>
+            </div>
+
+            <!-- Telemetry Card -->
+            <div class="card">
+                <h2>📶 Telemetry</h2>
+                <div class="metric">
+                    <span class="metric-label">State</span>
+                    <span class="metric-value"><span class="state-badge" id="telemetry-state">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Connected</span>
+                    <span class="metric-value"><span id="telemetry-connected">No</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Packets Sent</span>
+                    <span class="metric-value"><span id="telemetry-sent">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Packets Failed</span>
+                    <span class="metric-value"><span id="telemetry-failed">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last Successful Send</span>
+                    <span class="metric-value"><span id="telemetry-last-send">--</span></span>
+                </div>
+            </div>
+
+            <!-- Deployment Card -->
+            <div class="card">
+                <h2>🧰 Project Deployment</h2>
+                <div class="metric">
+                    <span class="metric-label">Status</span>
+                    <span class="metric-value"><span class="state-badge" id="deploy-state">idle</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Current Step</span>
+                    <span class="metric-value"><span id="deploy-step">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Progress</span>
+                    <span class="metric-value"><span id="deploy-progress">0 / 0</span></span>
+                </div>
+                <div class="checkbox-row">
+                    <label><input type="checkbox" value="vesc" class="deploy-integration"> VESC</label>
+                    <label><input type="checkbox" value="simpbms" class="deploy-integration"> SimpBMS</label>
+                    <label><input type="checkbox" value="quectel" class="deploy-integration"> Quectel</label>
+                    <label><input type="checkbox" value="mpu6050" class="deploy-integration"> MPU-6050</label>
+                    <label><input type="checkbox" value="mpu9250" class="deploy-integration"> MPU-9250</label>
+                </div>
+                <button id="deploy-button" class="action-btn" type="button">Deploy from scratch</button>
+                <div class="log-box" id="deploy-logs">No deployment logs yet.</div>
             </div>
 
             <!-- Temperature Sensors Card -->
@@ -441,6 +636,58 @@
             // Update vehicle data
             if (data.vehicle) {
                 updateStateBadge('vehicle-state', data.vehicle.state);
+                updateElement('vehicle-speed', data.vehicle.speed);
+                updateElement('vehicle-drive-mode', data.vehicle.drive_mode);
+                updateElement('vehicle-range', data.vehicle.range_km);
+                updateElement('vehicle-power', data.vehicle.power_kw);
+            }
+
+            // Update autopilot data
+            if (data.autopilot) {
+                updateElement('autopilot-mode', data.autopilot.current_mode);
+                updateElement('autopilot-provider', data.autopilot.autonomy ? data.autopilot.autonomy.provider : '--');
+                updateElement('autopilot-active', data.autopilot.is_active ? 'Yes' : 'No');
+                updateElement(
+                    'autopilot-alpamayo-ready',
+                    data.autopilot.autonomy ? (data.autopilot.autonomy.alpamayo_ready ? 'Yes' : 'No') : '--'
+                );
+                updateElement(
+                    'autopilot-fallback',
+                    data.autopilot.autonomy ? (data.autopilot.autonomy.alpamayo_fallback_active ? 'Yes' : 'No') : '--'
+                );
+            }
+
+            // Update safety/diagnostics data
+            if (data.safety) {
+                const safetyStates = data.safety.safety_states || {};
+                updateStateBadge('safety-thermal', safetyStates.thermal || '--');
+                updateStateBadge('safety-electrical', safetyStates.electrical || '--');
+                updateStateBadge('safety-mechanical', safetyStates.mechanical || '--');
+                updateElement('safety-active-faults', data.safety.active_fault_count);
+                updateElement('safety-critical-faults', data.safety.critical_fault_count);
+                updateElement('safety-emergency', data.safety.emergency_shutdown_active ? 'Yes' : 'No');
+                if (data.safety.diagnostics) {
+                    updateElement('diag-limp-mode', data.safety.diagnostics.limp_home_mode);
+                    updateElement('diag-active-dtcs', data.safety.diagnostics.active_dtc_count);
+                }
+            }
+
+            // Update telemetry data
+            if (data.telemetry) {
+                updateStateBadge('telemetry-state', data.telemetry.state);
+                updateElement('telemetry-connected', data.telemetry.connected ? 'Yes' : 'No');
+                updateElement('telemetry-sent', data.telemetry.stats ? data.telemetry.stats.packets_sent : 0);
+                updateElement('telemetry-failed', data.telemetry.stats ? data.telemetry.stats.packets_failed : 0);
+                updateElement(
+                    'telemetry-last-send',
+                    data.telemetry.stats && data.telemetry.stats.last_successful_send
+                        ? formatTimestamp(data.telemetry.stats.last_successful_send)
+                        : '--'
+                );
+            }
+
+            if (data.deployment) {
+                updateDeploymentStatus(data.deployment);
             }
 
             // Update temperature sensor data
@@ -521,13 +768,23 @@
 
         function updateStateBadge(id, state) {
             const element = document.getElementById(id);
-            if (element && state) {
-                element.textContent = state;
-                element.className = 'state-badge state-' + state.toLowerCase();
+            if (element && state && state !== '--') {
+                const text = String(state);
+                const normalized = text.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+                element.textContent = text;
+                element.className = 'state-badge state-' + normalized;
             } else if (element) {
                 element.textContent = '--';
                 element.className = 'state-badge';
             }
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) {
+                return '--';
+            }
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString();
         }
 
         function updateTemperatureElement(id, value, warningThreshold, faultThreshold) {
@@ -576,13 +833,87 @@
             }
         }
 
+        function updateDeploymentStatus(status) {
+            if (!status) {
+                return;
+            }
+
+            updateStateBadge('deploy-state', status.state || 'idle');
+            updateElement('deploy-step', status.current_step || '--');
+
+            const progress = status.progress || {};
+            updateElement('deploy-progress', `${progress.current || 0} / ${progress.total || 0}`);
+
+            const deployButton = document.getElementById('deploy-button');
+            if (deployButton) {
+                deployButton.disabled = status.state === 'running';
+                deployButton.textContent = status.state === 'running'
+                    ? 'Deployment in progress...'
+                    : 'Deploy from scratch';
+            }
+
+            const logsElement = document.getElementById('deploy-logs');
+            if (logsElement) {
+                const logs = status.logs || [];
+                if (logs.length > 0) {
+                    logsElement.textContent = logs.slice(-40).join('\n');
+                } else if (status.error) {
+                    logsElement.textContent = status.error;
+                } else {
+                    logsElement.textContent = 'No deployment logs yet.';
+                }
+            }
+        }
+
+        async function fetchDeploymentStatus() {
+            try {
+                const response = await fetch('/api/deploy/status');
+                if (!response.ok) {
+                    return;
+                }
+                const payload = await response.json();
+                updateDeploymentStatus(payload);
+            } catch (error) {
+                console.error('Failed to fetch deployment status:', error);
+            }
+        }
+
+        async function startDeploymentFromDashboard() {
+            const integrationBoxes = document.querySelectorAll('.deploy-integration:checked');
+            const integrations = Array.from(integrationBoxes).map((el) => el.value);
+            try {
+                const response = await fetch('/api/deploy/start', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({integrations})
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                    alert(payload.error || payload.message || 'Failed to start deployment');
+                }
+                if (payload.deployment) {
+                    updateDeploymentStatus(payload.deployment);
+                }
+            } catch (error) {
+                console.error('Failed to start deployment:', error);
+                alert('Deployment request failed');
+            }
+        }
+
         // Request initial data
         socket.emit('request_update');
+
+        const deployButton = document.getElementById('deploy-button');
+        if (deployButton) {
+            deployButton.addEventListener('click', startDeploymentFromDashboard);
+        }
+        fetchDeploymentStatus();
 
         // Request updates periodically as backup
         setInterval(() => {
             socket.emit('request_update');
         }, 5000);
+        setInterval(fetchDeploymentStatus, 3000);
     </script>
 </body>
 </html>
