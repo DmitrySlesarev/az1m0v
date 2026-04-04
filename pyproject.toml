@@ -22,6 +22,12 @@ alpamayo = ["alpamayo-tools"]
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
 pytest-cov = "^4.0"
+
+# Optional: no armv7l wheels for Playwright; install with: poetry install --with playwright
+[tool.poetry.group.playwright]
+optional = true
+
+[tool.poetry.group.playwright.dependencies]
 pytest-playwright = "^0.7.2"
 playwright = "^1.57.0"
 
