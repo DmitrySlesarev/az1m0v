@@ -6,7 +6,12 @@ echo "Setting up EV project environment..."
 # Install dependencies via Poetry
 if command -v poetry &> /dev/null; then
     echo "Installing dependencies with Poetry..."
-    poetry install
+    if [[ -r /proc/device-tree/model ]] && tr -d '\0' < /proc/device-tree/model | grep -qi raspberry; then
+        echo "Raspberry Pi detected: main dependencies only (skips dev tools e.g. Playwright)."
+        poetry install --only main --no-interaction
+    else
+        poetry install --no-interaction
+    fi
 else
     echo "Poetry not found. Please install Poetry first: https://python-poetry.org/docs/#installation"
     exit 1
