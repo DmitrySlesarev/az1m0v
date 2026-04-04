@@ -1,5 +1,7 @@
 # Hardware Requirements for az1m0v EV Management System
 
+**Version 1.0.0**
+
 This document provides a comprehensive list of all hardware components required to implement the az1m0v Electric Vehicle Management System.
 
 ## Table of Contents

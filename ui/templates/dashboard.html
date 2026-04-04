@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EV Dashboard - az1m0v</title>
+    <title>EV Dashboard - az1m0v 1.0.0</title>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <style>
         * {
@@ -34,6 +34,12 @@
             font-size: 2.5em;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .app-version {
+            font-size: 0.95em;
+            opacity: 0.85;
+            margin-bottom: 12px;
         }
 
         .status-indicator {
@@ -252,6 +258,7 @@
     <div class="container">
         <header>
             <h1>⚡ EV Management Dashboard</h1>
+            <p class="app-version">az1m0v 1.0.0</p>
             <p>
                 <span class="status-indicator disconnected" id="statusIndicator"></span>
                 <span id="connectionStatus">Disconnected</span>

@@ -40,6 +40,7 @@ class TestMotorStatus:
         assert status.duty_cycle == 0.0
         assert status.temperature_c == 0.0
         assert status.power_w == 0.0
+        assert status.torque_nm == 0.0
         assert status.state == MotorState.DISCONNECTED
 
 

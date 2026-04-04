@@ -63,6 +63,7 @@ class MotorStatus:
     duty_cycle: float = 0.0
     temperature_c: float = 0.0
     power_w: float = 0.0
+    torque_nm: float = 0.0
     state: MotorState = MotorState.DISCONNECTED
     timestamp: float = 0.0
     stator_temperatures: List[float] = None  # Stator winding temperatures per phase
@@ -349,6 +350,9 @@ class VESCManager:
                     self.current_status.state = MotorState.IDLE
                 else:
                     self.current_status.state = MotorState.RUNNING
+
+            # Estimated torque (dashboard / telemetry; matches CAN motor status)
+            self.current_status.torque_nm = self._calculate_torque()
 
             # Send status to CAN bus if available
             if self.can_protocol:

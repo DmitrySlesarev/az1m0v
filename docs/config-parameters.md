@@ -1,5 +1,7 @@
 # EV System Configuration Parameters
 
+**az1m0v 1.0.0**
+
 This document describes configuration parameters used by runtime code in
 `config/config.json`.
 

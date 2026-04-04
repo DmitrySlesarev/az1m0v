@@ -1,6 +1,7 @@
-az1m0v/ (EV Management System)
+az1m0v/ (EV Management System) — version 1.0.0 (first major release)
 ├── README.md
 ├── LICENSE
+├── CHANGELOG.md                   # Release history (semver); v1.0.0 = first major release
 ├── main.py                         # Entry point for EV system:
 │                                  #   - Initializes all components (BMS, motor, charging, vehicle controller)
 │                                  #   - Initializes sensors (IMU, temperature sensors)

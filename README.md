@@ -1,5 +1,7 @@
 # az1m0v - Electric Vehicle Management System
 
+**Version 1.0.0** — first major release.
+
 An open-source Electric Vehicle (EV) management system providing comprehensive control and monitoring capabilities for electric vehicles.
 
 ## Overview
@@ -169,7 +171,7 @@ See [architecture.txt](architecture.txt) for detailed structure.
 
 ### Prerequisites
 
-- Python 3.13 or higher
+- Python **3.11, 3.12, or 3.13** (see `pyproject.toml`)
 - Poetry (for dependency management)
 - Linux (recommended for CAN bus support)
 
@@ -184,6 +186,10 @@ See [architecture.txt](architecture.txt) for detailed structure.
 2. **Install dependencies**
    ```bash
    poetry install
+   ```
+   This installs runtime and dev dependencies. **Playwright** (browser UI tests) is in an optional group; install it only when you need those tests:
+   ```bash
+   poetry install --with playwright
    ```
 
 3. **Configure the system**
@@ -218,6 +224,56 @@ See [architecture.txt](architecture.txt) for detailed structure.
    ```bash
    python mpu_builder.py --sensor mpu6050  # or mpu9250
    ```
+
+### Raspberry Pi (and other constrained ARM boards)
+
+Use a **minimal** install so Poetry does not pull optional stacks (Alpamayo / PyTorch, Playwright, heavy dev-only wheels) that often fail or are unavailable on **32-bit ARM (`armv7l`)**.
+
+**About `.pyc` files and `__pycache__`:** Python creates these automatically. They do not break the app on the Pi, but they should **not be committed** to Git (noise, wrong machine fingerprints). The repository `.gitignore` ignores them; delete any that were added by mistake.
+
+**Recommended steps on the Pi**
+
+1. Install **Poetry** and (if you use it) **pyenv**, with Python **3.11+** available on your `PATH` (e.g. Raspberry Pi OS Bullseye with pyenv: `pyenv local 3.11` in the project directory).
+
+2. Point Poetry at that interpreter (pyenv shims are fine):
+   ```bash
+   poetry env use "$(command -v python3)"
+   ```
+   Use a real executable name such as `python3.11` or the output of `pyenv which python`, not a full version string like `python3.11.11` unless that binary exists.
+
+3. Run the setup script (it detects Raspberry Pi / `armv7l` / device-tree hints and runs `poetry install --only main`):
+   ```bash
+   ./scripts/setup.sh
+   ```
+   If detection fails on your image, force the same behavior:
+   ```bash
+   AZ1M0V_POETRY_ONLY_MAIN=1 ./scripts/setup.sh
+   ```
+   Or manually:
+   ```bash
+   poetry install --only main --no-interaction
+   ```
+
+4. The repo includes **`poetry.toml`** with `prefer-active-python = true` so Poetry prefers the interpreter already active in your shell (e.g. after `pyenv local`).
+
+5. Run the stack:
+   ```bash
+   poetry run python main.py
+   ```
+
+**Optional extras (not required for dashboard + main loop)**
+
+- **Alpamayo** (large dependencies including PyTorch): requires Python **≥ 3.12** per upstream. Install with:
+  ```bash
+  poetry install -E alpamayo
+  ```
+  On Python 3.11 this extra cannot be resolved; use rule-based autopilot without it.
+
+- **Playwright UI tests** (often no wheel on `armv7l`): on x86_64 / aarch64 dev machines:
+  ```bash
+  poetry install --with playwright
+  playwright install
+  ```
 
 ### Running the System
 
@@ -297,7 +353,7 @@ poetry run pytest tests/functional/ -v
 poetry run pytest tests/unit/test_motor_controller.py -v
 ```
 
-The project includes **600+ tests** covering all major components:
+The project includes **739+ tests** by default, plus optional Playwright UI tests (`poetry install --with playwright`), covering all major components:
 - **45 unit tests** for vehicle controller
 - **14 functional/integration tests** for vehicle controller
 - **21 unit tests** for telemetry system
@@ -420,16 +476,17 @@ The system implements standard EV CAN protocols:
 
 ## Requirements
 
-- **Python**: 3.13+
+- **Python**: 3.11–3.13
 - **Poetry**: For dependency management
 - **Dependencies**:
   - `jsonschema` - Configuration validation
   - `numpy` - Numerical computations
   - `flask` - Web framework for dashboard
   - `flask-socketio` - WebSocket support for real-time updates
-  - `alpamayo-tools` - NVIDIA Alpamayo ecosystem integration utilities
+  - `alpamayo-tools` - Optional extra (`poetry install -E alpamayo`); requires Python ≥ 3.12; pulls PyTorch and related packages
   - `pytest` - Testing framework (dev)
   - `pytest-cov` - Test coverage (dev)
+  - `playwright` / `pytest-playwright` - Optional group (`poetry install --with playwright`) for browser tests
 
 Optional (for VESC):
 - `pyvesc` - VESC Python library (installed via integration script)
@@ -459,7 +516,7 @@ See [LICENSE](LICENSE) for full license text.
 
 ## Status
 
-✅ **Active Development** - Core systems implemented and tested
+✅ **Version 1.0.0** — First major release; core systems implemented and tested
 - Battery Management System: ✅ Implemented (with temperature sensor integration, SOC/SOH calculation, cell balancing algorithms)
 - Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
@@ -474,8 +531,12 @@ See [LICENSE](LICENSE) for full license text.
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
 - Web Dashboard: ✅ Implemented (Flask + WebSocket, CAN bus integrated, Raspberry Pi 4 compatible)
-- Test Suite: ✅ Comprehensive test coverage (409 tests, including temperature sensor tests)
+- Test Suite: ✅ Comprehensive test coverage (739+ tests in CI; optional browser tests via `poetry install --with playwright`)
 - CI/CD: ✅ GitHub Actions workflow running all tests on every commit
+
+## Releases
+
+Release notes and version history: [CHANGELOG.md](CHANGELOG.md).
 
 ## Support
 
