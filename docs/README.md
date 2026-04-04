@@ -1,5 +1,7 @@
 # EV System Documentation
 
+**az1m0v 1.0.0** — documentation for the first major release.
+
 Welcome to the Electric Vehicle Management System documentation. This documentation provides comprehensive information about the system architecture, configuration, and usage.
 
 ## Documentation Structure
@@ -75,7 +77,7 @@ The system uses JSON-based configuration with schema validation:
 
 ### Testing
 - **Framework**: pytest
-- **Test Count**: 347 tests (45 unit + 14 functional for vehicle controller)
+- **Test Count**: 739+ tests in the default suite (see repository README; optional Playwright tests require `poetry install --with playwright`)
 - **Run Tests**: `poetry run pytest -q`
 - **Unit Tests**: `poetry run pytest tests/unit/ -v`
 - **Functional Tests**: `poetry run pytest tests/functional/ -v`
@@ -96,6 +98,6 @@ For questions or issues:
 
 ## Version Information
 
-- **Current Version**: 0.0.0.4
+- **Current Version**: 1.0.0 (first major release)
 - **Schema Version**: JSON Schema Draft 07
-- **Python Compatibility**: 3.13+
+- **Python Compatibility**: 3.11–3.13 (see root `pyproject.toml`)

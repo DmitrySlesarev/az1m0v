@@ -1,5 +1,7 @@
 # az1m0v - Electric Vehicle Management System
 
+**Version 1.0.0** — first major release.
+
 An open-source Electric Vehicle (EV) management system providing comprehensive control and monitoring capabilities for electric vehicles.
 
 ## Overview
@@ -351,7 +353,7 @@ poetry run pytest tests/functional/ -v
 poetry run pytest tests/unit/test_motor_controller.py -v
 ```
 
-The project includes **600+ tests** covering all major components:
+The project includes **739+ tests** by default, plus optional Playwright UI tests (`poetry install --with playwright`), covering all major components:
 - **45 unit tests** for vehicle controller
 - **14 functional/integration tests** for vehicle controller
 - **21 unit tests** for telemetry system
@@ -514,7 +516,7 @@ See [LICENSE](LICENSE) for full license text.
 
 ## Status
 
-✅ **Active Development** - Core systems implemented and tested
+✅ **Version 1.0.0** — First major release; core systems implemented and tested
 - Battery Management System: ✅ Implemented (with temperature sensor integration, SOC/SOH calculation, cell balancing algorithms)
 - Motor Controller (VESC): ✅ Implemented (with stator temperature monitoring)
 - Charging System: ✅ Implemented (with port/connector temperature monitoring)
@@ -529,8 +531,12 @@ See [LICENSE](LICENSE) for full license text.
 - Autopilot AI: ✅ Implemented
 - Configuration System: ✅ Implemented
 - Web Dashboard: ✅ Implemented (Flask + WebSocket, CAN bus integrated, Raspberry Pi 4 compatible)
-- Test Suite: ✅ Comprehensive test coverage (409 tests, including temperature sensor tests)
+- Test Suite: ✅ Comprehensive test coverage (739+ tests in CI; optional browser tests via `poetry install --with playwright`)
 - CI/CD: ✅ GitHub Actions workflow running all tests on every commit
+
+## Releases
+
+Release notes and version history: [CHANGELOG.md](CHANGELOG.md).
 
 ## Support
 

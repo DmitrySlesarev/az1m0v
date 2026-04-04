@@ -1,5 +1,7 @@
 # EV System Configuration Documentation
 
+Applies to **az1m0v 1.0.0**.
+
 This document describes all configuration parameters available in the EV system configuration file (`config/config.json`).
 For a runtime-focused key-by-key reference (including newer tuning and safety
 coefficients), see [config-parameters.md](config-parameters.md).
