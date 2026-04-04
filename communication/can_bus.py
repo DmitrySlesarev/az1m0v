@@ -167,6 +167,11 @@ class EVCANProtocol:
         'TEMPERATURE_CHARGING_PORT': 0x404,
         'TEMPERATURE_CHARGING_CONNECTOR': 0x405,
         'TEMPERATURE_GENERIC': 0x406,
+
+        # Arduino / peripheral coprocessor (analog + digital I/O delegated from Pi)
+        # Arduino → Pi: status; Pi → Arduino: command
+        'ARDUINO_PERIPHERAL_STATUS': 0x310,
+        'ARDUINO_PERIPHERAL_COMMAND': 0x311,
     }
 
     def __init__(self, can_bus: CANBusInterface):

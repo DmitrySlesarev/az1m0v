@@ -166,6 +166,18 @@
     "bitrate": 500000,
     "interface": "socketcan"
   },
+  "arduino_can": {
+    "enabled": false,
+    "status_can_id": 784,
+    "command_can_id": 785,
+    "analog_unit": "centi_c",
+    "listen_only_default": true,
+    "default_digital_outputs": 0,
+    "default_pwm_aux": 0,
+    "default_flags": 0,
+    "resend_command_interval_s": 1.0,
+    "inject_temperatures": []
+  },
   "vehicle_controller": {
     "max_speed_kmh": 120.0,
     "max_acceleration_ms2": 3.0,

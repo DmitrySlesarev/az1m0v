@@ -12,6 +12,7 @@ from typing import Optional, Dict, Any
 from config.settings import Settings
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
+from communication.arduino_can_bridge import ArduinoPeripheralBridge
 from communication.telemetry import TelemetrySystem
 from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
@@ -63,6 +64,7 @@ class EVSystem:
         # UI
         self.dashboard: Optional[EVDashboard] = None
         self.dashboard_thread: Optional[threading.Thread] = None
+        self.arduino_peripheral: Optional[ArduinoPeripheralBridge] = None
 
         # Setup logging first
         self._setup_logging()
@@ -129,6 +131,9 @@ class EVSystem:
         # Initialize Sensors early so core components can consume readings
         self._initialize_sensors()
 
+        # Arduino peripheral on CAN (optional I/O coprocessor)
+        self._initialize_arduino_peripheral()
+
         # Initialize Battery Management System
         self._initialize_bms()
 
@@ -176,6 +181,26 @@ class EVSystem:
                 self.logger.warning("CAN bus connection failed, continuing without CAN")
         except Exception as e:
             self.logger.error(f"Failed to initialize CAN bus: {e}")
+
+    def _initialize_arduino_peripheral(self) -> None:
+        """Optional Arduino + CAN peripheral for delegated I/O."""
+        try:
+            cfg = self.config.get("arduino_can") or {}
+            if not cfg.get("enabled", False):
+                self.logger.info("Arduino peripheral CAN disabled in config")
+                return
+            if not self.can_bus or not self.can_protocol:
+                self.logger.warning("Arduino peripheral enabled but CAN bus unavailable")
+                return
+            self.arduino_peripheral = ArduinoPeripheralBridge(
+                self.can_bus,
+                self.can_protocol,
+                cfg,
+                temperature_manager=self.temperature_manager,
+            )
+            self.logger.info("Arduino peripheral CAN bridge initialized")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Arduino peripheral: {e}")
 
     def _initialize_bms(self) -> None:
         """Initialize Battery Management System."""
@@ -448,7 +473,11 @@ class EVSystem:
                 self.dashboard.imu = self.imu
                 self.dashboard.temperature_manager = self.temperature_manager
                 self.dashboard.autopilot = self.autopilot
-                
+                self.dashboard.arduino_bridge = self.arduino_peripheral
+                if self.arduino_peripheral:
+                    self.arduino_peripheral.bind_dashboard(self.dashboard.update_data)
+                    self.arduino_peripheral.send_command()
+
                 self.logger.info(f"Dashboard initialized on {dashboard_host}:{dashboard_port}")
             else:
                 self.logger.info("Dashboard disabled")
@@ -568,6 +597,10 @@ class EVSystem:
         # Send telemetry data
         if self.telemetry and self.telemetry.is_enabled():
             self._send_telemetry_data()
+
+        # Resend Arduino peripheral command frame if configured
+        if self.arduino_peripheral:
+            self.arduino_peripheral.tick()
 
     def _update_temperature_data(self) -> None:
         """Update dashboard with temperature sensor data."""

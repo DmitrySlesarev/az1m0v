@@ -74,6 +74,20 @@ class EVDashboard:
             'telemetry': {},
             'safety': {},
             'deployment': self.deployment_manager.get_status(),
+            'arduino': {
+                'enabled': False,
+                'configured': False,
+                'listen_only': True,
+                'digital_inputs': None,
+                'digital_outputs': 0,
+                'pwm_aux': 0,
+                'analog_c': None,
+                'analog_raw': None,
+                'frames_rx': 0,
+                'frames_tx': 0,
+                'status_can_id_hex': '--',
+                'command_can_id_hex': '--',
+            },
             'system': {
                 'project_root': str(self.project_root)
             },
@@ -674,7 +688,34 @@ class EVDashboard:
                     else:
                         return autopilot.activate(mode)
                 return False
-            
+
+            elif command == 'arduino_set_listen_only':
+                bridge = getattr(self, 'arduino_bridge', None)
+                if bridge:
+                    bridge.set_listen_only(bool(params.get('enabled', True)))
+                    return True
+                return False
+
+            elif command == 'arduino_set_digital_bit':
+                bridge = getattr(self, 'arduino_bridge', None)
+                if bridge:
+                    bridge.set_digital_bit(int(params.get('bit', 0)), bool(params.get('on', False)))
+                    return True
+                return False
+
+            elif command == 'arduino_set_pwm':
+                bridge = getattr(self, 'arduino_bridge', None)
+                if bridge:
+                    bridge.set_pwm_aux(int(params.get('pwm', 0)))
+                    return True
+                return False
+
+            elif command == 'arduino_send_command':
+                bridge = getattr(self, 'arduino_bridge', None)
+                if bridge:
+                    return bridge.send_command()
+                return False
+
             else:
                 self.logger.warning(f"Unknown control command: {command}")
                 return False
@@ -688,7 +729,7 @@ class EVDashboard:
         
         Args:
             data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature',
-                       'autopilot', 'telemetry', 'safety', 'deployment', 'system')
+                       'autopilot', 'telemetry', 'safety', 'deployment', 'arduino', 'system')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:

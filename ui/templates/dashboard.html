@@ -42,6 +42,20 @@
             margin-bottom: 12px;
         }
 
+        .btn-arduino {
+            font-size: 0.8em;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+
+        .btn-arduino:hover {
+            background: rgba(255,255,255,0.22);
+        }
+
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -553,6 +567,67 @@
                 </div>
             </div>
 
+            <!-- Arduino peripheral (CAN I/O coprocessor) -->
+            <div class="card" id="arduino-card">
+                <h2>🔧 Arduino peripheral (CAN)</h2>
+                <p class="muted" style="font-size:0.9em;margin-bottom:10px;">
+                    Delegates low-speed digital I/O and ADC (e.g. thermistors, relays, fan PWM).
+                    Requires MCP2515/CAN shield on the Arduino and <code>arduino_can.enabled</code> in config.
+                </p>
+                <div class="metric">
+                    <span class="metric-label">Active</span>
+                    <span class="metric-value" id="arduino-enabled">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">RX / TX frames</span>
+                    <span class="metric-value" id="arduino-frames">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">IDs (status / cmd)</span>
+                    <span class="metric-value" id="arduino-ids">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital in (hex)</span>
+                    <span class="metric-value" id="arduino-din">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Analog A0–A2 (°C)</span>
+                    <span class="metric-value" id="arduino-analog">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Listen only (no driven outputs)</span>
+                    <span class="metric-value">
+                        <label><input type="checkbox" id="arduino-listen-only" /> Enabled</label>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital out D0–D3</span>
+                    <span class="metric-value" style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <button type="button" class="btn-arduino" data-bit="0">D0 on</button>
+                        <button type="button" class="btn-arduino" data-bit="0" data-on="0">D0 off</button>
+                        <button type="button" class="btn-arduino" data-bit="1">D1 on</button>
+                        <button type="button" class="btn-arduino" data-bit="1" data-on="0">D1 off</button>
+                        <button type="button" class="btn-arduino" data-bit="2">D2 on</button>
+                        <button type="button" class="btn-arduino" data-bit="2" data-on="0">D2 off</button>
+                        <button type="button" class="btn-arduino" data-bit="3">D3 on</button>
+                        <button type="button" class="btn-arduino" data-bit="3" data-on="0">D3 off</button>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">PWM aux (0–255)</span>
+                    <span class="metric-value">
+                        <input type="number" id="arduino-pwm" min="0" max="255" value="0" style="width:4em;" />
+                        <button type="button" id="arduino-pwm-apply">Apply</button>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Push command</span>
+                    <span class="metric-value">
+                        <button type="button" id="arduino-flush">Send CAN command now</button>
+                    </span>
+                </div>
+            </div>
+
             <!-- CAN Bus Stats Card -->
             <div class="card">
                 <h2>📡 CAN Bus</h2>
@@ -605,6 +680,45 @@
             connectionStatus.textContent = 'Disconnected';
             console.log('Disconnected from dashboard server');
         });
+
+        document.querySelectorAll('.btn-arduino').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const bit = parseInt(btn.getAttribute('data-bit'), 10);
+                const on = btn.getAttribute('data-on') !== '0';
+                socket.emit('control_command', {
+                    command: 'arduino_set_digital_bit',
+                    params: { bit, on },
+                });
+            });
+        });
+
+        const arduinoListenEl = document.getElementById('arduino-listen-only');
+        if (arduinoListenEl) {
+            arduinoListenEl.addEventListener('change', () => {
+                socket.emit('control_command', {
+                    command: 'arduino_set_listen_only',
+                    params: { enabled: arduinoListenEl.checked },
+                });
+            });
+        }
+
+        const arduinoPwmApply = document.getElementById('arduino-pwm-apply');
+        if (arduinoPwmApply) {
+            arduinoPwmApply.addEventListener('click', () => {
+                const v = parseInt(document.getElementById('arduino-pwm').value, 10);
+                socket.emit('control_command', {
+                    command: 'arduino_set_pwm',
+                    params: { pwm: Number.isFinite(v) ? v : 0 },
+                });
+            });
+        }
+
+        const arduinoFlush = document.getElementById('arduino-flush');
+        if (arduinoFlush) {
+            arduinoFlush.addEventListener('click', () => {
+                socket.emit('control_command', { command: 'arduino_send_command', params: {} });
+            });
+        }
 
         // Handle data updates
         socket.on('data_update', (data) => {
@@ -745,6 +859,43 @@
                 if (data.temperature.charging) {
                     updateTemperatureElement('temp-charging-port', data.temperature.charging.port, 60, 100);
                     updateTemperatureElement('temp-charging-connector', data.temperature.charging.connector, 60, 100);
+                }
+            }
+
+            // Arduino peripheral (CAN)
+            if (data.arduino) {
+                const a = data.arduino;
+                const active = a.configured && a.enabled;
+                updateElement('arduino-enabled', active ? 'Yes' : 'No');
+                updateElement('arduino-frames', `${a.frames_rx ?? 0} / ${a.frames_tx ?? 0}`);
+                updateElement(
+                    'arduino-ids',
+                    (a.status_can_id_hex && a.command_can_id_hex)
+                        ? `0x${a.status_can_id_hex} / 0x${a.command_can_id_hex}`
+                        : '--'
+                );
+                const din = a.digital_inputs;
+                updateElement(
+                    'arduino-din',
+                    (din !== null && din !== undefined) ? '0x' + Number(din).toString(16) : '--'
+                );
+                const ana = a.analog_c;
+                updateElement(
+                    'arduino-analog',
+                    Array.isArray(ana)
+                        ? ana.map((x) => (x === null || x === undefined ? '--' : Number(x).toFixed(2))).join(', ')
+                        : '--'
+                );
+                const lo = document.getElementById('arduino-listen-only');
+                if (lo) {
+                    const want = !!a.listen_only;
+                    if (lo.checked !== want) {
+                        lo.checked = want;
+                    }
+                }
+                const pwmEl = document.getElementById('arduino-pwm');
+                if (pwmEl && document.activeElement !== pwmEl) {
+                    pwmEl.value = String(a.pwm_aux ?? 0);
                 }
             }
 
