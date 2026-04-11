@@ -1627,6 +1627,21 @@ markers = {main = "python_version >= \"3.12\" and extra == \"alpamayo\""}
 windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
+name = "pyserial"
+version = "3.5"
+description = "Python Serial Port Extension"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0"},
+    {file = "pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb"},
+]
+
+[package.extras]
+cp2110 = ["hidapi"]
+
+[[package]]
 name = "pytest"
 version = "8.4.2"
 description = "pytest: simple powerful testing with Python"
@@ -2478,4 +2493,4 @@ alpamayo = ["alpamayo-tools"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.14"
-content-hash = "0720aedca60fe2ce28bd13c97acb726db1feb8ed5542032d084b6af77adc981f"
+content-hash = "bd06c9ba70206c1095ece9816aca89860b32ab67d97c165b268920df41a402fa"

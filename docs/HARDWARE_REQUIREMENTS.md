@@ -162,6 +162,14 @@ This minimal build keeps the system testable on real hardware while leaving adva
     - Cellular antenna (4G/LTE)
     - GPS antenna (if module includes GPS)
 
+### LoRaWAN (optional, az1m0v `lorawan` config)
+- **RAK WisBlock / WisCore module** (e.g. **RAK4631**: nRF52840 + SX1262)
+  - USB connection to the host (often `/dev/ttyACM0` on Linux; Adafruit WisCore may enumerate as `239a:8029`)
+  - Firmware exposing **RUI3-style AT commands** (network mode LoRaWAN, band, OTAA keys, join, send)
+  - **LoRa antenna** matched to your region and `AT+BAND` setting
+  - **Network server**: TTN, ChirpStack, or equivalent to receive application payloads from the device
+  - The application builds a **multi-sensor JSON snapshot** (battery, motor, vehicle, charging, temperatures, GPS, IMU subsets) and displays it on the web dashboard; the air payload is clipped to `max_payload_bytes` for the current data rate.
+
 ---
 
 ## Sensors

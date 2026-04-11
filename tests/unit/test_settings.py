@@ -48,6 +48,7 @@ class TestSettings:
         assert isinstance(settings.temperature_sensors, dict)
         assert isinstance(settings.communication, dict)
         assert isinstance(settings.telemetry, dict)
+        assert isinstance(settings.lorawan, dict)
         assert isinstance(settings.ui, dict)
         assert isinstance(settings.ai, dict)
         assert isinstance(settings.autopilot, dict)

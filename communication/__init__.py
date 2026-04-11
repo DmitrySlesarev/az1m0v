@@ -4,12 +4,16 @@ from communication.telemetry import (
     TelemetrySystem,
     TelemetryData,
     TelemetryConfig,
-    TelemetryState
+    TelemetryState,
 )
+from communication.lorawan import LoRaWANManager, LoRaWANState, LoRaWANStats
 
 __all__: list[str] = [
     "TelemetrySystem",
     "TelemetryData",
     "TelemetryConfig",
-    "TelemetryState"
+    "TelemetryState",
+    "LoRaWANManager",
+    "LoRaWANState",
+    "LoRaWANStats",
 ]

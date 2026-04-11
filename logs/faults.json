@@ -84671,6 +84671,6198 @@
           "motor_max_rate_c_per_s": 0.0
         }
       }
+    },
+    {
+      "timestamp": 1775923455.4543836,
+      "datetime": "2026-04-11T13:04:15.454384",
+      "fault_type": "thermal_runaway",
+      "severity": "EMERGENCY",
+      "component": "battery",
+      "description": "Battery thermal runaway detected: 3.75\u00b0C/s, temperature 55.0\u00b0C",
+      "dtc_code": "P0100-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.4543145,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 3.749747764976165,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923455.5348697,
+      "datetime": "2026-04-11T13:04:15.534870",
+      "fault_type": "thermal_runaway",
+      "severity": "EMERGENCY",
+      "component": "battery",
+      "description": "Battery thermal runaway detected: 4.43\u00b0C/s, temperature 65.0\u00b0C",
+      "dtc_code": "P0100-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.5348,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 4.433330514697701,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923455.691131,
+      "datetime": "2026-04-11T13:04:15.691131",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery temperature critical: 65.0\u00b0C (max: 60.0\u00b0C)",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.6910005,
+        "safety_states": {
+          "thermal": "EMERGENCY",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 4.433330514697701,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923455.768622,
+      "datetime": "2026-04-11T13:04:15.768622",
+      "fault_type": "thermal_runaway",
+      "severity": "EMERGENCY",
+      "component": "battery",
+      "description": "Battery thermal runaway detected: 3.00\u00b0C/s, temperature 70.0\u00b0C",
+      "dtc_code": "P0100-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.7685573,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 2.999998172125341,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923455.844389,
+      "datetime": "2026-04-11T13:04:15.844389",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery temperature critical: 70.0\u00b0C (max: 60.0\u00b0C)",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.8443089,
+        "safety_states": {
+          "thermal": "EMERGENCY",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 2.999998172125341,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923455.9232163,
+      "datetime": "2026-04-11T13:04:15.923216",
+      "fault_type": "overvoltage",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery overvoltage: 550.0V (max: 500.0V)",
+      "dtc_code": "P0102-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923455.9231582,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "CRITICAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 550.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.0004714,
+      "datetime": "2026-04-11T13:04:16.000471",
+      "fault_type": "undervoltage",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Battery undervoltage: 250.0V (min: 300.0V)",
+      "dtc_code": "P0103-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.000412,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 250.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.0875537,
+      "datetime": "2026-04-11T13:04:16.087554",
+      "fault_type": "overcurrent",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery overcurrent: 600.0A (max: 500.0A)",
+      "dtc_code": "P0104-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.0874946,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "CRITICAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 600.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.1701982,
+      "datetime": "2026-04-11T13:04:16.170198",
+      "fault_type": "thermal_runaway",
+      "severity": "EMERGENCY",
+      "component": "battery",
+      "description": "Battery thermal runaway detected: 3.00\u00b0C/s, temperature 70.0\u00b0C",
+      "dtc_code": "P0100-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.1701458,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 70.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 2.99998593336979,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.246139,
+      "datetime": "2026-04-11T13:04:16.246139",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery temperature critical: 70.0\u00b0C (max: 60.0\u00b0C)",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.2460618,
+        "safety_states": {
+          "thermal": "EMERGENCY",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 70.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 2.99998593336979,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.3215609,
+      "datetime": "2026-04-11T13:04:16.321561",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Test fault",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.3214967,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.3988154,
+      "datetime": "2026-04-11T13:04:16.398815",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Active fault",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.39875,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.4805498,
+      "datetime": "2026-04-11T13:04:16.480550",
+      "fault_type": "overvoltage",
+      "severity": "WARNING",
+      "component": "motor",
+      "description": "Another fault",
+      "dtc_code": "P0102-MOT",
+      "freeze_frame": {
+        "timestamp": 1775923456.48041,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.5685642,
+      "datetime": "2026-04-11T13:04:16.568564",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Critical fault",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.568499,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.6518052,
+      "datetime": "2026-04-11T13:04:16.651805",
+      "fault_type": "overvoltage",
+      "severity": "WARNING",
+      "component": "motor",
+      "description": "Warning fault",
+      "dtc_code": "P0102-MOT",
+      "freeze_frame": {
+        "timestamp": 1775923456.651725,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.7480419,
+      "datetime": "2026-04-11T13:04:16.748042",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Fault 1",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.7479558,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.825491,
+      "datetime": "2026-04-11T13:04:16.825491",
+      "fault_type": "overvoltage",
+      "severity": "WARNING",
+      "component": "motor",
+      "description": "Fault 2",
+      "dtc_code": "P0102-MOT",
+      "freeze_frame": {
+        "timestamp": 1775923456.825415,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.9031956,
+      "datetime": "2026-04-11T13:04:16.903196",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Battery fault",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923456.903129,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923456.9789732,
+      "datetime": "2026-04-11T13:04:16.978973",
+      "fault_type": "overvoltage",
+      "severity": "WARNING",
+      "component": "motor",
+      "description": "Motor fault",
+      "dtc_code": "P0102-MOT",
+      "freeze_frame": {
+        "timestamp": 1775923456.9788947,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.058191,
+      "datetime": "2026-04-11T13:04:17.058191",
+      "fault_type": "overheating",
+      "severity": "EMERGENCY",
+      "component": "battery",
+      "description": "Critical fault",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.0581205,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": true,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.137537,
+      "datetime": "2026-04-11T13:04:17.137537",
+      "fault_type": "overheating",
+      "severity": "CRITICAL",
+      "component": "battery",
+      "description": "Fault 1",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.1374712,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.2146378,
+      "datetime": "2026-04-11T13:04:17.214638",
+      "fault_type": "overvoltage",
+      "severity": "EMERGENCY",
+      "component": "motor",
+      "description": "Fault 2",
+      "dtc_code": "P0102-MOT",
+      "freeze_frame": {
+        "timestamp": 1775923457.2145584,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.2931087,
+      "datetime": "2026-04-11T13:04:17.293109",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 0",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.2930415,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.3674455,
+      "datetime": "2026-04-11T13:04:17.367445",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 1",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.3673906,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.4513128,
+      "datetime": "2026-04-11T13:04:17.451313",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 2",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.4512239,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.5304513,
+      "datetime": "2026-04-11T13:04:17.530451",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 3",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.5303462,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.6058886,
+      "datetime": "2026-04-11T13:04:17.605889",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 4",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.605775,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.6819115,
+      "datetime": "2026-04-11T13:04:17.681911",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 5",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.681859,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.7665362,
+      "datetime": "2026-04-11T13:04:17.766536",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 6",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.7664373,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.8530617,
+      "datetime": "2026-04-11T13:04:17.853062",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 7",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.852994,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923457.930887,
+      "datetime": "2026-04-11T13:04:17.930887",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 8",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923457.9308386,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.015742,
+      "datetime": "2026-04-11T13:04:18.015742",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 9",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.0156574,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.106936,
+      "datetime": "2026-04-11T13:04:18.106936",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 10",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.1068344,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.204122,
+      "datetime": "2026-04-11T13:04:18.204122",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 11",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.204012,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.32,
+      "datetime": "2026-04-11T13:04:18.320000",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 12",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.319947,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.4106152,
+      "datetime": "2026-04-11T13:04:18.410615",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 13",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.4105346,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.495327,
+      "datetime": "2026-04-11T13:04:18.495327",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 14",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.4952698,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.5834372,
+      "datetime": "2026-04-11T13:04:18.583437",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 15",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.5833821,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.6838257,
+      "datetime": "2026-04-11T13:04:18.683826",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 16",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.6837687,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.7699013,
+      "datetime": "2026-04-11T13:04:18.769901",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 17",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.7698545,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.8646002,
+      "datetime": "2026-04-11T13:04:18.864600",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 18",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.8645406,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923458.9471586,
+      "datetime": "2026-04-11T13:04:18.947159",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 19",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923458.9471118,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.0304666,
+      "datetime": "2026-04-11T13:04:19.030467",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 20",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.0304046,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.1158216,
+      "datetime": "2026-04-11T13:04:19.115822",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 21",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.115774,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.197946,
+      "datetime": "2026-04-11T13:04:19.197946",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 22",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.1978993,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.2825885,
+      "datetime": "2026-04-11T13:04:19.282588",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 23",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.2823753,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.3647382,
+      "datetime": "2026-04-11T13:04:19.364738",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 24",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.364687,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.4471955,
+      "datetime": "2026-04-11T13:04:19.447196",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 25",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.4471467,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.530867,
+      "datetime": "2026-04-11T13:04:19.530867",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 26",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.5308201,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.6139553,
+      "datetime": "2026-04-11T13:04:19.613955",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 27",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.6139057,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.698743,
+      "datetime": "2026-04-11T13:04:19.698743",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 28",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.6986952,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.7814522,
+      "datetime": "2026-04-11T13:04:19.781452",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 29",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.781402,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.8967776,
+      "datetime": "2026-04-11T13:04:19.896778",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 30",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.8967292,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923459.9822776,
+      "datetime": "2026-04-11T13:04:19.982278",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 31",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923459.98211,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.0649934,
+      "datetime": "2026-04-11T13:04:20.064993",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 32",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.0649467,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.1490014,
+      "datetime": "2026-04-11T13:04:20.149001",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 33",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.1488261,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.232199,
+      "datetime": "2026-04-11T13:04:20.232199",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 34",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.232153,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.3153343,
+      "datetime": "2026-04-11T13:04:20.315334",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 35",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.3152862,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.394344,
+      "datetime": "2026-04-11T13:04:20.394344",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 36",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.394295,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.4734619,
+      "datetime": "2026-04-11T13:04:20.473462",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 37",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.4734058,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.5524123,
+      "datetime": "2026-04-11T13:04:20.552412",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 38",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.5523636,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.6291387,
+      "datetime": "2026-04-11T13:04:20.629139",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 39",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.629091,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.7096298,
+      "datetime": "2026-04-11T13:04:20.709630",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 40",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.7095406,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.7907164,
+      "datetime": "2026-04-11T13:04:20.790716",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 41",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.7906363,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.8689926,
+      "datetime": "2026-04-11T13:04:20.868993",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 42",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.8689456,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923460.9477212,
+      "datetime": "2026-04-11T13:04:20.947721",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 43",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923460.947673,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.0282526,
+      "datetime": "2026-04-11T13:04:21.028253",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 44",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.0282016,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.110182,
+      "datetime": "2026-04-11T13:04:21.110182",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 45",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.110117,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.190826,
+      "datetime": "2026-04-11T13:04:21.190826",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 46",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.190754,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.2687128,
+      "datetime": "2026-04-11T13:04:21.268713",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 47",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.2686622,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.347663,
+      "datetime": "2026-04-11T13:04:21.347663",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 48",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.3476093,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.4279943,
+      "datetime": "2026-04-11T13:04:21.427994",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 49",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.427943,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.5118718,
+      "datetime": "2026-04-11T13:04:21.511872",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 50",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.5118196,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.5918348,
+      "datetime": "2026-04-11T13:04:21.591835",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 51",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.5917823,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.6693673,
+      "datetime": "2026-04-11T13:04:21.669367",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 52",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.6693158,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.7482708,
+      "datetime": "2026-04-11T13:04:21.748271",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 53",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.7482207,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.825809,
+      "datetime": "2026-04-11T13:04:21.825809",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 54",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.8257577,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.9085135,
+      "datetime": "2026-04-11T13:04:21.908514",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 55",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.9084516,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923461.994973,
+      "datetime": "2026-04-11T13:04:21.994973",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 56",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923461.99492,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.0777192,
+      "datetime": "2026-04-11T13:04:22.077719",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 57",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.0776656,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.1583774,
+      "datetime": "2026-04-11T13:04:22.158377",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 58",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.1582797,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.2373235,
+      "datetime": "2026-04-11T13:04:22.237324",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 59",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.2372756,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.3172436,
+      "datetime": "2026-04-11T13:04:22.317244",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 60",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.317196,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.3949246,
+      "datetime": "2026-04-11T13:04:22.394925",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 61",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.394791,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.477602,
+      "datetime": "2026-04-11T13:04:22.477602",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 62",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.4775453,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.5580056,
+      "datetime": "2026-04-11T13:04:22.558006",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 63",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.5579119,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.668059,
+      "datetime": "2026-04-11T13:04:22.668059",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 64",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.6679974,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.746565,
+      "datetime": "2026-04-11T13:04:22.746565",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 65",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.7465155,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.825737,
+      "datetime": "2026-04-11T13:04:22.825737",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 66",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.825684,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.9038892,
+      "datetime": "2026-04-11T13:04:22.903889",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 67",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.9038415,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923462.9828382,
+      "datetime": "2026-04-11T13:04:22.982838",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 68",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923462.982788,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.0628388,
+      "datetime": "2026-04-11T13:04:23.062839",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 69",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.0627906,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.143691,
+      "datetime": "2026-04-11T13:04:23.143691",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 70",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.1436377,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.2244043,
+      "datetime": "2026-04-11T13:04:23.224404",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 71",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.224348,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.3031437,
+      "datetime": "2026-04-11T13:04:23.303144",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 72",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.3030932,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.3837235,
+      "datetime": "2026-04-11T13:04:23.383723",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 73",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.3836753,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.463819,
+      "datetime": "2026-04-11T13:04:23.463819",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 74",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.46377,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.5467658,
+      "datetime": "2026-04-11T13:04:23.546766",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 75",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.5467145,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.628189,
+      "datetime": "2026-04-11T13:04:23.628189",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 76",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.6281347,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.712012,
+      "datetime": "2026-04-11T13:04:23.712012",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 77",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.7119575,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.7965388,
+      "datetime": "2026-04-11T13:04:23.796539",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 78",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.796456,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.8800657,
+      "datetime": "2026-04-11T13:04:23.880066",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 79",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.8800116,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923463.9636252,
+      "datetime": "2026-04-11T13:04:23.963625",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 80",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923463.963579,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.0456223,
+      "datetime": "2026-04-11T13:04:24.045622",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 81",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.0455728,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.130525,
+      "datetime": "2026-04-11T13:04:24.130525",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 82",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.1304777,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.2146575,
+      "datetime": "2026-04-11T13:04:24.214658",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 83",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.2146099,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.3263204,
+      "datetime": "2026-04-11T13:04:24.326320",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 84",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.3260806,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.4133716,
+      "datetime": "2026-04-11T13:04:24.413372",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 85",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.4133193,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.509295,
+      "datetime": "2026-04-11T13:04:24.509295",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 86",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.509182,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.674338,
+      "datetime": "2026-04-11T13:04:24.674338",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 87",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.6742752,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.7609856,
+      "datetime": "2026-04-11T13:04:24.760986",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 88",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.7609339,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.8457558,
+      "datetime": "2026-04-11T13:04:24.845756",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 89",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.8457017,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923464.9277496,
+      "datetime": "2026-04-11T13:04:24.927750",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 90",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923464.9276946,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.0125356,
+      "datetime": "2026-04-11T13:04:25.012536",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 91",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.01248,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.0942924,
+      "datetime": "2026-04-11T13:04:25.094292",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 92",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.0942392,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.1774626,
+      "datetime": "2026-04-11T13:04:25.177463",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 93",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.1774106,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.2615047,
+      "datetime": "2026-04-11T13:04:25.261505",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 94",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.2614567,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.3463066,
+      "datetime": "2026-04-11T13:04:25.346307",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 95",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.3462245,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.4288774,
+      "datetime": "2026-04-11T13:04:25.428877",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 96",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.428829,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.5113108,
+      "datetime": "2026-04-11T13:04:25.511311",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 97",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.5112522,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.5939097,
+      "datetime": "2026-04-11T13:04:25.593910",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 98",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.5937223,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.6817403,
+      "datetime": "2026-04-11T13:04:25.681740",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 99",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.6816769,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.762804,
+      "datetime": "2026-04-11T13:04:25.762804",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 100",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.762753,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.8470619,
+      "datetime": "2026-04-11T13:04:25.847062",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 101",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.8469007,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923465.939251,
+      "datetime": "2026-04-11T13:04:25.939251",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 102",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923465.9390497,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.0196545,
+      "datetime": "2026-04-11T13:04:26.019655",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 103",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.0196054,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.098266,
+      "datetime": "2026-04-11T13:04:26.098266",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 104",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.0982158,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.1784768,
+      "datetime": "2026-04-11T13:04:26.178477",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 105",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.1784241,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.2595208,
+      "datetime": "2026-04-11T13:04:26.259521",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 106",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.2594688,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.343299,
+      "datetime": "2026-04-11T13:04:26.343299",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 107",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.3432243,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.4251833,
+      "datetime": "2026-04-11T13:04:26.425183",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 108",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.425125,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.5053713,
+      "datetime": "2026-04-11T13:04:26.505371",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 109",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.5052667,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.5867898,
+      "datetime": "2026-04-11T13:04:26.586790",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 110",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.5867405,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.6666353,
+      "datetime": "2026-04-11T13:04:26.666635",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 111",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.6665864,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.7491546,
+      "datetime": "2026-04-11T13:04:26.749155",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 112",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.7490911,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.8305762,
+      "datetime": "2026-04-11T13:04:26.830576",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 113",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.8305297,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923466.9263673,
+      "datetime": "2026-04-11T13:04:26.926367",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 114",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923466.9263022,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.010517,
+      "datetime": "2026-04-11T13:04:27.010517",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 115",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.0104609,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.0921326,
+      "datetime": "2026-04-11T13:04:27.092133",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 116",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.0920725,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.174012,
+      "datetime": "2026-04-11T13:04:27.174012",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 117",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.1739511,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.2574785,
+      "datetime": "2026-04-11T13:04:27.257478",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 118",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.2574174,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.3391685,
+      "datetime": "2026-04-11T13:04:27.339169",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 119",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.3390162,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.421663,
+      "datetime": "2026-04-11T13:04:27.421663",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 120",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.4216065,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.5025363,
+      "datetime": "2026-04-11T13:04:27.502536",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 121",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.5024872,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.5850573,
+      "datetime": "2026-04-11T13:04:27.585057",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 122",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.5850017,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.6654382,
+      "datetime": "2026-04-11T13:04:27.665438",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 123",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.6653907,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.7473834,
+      "datetime": "2026-04-11T13:04:27.747383",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 124",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.747332,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.830408,
+      "datetime": "2026-04-11T13:04:27.830408",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 125",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.8303578,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.9130583,
+      "datetime": "2026-04-11T13:04:27.913058",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 126",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.9129865,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923467.9958177,
+      "datetime": "2026-04-11T13:04:27.995818",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 127",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923467.9957435,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.0783613,
+      "datetime": "2026-04-11T13:04:28.078361",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 128",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.0783017,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.1599555,
+      "datetime": "2026-04-11T13:04:28.159956",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 129",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.159893,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.2442703,
+      "datetime": "2026-04-11T13:04:28.244270",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 130",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.2442117,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.3276663,
+      "datetime": "2026-04-11T13:04:28.327666",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 131",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.327565,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.4122982,
+      "datetime": "2026-04-11T13:04:28.412298",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 132",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.4122462,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.4923127,
+      "datetime": "2026-04-11T13:04:28.492313",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 133",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.4922607,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.5714278,
+      "datetime": "2026-04-11T13:04:28.571428",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 134",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.571379,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.6574147,
+      "datetime": "2026-04-11T13:04:28.657415",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 135",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.6573584,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.7396634,
+      "datetime": "2026-04-11T13:04:28.739663",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 136",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.7395182,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.8214293,
+      "datetime": "2026-04-11T13:04:28.821429",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 137",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.8213763,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.903637,
+      "datetime": "2026-04-11T13:04:28.903637",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 138",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.9035878,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923468.9861777,
+      "datetime": "2026-04-11T13:04:28.986178",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 139",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923468.9861276,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.0680566,
+      "datetime": "2026-04-11T13:04:29.068057",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 140",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.067958,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.1526303,
+      "datetime": "2026-04-11T13:04:29.152630",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 141",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.1525805,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.2414095,
+      "datetime": "2026-04-11T13:04:29.241410",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 142",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.2413466,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.324678,
+      "datetime": "2026-04-11T13:04:29.324678",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 143",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.32462,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.4065871,
+      "datetime": "2026-04-11T13:04:29.406587",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 144",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.4065216,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.489997,
+      "datetime": "2026-04-11T13:04:29.489997",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 145",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.4899304,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.571116,
+      "datetime": "2026-04-11T13:04:29.571116",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 146",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.5710099,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.654229,
+      "datetime": "2026-04-11T13:04:29.654229",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 147",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.6541731,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.7355957,
+      "datetime": "2026-04-11T13:04:29.735596",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 148",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.7355452,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": 1775923469.8179984,
+      "datetime": "2026-04-11T13:04:29.817998",
+      "fault_type": "overheating",
+      "severity": "WARNING",
+      "component": "battery",
+      "description": "Fault 149",
+      "dtc_code": "P0101-BAT",
+      "freeze_frame": {
+        "timestamp": 1775923469.8179507,
+        "safety_states": {
+          "thermal": "NORMAL",
+          "electrical": "NORMAL",
+          "mechanical": "NORMAL"
+        },
+        "emergency_shutdown_active": false,
+        "battery": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "soc": 50.0,
+          "status": "standby"
+        },
+        "motor": {
+          "voltage": 400.0,
+          "current": 0.0,
+          "temperature": 25.0,
+          "speed_rpm": 0.0,
+          "state": "idle"
+        },
+        "thermal_rates": {
+          "battery_max_rate_c_per_s": 0.0,
+          "motor_max_rate_c_per_s": 0.0
+        }
+      }
     }
   ]
 }

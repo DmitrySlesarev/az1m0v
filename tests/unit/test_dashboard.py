@@ -67,6 +67,7 @@ class TestEVDashboard:
         assert 'vehicle' in dashboard.latest_data
         assert 'autopilot' in dashboard.latest_data
         assert 'telemetry' in dashboard.latest_data
+        assert 'lorawan' in dashboard.latest_data
         assert 'safety' in dashboard.latest_data
         assert 'deployment' in dashboard.latest_data
         assert 'system' in dashboard.latest_data

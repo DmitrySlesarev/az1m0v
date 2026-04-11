@@ -195,6 +195,11 @@ class Settings:
     def telemetry(self) -> Dict[str, Any]:
         """Get telemetry configuration."""
         return self.get_section('telemetry')
+
+    @property
+    def lorawan(self) -> Dict[str, Any]:
+        """Get LoRaWAN (RAK module) configuration."""
+        return self.get_section('lorawan')
     
     @property
     def ui(self) -> Dict[str, Any]:

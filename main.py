@@ -7,13 +7,14 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from config.settings import Settings
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
 from communication.arduino_can_bridge import ArduinoPeripheralBridge
 from communication.telemetry import TelemetrySystem
+from communication.lorawan import LoRaWANManager
 from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
 from core.charging_system import ChargingSystem
@@ -52,7 +53,8 @@ class EVSystem:
         self.vehicle_controller: Optional[VehicleController] = None
         self.safety_system: Optional[SafetySystem] = None
         self.telemetry: Optional[TelemetrySystem] = None
-        
+        self.lorawan: Optional[LoRaWANManager] = None
+
         # Sensors
         self.imu: Optional[IMU] = None
         self.temperature_manager: Optional[TemperatureSensorManager] = None
@@ -145,6 +147,9 @@ class EVSystem:
 
         # Initialize Telemetry System
         self._initialize_telemetry()
+
+        # LoRaWAN (RAK module uplink + multi-sensor snapshot)
+        self._initialize_lorawan()
 
         # Initialize Vehicle Controller
         self._initialize_vehicle_controller()
@@ -284,6 +289,22 @@ class EVSystem:
                 self.logger.info("Telemetry System disabled")
         except Exception as e:
             self.logger.error(f"Failed to initialize telemetry system: {e}")
+
+    def _initialize_lorawan(self) -> None:
+        """Initialize LoRaWAN uplink (RAK4631 / RUI3 AT firmware)."""
+        try:
+            cfg = self.config.get("lorawan", {})
+            if not cfg.get("enabled", False):
+                self.logger.info("LoRaWAN disabled")
+                return
+            vehicle_id = self.config.get("vehicle", {}).get("serial_number", "EV001")
+            self.lorawan = LoRaWANManager(config=cfg, vehicle_id=vehicle_id)
+            if self.lorawan.connect():
+                self.logger.info("LoRaWAN initialized and connected")
+            else:
+                self.logger.warning("LoRaWAN enabled but connection or join did not complete")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize LoRaWAN: {e}")
 
     def _initialize_vehicle_controller(self) -> None:
         """Initialize Vehicle Controller."""
@@ -470,6 +491,7 @@ class EVSystem:
                 self.dashboard.vehicle_controller = self.vehicle_controller
                 self.dashboard.safety_system = self.safety_system
                 self.dashboard.telemetry = self.telemetry
+                self.dashboard.lorawan = self.lorawan
                 self.dashboard.imu = self.imu
                 self.dashboard.temperature_manager = self.temperature_manager
                 self.dashboard.autopilot = self.autopilot
@@ -597,6 +619,10 @@ class EVSystem:
         # Send telemetry data
         if self.telemetry and self.telemetry.is_enabled():
             self._send_telemetry_data()
+
+        # LoRaWAN: refresh multi-sensor snapshot and uplink on interval
+        if self.lorawan and self.lorawan.is_enabled():
+            self._update_lorawan()
 
         # Resend Arduino peripheral command frame if configured
         if self.arduino_peripheral:
@@ -745,6 +771,157 @@ class EVSystem:
         except Exception as e:
             self.logger.error(f"Error sending telemetry data: {e}")
 
+    def _lorawan_temperature_summary(self) -> Dict[str, Any]:
+        """Compact temperature dict for LoRaWAN payload and dashboard."""
+        if not self.temperature_manager:
+            return {}
+        out: Dict[str, Any] = {}
+
+        def _sort_by_suffix(sensor_id: str) -> int:
+            parts = sensor_id.rsplit("_", 1)
+            if len(parts) == 2 and parts[1].isdigit():
+                return int(parts[1])
+            return 0
+
+        battery_group_ids = self.temperature_manager.sensor_groups.get("battery_cell_groups", [])
+        if not battery_group_ids:
+            battery_group_ids = [
+                sid
+                for sid in self.temperature_manager.sensors
+                if sid.startswith("battery_cell_group_")
+            ]
+        battery_temps: List[float] = []
+        for sensor_id in sorted(battery_group_ids, key=_sort_by_suffix):
+            sensor = self.temperature_manager.sensors.get(sensor_id)
+            if not sensor:
+                continue
+            reading = sensor.read_temperature()
+            if reading:
+                battery_temps.append(reading.temperature_c)
+        if battery_temps:
+            out["battery_cell_avg_c"] = sum(battery_temps) / len(battery_temps)
+            out["battery_cell_max_c"] = max(battery_temps)
+
+        motor_ids = self.temperature_manager.sensor_groups.get("motor", [])
+        motor_temps: List[float] = []
+        for sensor_id in sorted(motor_ids, key=_sort_by_suffix):
+            sensor = self.temperature_manager.sensors.get(sensor_id)
+            if not sensor:
+                continue
+            reading = sensor.read_temperature()
+            if reading:
+                motor_temps.append(reading.temperature_c)
+        if motor_temps:
+            out["motor_stator_avg_c"] = sum(motor_temps) / len(motor_temps)
+
+        coolant_ids = self.temperature_manager.sensor_groups.get("coolant", [])
+        for sensor_id in coolant_ids:
+            sensor = self.temperature_manager.sensors.get(sensor_id)
+            if not sensor:
+                continue
+            reading = sensor.read_temperature()
+            if reading:
+                if "inlet" in sensor_id:
+                    out["coolant_inlet_c"] = reading.temperature_c
+                elif "outlet" in sensor_id:
+                    out["coolant_outlet_c"] = reading.temperature_c
+
+        charging_ids = self.temperature_manager.sensor_groups.get("charging", [])
+        for sensor_id in charging_ids:
+            sensor = self.temperature_manager.sensors.get(sensor_id)
+            if not sensor:
+                continue
+            reading = sensor.read_temperature()
+            if reading:
+                if "port" in sensor_id:
+                    out["charging_port_c"] = reading.temperature_c
+                elif "connector" in sensor_id:
+                    out["charging_connector_c"] = reading.temperature_c
+
+        return out
+
+    def _build_lorawan_sensor_snapshot(self) -> Dict[str, Any]:
+        """Aggregate enabled subsystem readings for LoRaWAN uplink / dashboard."""
+        snap: Dict[str, Any] = {}
+
+        if self.bms:
+            bms_state = self.bms.get_state()
+            if bms_state:
+                snap["battery"] = {
+                    "voltage": bms_state.voltage,
+                    "current": bms_state.current,
+                    "soc": bms_state.soc,
+                    "temperature": (
+                        bms_state.temperature
+                        if hasattr(bms_state, "temperature")
+                        else self.default_temperature_c
+                    ),
+                }
+
+        if self.motor_controller and self.motor_controller.is_connected:
+            motor_status = self.motor_controller.get_status()
+            if motor_status:
+                snap["motor"] = {
+                    "speed_rpm": motor_status.speed_rpm,
+                    "current_a": motor_status.current_a,
+                    "temperature_c": motor_status.temperature_c,
+                }
+
+        if self.vehicle_controller:
+            self.vehicle_controller.update_status()
+            vehicle_status = self.vehicle_controller.get_status()
+            if vehicle_status:
+                snap["vehicle"] = {
+                    "state": vehicle_status.state.value,
+                    "speed_kmh": vehicle_status.speed_kmh,
+                    "drive_mode": vehicle_status.drive_mode.value
+                    if vehicle_status.drive_mode
+                    else "normal",
+                }
+
+        if self.charging_system and self.charging_system.is_connected():
+            charging_status = self.charging_system.get_status()
+            if charging_status:
+                snap["charging"] = {
+                    "state": charging_status.state.value,
+                    "power_kw": charging_status.power_kw,
+                    "voltage": charging_status.voltage,
+                    "current": charging_status.current,
+                }
+
+        temp_summary = self._lorawan_temperature_summary()
+        if temp_summary:
+            snap["temperature"] = temp_summary
+
+        if self.gps:
+            gps_fix = self.gps.read_fix()
+            if gps_fix:
+                snap["gps"] = {
+                    "lat": gps_fix.latitude,
+                    "lon": gps_fix.longitude,
+                    "alt_m": gps_fix.altitude_m,
+                    "speed_kmh": gps_fix.speed_kmh,
+                    "heading_deg": gps_fix.heading_deg,
+                }
+
+        if self.imu:
+            imu_reading = self.imu.read_data()
+            if imu_reading:
+                snap["imu"] = imu_reading.to_dict()
+
+        return snap
+
+    def _update_lorawan(self) -> None:
+        """Push latest sensor snapshot to LoRaWAN manager and run uplink timer."""
+        if not self.lorawan:
+            return
+        try:
+            snapshot = self._build_lorawan_sensor_snapshot()
+            self.lorawan.update_sensor_snapshot(snapshot)
+            self.lorawan.tick()
+        except Exception as e:
+            self.logger.error(f"Error updating LoRaWAN: {e}")
+
     def shutdown(self) -> None:
         """Shutdown the EV system gracefully."""
         if not self.running:
@@ -769,6 +946,10 @@ class EVSystem:
         if self.telemetry:
             self.telemetry.disconnect()
             self.logger.info("Telemetry system disconnected")
+
+        if self.lorawan:
+            self.lorawan.disconnect()
+            self.logger.info("LoRaWAN disconnected")
 
         # Stop dashboard
         if self.dashboard:

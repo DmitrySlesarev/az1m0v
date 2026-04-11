@@ -72,6 +72,11 @@ class EVDashboard:
             'can_stats': {},
             'autopilot': {},
             'telemetry': {},
+            'lorawan': {
+                'enabled': False,
+                'state': 'disabled',
+                'sensor_snapshot': {},
+            },
             'safety': {},
             'deployment': self.deployment_manager.get_status(),
             'arduino': {
@@ -497,6 +502,13 @@ class EVDashboard:
             except Exception as e:
                 self.logger.warning(f"Failed to collect telemetry status: {e}")
 
+        lorawan = getattr(self, "lorawan", None)
+        if lorawan and hasattr(lorawan, "get_status"):
+            try:
+                self.latest_data["lorawan"] = self._sanitize_data(lorawan.get_status())
+            except Exception as e:
+                self.logger.warning(f"Failed to collect LoRaWAN status: {e}")
+
         safety_system = getattr(self, 'safety_system', None)
         if safety_system and hasattr(safety_system, 'get_status'):
             try:
@@ -729,7 +741,7 @@ class EVDashboard:
         
         Args:
             data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature',
-                       'autopilot', 'telemetry', 'safety', 'deployment', 'arduino', 'system')
+                       'autopilot', 'telemetry', 'lorawan', 'safety', 'deployment', 'arduino', 'system')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:

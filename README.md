@@ -86,6 +86,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Error reporting and diagnostics
   - Configurable update intervals and retry logic
   - Simulation mode for development
+- **LoRaWAN (RAK AT modules, e.g. RAK4631)**: Optional USB serial uplink using RUI3-style AT commands; collects a configurable **multi-sensor snapshot** (battery, motor, vehicle state, charging, temperature summary, GPS, IMU) and shows link status plus the encoded payload preview on the **web dashboard**. Uses `pyserial` for hardware mode; `simulation_mode` for bench testing without RF.
 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
@@ -157,7 +158,7 @@ az1m0v/
 │   └── diagnostics.py      # OBD-II style diagnostics (DTC, limp-home, fault logging)
 ├── sensors/                 # Sensor interfaces
 │   ├── temperature.py      # Comprehensive temperature sensor system
-├── communication/           # CAN bus and telemetry
+├── communication/           # CAN bus, cellular telemetry, LoRaWAN (RAK)
 ├── ai/                      # Autopilot and AI systems
 ├── ui/                      # User interfaces
 ├── config/                  # Configuration files
@@ -199,6 +200,7 @@ See [architecture.txt](architecture.txt) for detailed structure.
    - Configure battery parameters
    - Adjust sensor settings
    - Enable/disable features as needed
+   - For **LoRaWAN** (RAK4631 / USB): set `lorawan.serial_port` (e.g. `/dev/ttyACM0`), `band`, and OTAA keys; use `lorawan.simulation_mode: true` until the radio is provisioned on your network server
 
    See [Configuration Documentation](docs/configuration.md) for detailed parameter reference.
 
@@ -303,7 +305,7 @@ Once the system is running, the dashboard is automatically available at:
   - REST API endpoint at `/api/status`
   - Control interface for vehicle operations (accelerate, brake, drive modes, charging, autopilot)
   - Responsive web interface accessible from any device on the network
-  - Automatic integration with CAN bus, BMS, motor controller, and sensors
+  - Automatic integration with CAN bus, BMS, motor controller, sensors, cellular telemetry, and LoRaWAN status (when enabled)
 
 **Standalone dashboard mode (alternative):**
 If you want to run the dashboard separately without the full EV system:
@@ -387,6 +389,7 @@ Key configuration sections:
 - Safety system configuration (temperature thresholds, thermal runaway rates, voltage/current limits)
 - Diagnostics system configuration (log directory, DTC settings)
 - Telemetry settings (server URL, cellular APN, update intervals)
+- LoRaWAN settings (serial port, band, OTAA keys, sensor groups in uplink, payload size)
 - IMU sensor configuration:
   - Sensor type (MPU-6050 or MPU-9250)
   - I2C address and bus
@@ -483,6 +486,7 @@ The system implements standard EV CAN protocols:
   - `numpy` - Numerical computations
   - `flask` - Web framework for dashboard
   - `flask-socketio` - WebSocket support for real-time updates
+  - `pyserial` - Serial ports (LoRaWAN RAK module, GPS, and other UART devices)
   - `alpamayo-tools` - Optional extra (`poetry install -E alpamayo`); requires Python ≥ 3.12; pulls PyTorch and related packages
   - `pytest` - Testing framework (dev)
   - `pytest-cov` - Test coverage (dev)
@@ -490,7 +494,6 @@ The system implements standard EV CAN protocols:
 
 Optional (for VESC):
 - `pyvesc` - VESC Python library (installed via integration script)
-- `pyserial` - Serial communication
 
 Optional (for Telemetry):
 - `quecpython` - Quectel QuecPython library (installed via integration script)
@@ -500,9 +503,6 @@ Optional (for IMU):
 - `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
 - `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
 - `smbus2` - I2C communication library (installed via integration script)
-
-Optional (for GPS):
-- `pyserial` - Serial communication for NMEA GPS receivers
 
 ## License
 
@@ -525,6 +525,7 @@ See [LICENSE](LICENSE) for full license text.
 - Diagnostics System: ✅ Implemented (OBD-II style DTC system, limp-home modes, fault logging)
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
+- LoRaWAN uplink: ✅ Implemented (RAK AT / multi-sensor snapshot + dashboard)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)
 - IMU Sensor System: ✅ Implemented (MPU-6050/MPU-9250 support)
 - Sensor Integration: ✅ Implemented

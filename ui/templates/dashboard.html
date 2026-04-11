@@ -494,6 +494,47 @@
                 </div>
             </div>
 
+            <!-- LoRaWAN (multi-sensor uplink) -->
+            <div class="card">
+                <h2>📡 LoRaWAN</h2>
+                <div class="metric">
+                    <span class="metric-label">State</span>
+                    <span class="metric-value"><span class="state-badge" id="lorawan-state">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Mode</span>
+                    <span class="metric-value"><span id="lorawan-mode">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Joined</span>
+                    <span class="metric-value"><span id="lorawan-joined">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uplinks OK</span>
+                    <span class="metric-value"><span id="lorawan-uplinks-ok">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uplinks Failed</span>
+                    <span class="metric-value"><span id="lorawan-uplinks-fail">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last Uplink</span>
+                    <span class="metric-value"><span id="lorawan-last-uplink">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last RSSI / SNR</span>
+                    <span class="metric-value"><span id="lorawan-rf">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Payload (hex preview)</span>
+                    <span class="metric-value mono" id="lorawan-payload-preview" style="font-size:0.75rem;word-break:break-all;">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Sensor snapshot (uplink)</span>
+                </div>
+                <pre class="log-box" id="lorawan-sensor-snapshot" style="max-height:14rem;overflow:auto;">No snapshot yet.</pre>
+            </div>
+
             <!-- Deployment Card -->
             <div class="card">
                 <h2>🧰 Project Deployment</h2>
@@ -805,6 +846,50 @@
                         ? formatTimestamp(data.telemetry.stats.last_successful_send)
                         : '--'
                 );
+            }
+
+            // LoRaWAN + aggregated sensor payload
+            if (data.lorawan) {
+                const lw = data.lorawan;
+                if (!lw.enabled) {
+                    updateStateBadge('lorawan-state', lw.state || 'disabled');
+                    updateElement('lorawan-mode', 'Disabled');
+                    updateElement('lorawan-joined', '--');
+                    updateElement('lorawan-uplinks-ok', '0');
+                    updateElement('lorawan-uplinks-fail', '0');
+                    updateElement('lorawan-last-uplink', '--');
+                    updateElement('lorawan-rf', '--');
+                    updateElement('lorawan-payload-preview', '--');
+                    const snapElOff = document.getElementById('lorawan-sensor-snapshot');
+                    if (snapElOff) {
+                        snapElOff.textContent = 'LoRaWAN is disabled in configuration.';
+                    }
+                } else {
+                    updateStateBadge('lorawan-state', lw.state || '--');
+                    updateElement('lorawan-mode', lw.simulation_mode ? 'Simulation' : 'Hardware');
+                    updateElement('lorawan-joined', lw.joined ? 'Yes' : 'No');
+                    const st = lw.stats || {};
+                    updateElement('lorawan-uplinks-ok', st.uplinks_sent != null ? st.uplinks_sent : 0);
+                    updateElement('lorawan-uplinks-fail', st.uplinks_failed != null ? st.uplinks_failed : 0);
+                    updateElement(
+                        'lorawan-last-uplink',
+                        st.last_uplink_time ? formatTimestamp(st.last_uplink_time) : '--'
+                    );
+                    let rf = '--';
+                    if (st.last_rssi != null || st.last_snr != null) {
+                        rf = `${st.last_rssi != null ? st.last_rssi + ' dBm' : '--'} / ${st.last_snr != null ? st.last_snr : '--'}`;
+                    }
+                    updateElement('lorawan-rf', rf);
+                    updateElement('lorawan-payload-preview', lw.last_payload_hex_preview || '--');
+                    const snapEl = document.getElementById('lorawan-sensor-snapshot');
+                    if (snapEl) {
+                        const snap = lw.sensor_snapshot;
+                        snapEl.textContent =
+                            snap && Object.keys(snap).length
+                                ? JSON.stringify(snap, null, 2)
+                                : '(empty - waiting for sensor data)';
+                    }
+                }
             }
 
             if (data.deployment) {

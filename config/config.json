@@ -209,6 +209,32 @@
     "cellular_password": "",
     "simulation_mode": true
   },
+  "lorawan": {
+    "enabled": true,
+    "simulation_mode": true,
+    "serial_port": "/dev/ttyACM0",
+    "baudrate": 115200,
+    "band": 10,
+    "dev_eui": "",
+    "app_eui": "",
+    "app_key": "",
+    "application_port": 2,
+    "confirmed_uplink": false,
+    "update_interval_s": 60.0,
+    "max_payload_bytes": 51,
+    "join_timeout_s": 120.0,
+    "at_timeout_s": 5.0,
+    "send_timeout_s": 15.0,
+    "sensor_sources": {
+      "battery": true,
+      "motor": true,
+      "vehicle": true,
+      "charging": true,
+      "temperature": true,
+      "gps": true,
+      "imu": true
+    }
+  },
   "ui": {
     "dashboard_enabled": true,
     "mobile_app_enabled": true,

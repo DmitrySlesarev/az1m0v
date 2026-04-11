@@ -42,7 +42,8 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 - **GPS**: Positioning and navigation data
 - **Temperature Sensors**: Thermal monitoring (feeds BMS, motor, charging)
 - **CAN Bus**: Vehicle network communication
-- **Telemetry**: Remote data transmission
+- **Telemetry**: Remote data transmission (cellular / Quectel-oriented)
+- **LoRaWAN**: Optional RAK AT USB uplink; aggregates a multi-sensor snapshot and surfaces it on the dashboard (see `lorawan` in [configuration.md](configuration.md))
 
 ### User Interfaces
 - **Dashboard**: Primary control interface
