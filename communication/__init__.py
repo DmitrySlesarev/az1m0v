@@ -7,6 +7,7 @@ from communication.telemetry import (
     TelemetryState,
 )
 from communication.lorawan import LoRaWANManager, LoRaWANState, LoRaWANStats
+from communication.bench_mvp_bridge import BenchMVPBridge
 
 __all__: list[str] = [
     "TelemetrySystem",
@@ -16,4 +17,5 @@ __all__: list[str] = [
     "LoRaWANManager",
     "LoRaWANState",
     "LoRaWANStats",
+    "BenchMVPBridge",
 ]

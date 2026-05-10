@@ -78,6 +78,7 @@ class EVDashboard:
                 'sensor_snapshot': {},
             },
             'safety': {},
+            'bench_network': {},
             'deployment': self.deployment_manager.get_status(),
             'arduino': {
                 'enabled': False,
@@ -741,7 +742,8 @@ class EVDashboard:
         
         Args:
             data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature',
-                       'autopilot', 'telemetry', 'lorawan', 'safety', 'deployment', 'arduino', 'system')
+                       'autopilot', 'telemetry', 'lorawan', 'safety', 'bench_network',
+                       'deployment', 'arduino', 'system')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:

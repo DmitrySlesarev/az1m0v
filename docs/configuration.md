@@ -104,6 +104,22 @@ a reference point so downstream systems can be exercised.
 | `can_bus_enabled` | boolean | Enable CAN bus communication | true/false | true |
 | `update_interval_ms` | integer | Communication update interval | ≥ 1 ms | 1000 |
 
+### Bench MVP Bridge Configuration (optional)
+
+`bench_mvp` is intended for Raspberry Pi lab benches with Arduino and RAK4630 attached over USB.
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `enabled` | boolean | Enable bench bridge | true/false | false |
+| `simulation_mode` | boolean | Simulate serial inputs when hardware unavailable | true/false | true |
+| `prefer_lorawan` | boolean | Prefer dual-link operation when LoRaWAN is healthy | true/false | true |
+| `heartbeat_timeout_s` | number | Link heartbeat timeout window | ≥ 0.1 s | 10.0 |
+| `lora_min_rssi_dbm` | number | Minimum RSSI for healthy LoRaWAN path | dBm | -120 |
+| `arduino_port` | string | Arduino serial port | Path | "/dev/ttyACM0" |
+| `rak_port` | string | RAK4630 serial port | Path | "/dev/ttyACM1" |
+| `default_baudrate` | integer | Default serial baudrate | ≥ 1200 | 115200 |
+| `read_timeout_s` | number | Serial read timeout | ≥ 0.001 s | 0.01 |
+
 ### Telemetry Configuration
 
 | Parameter | Type | Description | Range/Units | Example |
