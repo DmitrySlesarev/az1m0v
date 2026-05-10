@@ -12,15 +12,18 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 
 ### System Architecture
 - **[Architecture Overview](../architecture.txt)** - High-level system structure and component organization
+- **[EV Bench Architecture](EV_BENCH_ARCHITECTURE.md)** - MVP bench topology with Raspberry Pi + CAN + Arduino + RAK4630 and extension to real EV prototype
+- **[EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md)** - Iterative build plan and phased purchasing checklist
 
 ## Quick Start
 
 1. **Configuration Setup**: Start with the [Configuration Guide](configuration.md) to understand and customize system parameters
-2. **Installation**: Use the setup script to initialize the environment:
+2. **Bench/Prototype Planning**: Review [EV Bench Architecture](EV_BENCH_ARCHITECTURE.md) and [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md) before wiring hardware
+3. **Installation**: Use the setup script to initialize the environment:
    ```bash
    ./scripts/setup.sh
    ```
-3. **Testing**: Run the test suite to verify installation:
+4. **Testing**: Run the test suite to verify installation:
    ```bash
    poetry run pytest -q
    ```
