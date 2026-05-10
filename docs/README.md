@@ -15,6 +15,7 @@ Welcome to the Electric Vehicle Management System documentation. This documentat
 - **[EV Bench Architecture](EV_BENCH_ARCHITECTURE.md)** - MVP bench topology with Raspberry Pi + CAN + Arduino + RAK4630 and extension to real EV prototype
 - **[EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md)** - Iterative build plan and phased purchasing checklist
 - **[Arduino Porting Guide](ARDUINO_PORTING.md)** - C firmware-ready control primitives and flashing notes
+- **[Arduino Flashing Manual](ARDUINO_FLASHING_MANUAL.md)** - Detailed step-by-step firmware flashing and troubleshooting guide
 
 ## Quick Start
 
