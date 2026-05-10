@@ -8,6 +8,7 @@ For iterative planning and phased procurement, see:
 
 - [EV Bench Architecture](EV_BENCH_ARCHITECTURE.md)
 - [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md)
+- [Arduino Porting Guide](ARDUINO_PORTING.md)
 
 ## Table of Contents
 

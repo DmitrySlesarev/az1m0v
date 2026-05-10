@@ -176,6 +176,7 @@ az1m0v/
 ├── communication/           # CAN bus, cellular telemetry, LoRaWAN (RAK)
 ├── ai/                      # Autopilot and AI systems
 ├── ui/                      # User interfaces
+├── firmware/arduino/        # Arduino C firmware artifacts for bench/edge control
 ├── config/                  # Configuration files
 ├── scripts/integration/     # Build and integration scripts
 └── tests/                   # Comprehensive test suite
@@ -431,6 +432,7 @@ Key configuration sections:
 - **[Architecture Diagram](architecture.drawio)** - Visual system architecture (open in draw.io)
 - **[EV Bench Architecture](docs/EV_BENCH_ARCHITECTURE.md)** - Bench MVP design and extension path to real EV
 - **[EV Roadmap and Shopping List](docs/EV_ROADMAP_AND_SHOPPING_LIST.md)** - Iterative roadmap and phased purchase plan
+- **[Arduino Porting Guide](docs/ARDUINO_PORTING.md)** - C firmware pieces extracted from Python control logic
 
 ## Development
 
