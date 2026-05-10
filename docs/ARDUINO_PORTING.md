@@ -37,6 +37,10 @@ These routines are:
 
 ## 4) Flash workflow (manual)
 
+For the full, detailed flash manual, use:
+
+- [Arduino Flashing Manual](ARDUINO_FLASHING_MANUAL.md)
+
 1. Open `firmware/arduino/bench_mvp_controller.ino` in Arduino IDE.
 2. Keep `ev_drive_core.h` and `ev_drive_core.c` in the same sketch folder (or add as local library).
 3. Select your board and USB port.
