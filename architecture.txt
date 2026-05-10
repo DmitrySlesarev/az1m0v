@@ -99,11 +99,9 @@ az1m0v/ (EV Management System) — version 1.0.0 (first major release)
 │   │                                #   - Temperature sensor protocol (CAN IDs 0x400-0x406)
 │   │                                #   - Battery, motor, charging status messages
 │   │                                #   - ISO 11898 compliant
-│   └── telemetry.py                 # Telemetry data transmission (Quectel integration):
-│                                      #   - Remote data streaming
-│                                      #   - GPS location tracking
-│                                      #   - Error reporting
-│                                      #   - Cellular communication
+│   ├── telemetry.py                 # Telemetry data transmission (Quectel integration):
+│   │                                #   - Remote data streaming, GPS, errors, cellular
+│   └── lorawan.py                   # LoRaWAN uplink (RAK AT, multi-sensor JSON payload)
 ├── ui/
 │   ├── __init__.py
 │   ├── dashboard.py                 # Web-based dashboard with Flask + WebSocket:

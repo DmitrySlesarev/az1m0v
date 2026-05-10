@@ -161,10 +161,35 @@
     "can_bus_enabled": true,
     "update_interval_ms": 1000
   },
+  "bench_mvp": {
+    "enabled": false,
+    "simulation_mode": true,
+    "prefer_lorawan": true,
+    "heartbeat_timeout_s": 10.0,
+    "lora_min_rssi_dbm": -120.0,
+    "default_baudrate": 115200,
+    "read_timeout_s": 0.01,
+    "arduino_port": "/dev/ttyACM0",
+    "arduino_baudrate": 115200,
+    "rak_port": "/dev/ttyACM1",
+    "rak_baudrate": 115200
+  },
   "can_bus": {
     "channel": "can0",
     "bitrate": 500000,
     "interface": "socketcan"
+  },
+  "arduino_can": {
+    "enabled": false,
+    "status_can_id": 784,
+    "command_can_id": 785,
+    "analog_unit": "centi_c",
+    "listen_only_default": true,
+    "default_digital_outputs": 0,
+    "default_pwm_aux": 0,
+    "default_flags": 0,
+    "resend_command_interval_s": 1.0,
+    "inject_temperatures": []
   },
   "vehicle_controller": {
     "max_speed_kmh": 120.0,
@@ -196,6 +221,32 @@
     "cellular_username": "",
     "cellular_password": "",
     "simulation_mode": true
+  },
+  "lorawan": {
+    "enabled": true,
+    "simulation_mode": true,
+    "serial_port": "/dev/ttyACM0",
+    "baudrate": 115200,
+    "band": 10,
+    "dev_eui": "",
+    "app_eui": "",
+    "app_key": "",
+    "application_port": 2,
+    "confirmed_uplink": false,
+    "update_interval_s": 60.0,
+    "max_payload_bytes": 51,
+    "join_timeout_s": 120.0,
+    "at_timeout_s": 5.0,
+    "send_timeout_s": 15.0,
+    "sensor_sources": {
+      "battery": true,
+      "motor": true,
+      "vehicle": true,
+      "charging": true,
+      "temperature": true,
+      "gps": true,
+      "imu": true
+    }
   },
   "ui": {
     "dashboard_enabled": true,

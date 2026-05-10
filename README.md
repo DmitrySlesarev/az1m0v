@@ -4,6 +4,21 @@
 
 An open-source Electric Vehicle (EV) management system providing comprehensive control and monitoring capabilities for electric vehicles.
 
+## Bench MVP and Prototype Roadmap
+
+This repository now includes an iterative hardware plan based on:
+
+- Raspberry Pi as the main module
+- RS485 CAN HAT + MCP2515 CAN chain
+- Arduino over USB 2.0
+- RAK4630 WisBlock over USB 2.0
+- Future STM32F407 integration
+
+Use these documents first if you are building from a real bench setup:
+
+- **[EV Bench Architecture](docs/EV_BENCH_ARCHITECTURE.md)** - MVP architecture and dual-link CAN + LoRaWAN strategy with fallback rules
+- **[EV Roadmap and Shopping List](docs/EV_ROADMAP_AND_SHOPPING_LIST.md)** - phase-by-phase build roadmap (bench -> real-size no trolley -> full-size) and purchase checklist
+
 ## Overview
 
 az1m0v is a complete EV management platform featuring battery management, motor control, sensor integration, CAN bus communication, and AI-powered autopilot capabilities. The system is designed with modularity and extensibility in mind, following industry best practices.
@@ -86,6 +101,7 @@ az1m0v is a complete EV management platform featuring battery management, motor 
   - Error reporting and diagnostics
   - Configurable update intervals and retry logic
   - Simulation mode for development
+- **LoRaWAN (RAK AT modules, e.g. RAK4631)**: Optional USB serial uplink using RUI3-style AT commands; collects a configurable **multi-sensor snapshot** (battery, motor, vehicle state, charging, temperature summary, GPS, IMU) and shows link status plus the encoded payload preview on the **web dashboard**. Uses `pyserial` for hardware mode; `simulation_mode` for bench testing without RF.
 
 ### Sensors & Perception
 - **IMU (Inertial Measurement Unit)**: Vehicle dynamics and orientation
@@ -157,9 +173,10 @@ az1m0v/
 │   └── diagnostics.py      # OBD-II style diagnostics (DTC, limp-home, fault logging)
 ├── sensors/                 # Sensor interfaces
 │   ├── temperature.py      # Comprehensive temperature sensor system
-├── communication/           # CAN bus and telemetry
+├── communication/           # CAN bus, cellular telemetry, LoRaWAN (RAK)
 ├── ai/                      # Autopilot and AI systems
 ├── ui/                      # User interfaces
+├── firmware/arduino/        # Arduino C firmware artifacts for bench/edge control
 ├── config/                  # Configuration files
 ├── scripts/integration/     # Build and integration scripts
 └── tests/                   # Comprehensive test suite
@@ -199,6 +216,7 @@ See [architecture.txt](architecture.txt) for detailed structure.
    - Configure battery parameters
    - Adjust sensor settings
    - Enable/disable features as needed
+   - For **LoRaWAN** (RAK4631 / USB): set `lorawan.serial_port` (e.g. `/dev/ttyACM0`), `band`, and OTAA keys; use `lorawan.simulation_mode: true` until the radio is provisioned on your network server
 
    See [Configuration Documentation](docs/configuration.md) for detailed parameter reference.
 
@@ -303,7 +321,7 @@ Once the system is running, the dashboard is automatically available at:
   - REST API endpoint at `/api/status`
   - Control interface for vehicle operations (accelerate, brake, drive modes, charging, autopilot)
   - Responsive web interface accessible from any device on the network
-  - Automatic integration with CAN bus, BMS, motor controller, and sensors
+  - Automatic integration with CAN bus, BMS, motor controller, sensors, cellular telemetry, and LoRaWAN status (when enabled)
 
 **Standalone dashboard mode (alternative):**
 If you want to run the dashboard separately without the full EV system:
@@ -387,6 +405,7 @@ Key configuration sections:
 - Safety system configuration (temperature thresholds, thermal runaway rates, voltage/current limits)
 - Diagnostics system configuration (log directory, DTC settings)
 - Telemetry settings (server URL, cellular APN, update intervals)
+- LoRaWAN settings (serial port, band, OTAA keys, sensor groups in uplink, payload size)
 - IMU sensor configuration:
   - Sensor type (MPU-6050 or MPU-9250)
   - I2C address and bus
@@ -399,6 +418,7 @@ Key configuration sections:
   - Update intervals and thresholds
 - Sensor enablement
 - CAN bus settings
+- Bench MVP bridge settings (`bench_mvp`) for Raspberry Pi + Arduino + RAK4630 serial/CAN integration
 - AI/autopilot configuration
   - Provider selection (`autonomy_provider`: `rule_based` or `alpamayo`)
   - Alpamayo adapter configuration (`alpamayo_*` keys)
@@ -410,6 +430,10 @@ Key configuration sections:
 - **[Configuration Guide](docs/configuration.md)** - Complete configuration reference
 - **[Architecture Overview](architecture.txt)** - System structure and components
 - **[Architecture Diagram](architecture.drawio)** - Visual system architecture (open in draw.io)
+- **[EV Bench Architecture](docs/EV_BENCH_ARCHITECTURE.md)** - Bench MVP design and extension path to real EV
+- **[EV Roadmap and Shopping List](docs/EV_ROADMAP_AND_SHOPPING_LIST.md)** - Iterative roadmap and phased purchase plan
+- **[Arduino Porting Guide](docs/ARDUINO_PORTING.md)** - C firmware pieces extracted from Python control logic
+- **[Arduino Flashing Manual](docs/ARDUINO_FLASHING_MANUAL.md)** - Detailed step-by-step flash workflow and troubleshooting
 
 ## Development
 
@@ -474,6 +498,24 @@ The system implements standard EV CAN protocols:
 - Message handlers and routing
 - Support for battery, motor, charging, and temperature data
 
+### Bench MVP Bridge (Arduino + RAK4630)
+
+To run the current lab bench as an MVP, enable the `bench_mvp` section in `config/config.json`:
+
+```json
+{
+  "bench_mvp": {
+    "enabled": true,
+    "simulation_mode": false,
+    "arduino_port": "/dev/ttyACM0",
+    "rak_port": "/dev/ttyACM1",
+    "prefer_lorawan": true
+  }
+}
+```
+
+The bridge ingests one-JSON-line messages from Arduino/RAK serial links, updates runtime status, emits CAN-compatible updates, and automatically falls back to CAN-primary mode when LoRaWAN link quality drops.
+
 ## Requirements
 
 - **Python**: 3.11–3.13
@@ -483,6 +525,7 @@ The system implements standard EV CAN protocols:
   - `numpy` - Numerical computations
   - `flask` - Web framework for dashboard
   - `flask-socketio` - WebSocket support for real-time updates
+  - `pyserial` - Serial ports (LoRaWAN RAK module, GPS, and other UART devices)
   - `alpamayo-tools` - Optional extra (`poetry install -E alpamayo`); requires Python ≥ 3.12; pulls PyTorch and related packages
   - `pytest` - Testing framework (dev)
   - `pytest-cov` - Test coverage (dev)
@@ -490,7 +533,6 @@ The system implements standard EV CAN protocols:
 
 Optional (for VESC):
 - `pyvesc` - VESC Python library (installed via integration script)
-- `pyserial` - Serial communication
 
 Optional (for Telemetry):
 - `quecpython` - Quectel QuecPython library (installed via integration script)
@@ -500,9 +542,6 @@ Optional (for IMU):
 - `mpu6050-raspberrypi` - MPU-6050 Python library (installed via integration script)
 - `mpu9250-jmdev` - MPU-9250 Python library (installed via integration script)
 - `smbus2` - I2C communication library (installed via integration script)
-
-Optional (for GPS):
-- `pyserial` - Serial communication for NMEA GPS receivers
 
 ## License
 
@@ -525,6 +564,7 @@ See [LICENSE](LICENSE) for full license text.
 - Diagnostics System: ✅ Implemented (OBD-II style DTC system, limp-home modes, fault logging)
 - CAN Bus Communication: ✅ Implemented (with temperature sensor protocol)
 - Telemetry System: ✅ Implemented (Quectel integration)
+- LoRaWAN uplink: ✅ Implemented (RAK AT / multi-sensor snapshot + dashboard)
 - Temperature Sensor System: ✅ Implemented (comprehensive multi-point monitoring)
 - IMU Sensor System: ✅ Implemented (MPU-6050/MPU-9250 support)
 - Sensor Integration: ✅ Implemented

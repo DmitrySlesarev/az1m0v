@@ -104,6 +104,22 @@ a reference point so downstream systems can be exercised.
 | `can_bus_enabled` | boolean | Enable CAN bus communication | true/false | true |
 | `update_interval_ms` | integer | Communication update interval | ≥ 1 ms | 1000 |
 
+### Bench MVP Bridge Configuration (optional)
+
+`bench_mvp` is intended for Raspberry Pi lab benches with Arduino and RAK4630 attached over USB.
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `enabled` | boolean | Enable bench bridge | true/false | false |
+| `simulation_mode` | boolean | Simulate serial inputs when hardware unavailable | true/false | true |
+| `prefer_lorawan` | boolean | Prefer dual-link operation when LoRaWAN is healthy | true/false | true |
+| `heartbeat_timeout_s` | number | Link heartbeat timeout window | ≥ 0.1 s | 10.0 |
+| `lora_min_rssi_dbm` | number | Minimum RSSI for healthy LoRaWAN path | dBm | -120 |
+| `arduino_port` | string | Arduino serial port | Path | "/dev/ttyACM0" |
+| `rak_port` | string | RAK4630 serial port | Path | "/dev/ttyACM1" |
+| `default_baudrate` | integer | Default serial baudrate | ≥ 1200 | 115200 |
+| `read_timeout_s` | number | Serial read timeout | ≥ 0.001 s | 0.01 |
+
 ### Telemetry Configuration
 
 | Parameter | Type | Description | Range/Units | Example |
@@ -121,6 +137,31 @@ a reference point so downstream systems can be exercised.
 | `cellular_username` | string | Cellular username | String | "" |
 | `cellular_password` | string | Cellular password | String | "" |
 | `simulation_mode` | boolean | Enable simulation mode | true/false | true |
+
+### LoRaWAN configuration (RAK module, e.g. RAK4631)
+
+Optional uplink path: aggregates battery, motor, vehicle, charging, temperature summary, GPS, and IMU into a compact JSON payload and sends it over LoRaWAN using **RUI3-style AT commands** on a USB serial port (`AT+NWM`, `AT+BAND`, `AT+DEVEUI`, `AT+APPEUI`, `AT+APPKEY`, `AT+JOIN`, `AT+SEND`). The web dashboard shows link state, uplink counters, and the current sensor snapshot used for encoding.
+
+| Parameter | Type | Description | Range/Units | Example |
+|-----------|------|-------------|-------------|---------|
+| `enabled` | boolean | Enable LoRaWAN manager | true/false | false |
+| `simulation_mode` | boolean | Bench mode (no serial / no RF) | true/false | true |
+| `serial_port` | string | Device path for the RAK USB serial | Path | `"/dev/ttyACM0"` |
+| `baudrate` | integer | Serial baud rate | ≥ 1200 | 115200 |
+| `band` | integer | RAK `AT+BAND` region index | See RAK docs | 10 |
+| `dev_eui` | string | 16 hex chars (no `0x`) | OTAA | `"0123456789ABCDEF"` |
+| `app_eui` | string | Join EUI, 16 hex chars | OTAA | `"FEDCBA9876543210"` |
+| `app_key` | string | AppKey, 32 hex chars | OTAA | 32 hex digits |
+| `application_port` | integer | LoRaWAN FPort | 1–223 | 2 |
+| `confirmed_uplink` | boolean | Request confirmed uplinks | true/false | false |
+| `update_interval_s` | number | Minimum seconds between uplinks | ≥ 1 s | 60.0 |
+| `max_payload_bytes` | integer | Max application payload (JSON clipped) | 1–242 | 51 |
+| `join_timeout_s` | number | OTAA join wait | ≥ 5 s | 120.0 |
+| `at_timeout_s` | number | Per AT command read window | ≥ 0.2 s | 5.0 |
+| `send_timeout_s` | number | `AT+SEND` response wait | ≥ 1 s | 15.0 |
+| `sensor_sources` | object | Include/exclude sensor groups in payload | booleans | see `config.json` |
+
+**Security:** Store production keys outside the repo when possible (e.g. environment injection or a secrets file not committed).
 
 ### User Interface Configuration
 
@@ -185,6 +226,7 @@ The following sections are required in the configuration file:
 
 The following sections are optional but may be included:
 - `telemetry` - Telemetry system configuration (for remote monitoring)
+- `lorawan` - LoRaWAN uplink via RAK AT module (multi-sensor snapshot; see table above)
 - `temperature_sensors` - Advanced temperature sensor configuration (extends basic sensor config)
 
 ## Usage Examples
@@ -241,6 +283,39 @@ The motor controller manages the VESC (Vedder Electronic Speed Controller) or ot
     "cellular_username": "",
     "cellular_password": "",
     "simulation_mode": true
+  }
+}
+```
+
+### LoRaWAN configuration example
+
+```json
+{
+  "lorawan": {
+    "enabled": true,
+    "simulation_mode": true,
+    "serial_port": "/dev/ttyACM0",
+    "baudrate": 115200,
+    "band": 10,
+    "dev_eui": "",
+    "app_eui": "",
+    "app_key": "",
+    "application_port": 2,
+    "confirmed_uplink": false,
+    "update_interval_s": 60.0,
+    "max_payload_bytes": 51,
+    "join_timeout_s": 120.0,
+    "at_timeout_s": 5.0,
+    "send_timeout_s": 15.0,
+    "sensor_sources": {
+      "battery": true,
+      "motor": true,
+      "vehicle": true,
+      "charging": true,
+      "temperature": true,
+      "gps": true,
+      "imu": true
+    }
   }
 }
 ```

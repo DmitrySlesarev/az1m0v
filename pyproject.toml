@@ -11,6 +11,7 @@ package-mode = false
 python = ">=3.11,<3.14"
 jsonschema = "^4.0"
 numpy = "^2.0.0"
+pyserial = "^3.5"
 flask = "^3.0.0"
 flask-socketio = "^5.3.0"
 # Optional: pulls PyTorch; requires Python >=3.12 per upstream. Use: poetry install -E alpamayo

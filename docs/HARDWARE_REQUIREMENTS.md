@@ -4,6 +4,12 @@
 
 This document provides a comprehensive list of all hardware components required to implement the az1m0v Electric Vehicle Management System.
 
+For iterative planning and phased procurement, see:
+
+- [EV Bench Architecture](EV_BENCH_ARCHITECTURE.md)
+- [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md)
+- [Arduino Porting Guide](ARDUINO_PORTING.md)
+
 ## Table of Contents
 
 0. [Minimal Bench Build (Low Cost)](#minimal-bench-build-low-cost)
@@ -38,6 +44,16 @@ Optional for bench bring-up:
 - GPS and camera systems can be deferred to reduce cost
 
 This minimal build keeps the system testable on real hardware while leaving advanced autonomy hardware optional.
+
+### MVP update for current bench
+
+For the specific bench setup (Raspberry Pi + RS485 CAN HAT + MCP2515 + Arduino + RAK4630), start with:
+
+- CAN bus as mandatory deterministic channel
+- LoRaWAN (RAK4630) as parallel supervisory channel
+- Fallback policy: if LoRaWAN degrades, continue operation on CAN-only profile
+
+The phased purchase plan is maintained in [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md).
 
 ---
 
@@ -161,6 +177,14 @@ This minimal build keeps the system testable on real hardware while leaving adva
   - **Antennas**:
     - Cellular antenna (4G/LTE)
     - GPS antenna (if module includes GPS)
+
+### LoRaWAN (optional, az1m0v `lorawan` config)
+- **RAK WisBlock / WisCore module** (e.g. **RAK4631**: nRF52840 + SX1262)
+  - USB connection to the host (often `/dev/ttyACM0` on Linux; Adafruit WisCore may enumerate as `239a:8029`)
+  - Firmware exposing **RUI3-style AT commands** (network mode LoRaWAN, band, OTAA keys, join, send)
+  - **LoRa antenna** matched to your region and `AT+BAND` setting
+  - **Network server**: TTN, ChirpStack, or equivalent to receive application payloads from the device
+  - The application builds a **multi-sensor JSON snapshot** (battery, motor, vehicle, charging, temperatures, GPS, IMU subsets) and displays it on the web dashboard; the air payload is clipped to `max_payload_bytes` for the current data rate.
 
 ---
 

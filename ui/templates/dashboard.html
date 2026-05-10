@@ -6,6 +6,19 @@
     <title>EV Dashboard - az1m0v 1.0.0</title>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <style>
+        :root {
+            --bg: #0a0d14;
+            --bg-secondary: #121722;
+            --card: rgba(23, 30, 45, 0.88);
+            --line: rgba(255, 255, 255, 0.08);
+            --text: #f6f7fb;
+            --muted: #99a3b8;
+            --accent: #3f8cff;
+            --good: #2dd881;
+            --warn: #ffc857;
+            --bad: #ff5d73;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,87 +26,130 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background:
+                radial-gradient(1200px 600px at 15% -20%, #1c2f4f 0%, transparent 55%),
+                radial-gradient(900px 500px at 85% -10%, #1f2d45 0%, transparent 50%),
+                var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            padding: 22px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1480px;
             margin: 0 auto;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(35, 43, 62, 0.92), rgba(17, 22, 34, 0.92));
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
         }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .title-wrap h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 6px;
         }
 
         .app-version {
-            font-size: 0.95em;
-            opacity: 0.85;
-            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 0.88rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .connection-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 9px 14px;
+            font-weight: 600;
+        }
+
+        .btn-arduino {
+            font-size: 0.8em;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+
+        .btn-arduino:hover {
+            background: rgba(255,255,255,0.22);
         }
 
         .status-indicator {
             display: inline-block;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
+            animation: pulse 1.8s infinite;
         }
 
         .status-indicator.connected {
-            background-color: #4CAF50;
+            background-color: var(--good);
+            box-shadow: 0 0 12px rgba(45, 216, 129, 0.7);
         }
 
         .status-indicator.disconnected {
-            background-color: #f44336;
+            background-color: var(--bad);
+            box-shadow: 0 0 12px rgba(255, 93, 115, 0.6);
             animation: none;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.45; }
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: var(--card);
+            backdrop-filter: blur(6px);
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            padding: 16px 16px 14px;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
         }
 
         .card h2 {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            padding-bottom: 10px;
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+            font-weight: 600;
         }
 
         .metric {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--line);
         }
 
         .metric:last-child {
@@ -101,67 +157,100 @@
         }
 
         .metric-label {
-            font-weight: 500;
-            opacity: 0.9;
+            color: var(--muted);
+            font-size: 0.92rem;
+            letter-spacing: 0.02em;
         }
 
         .metric-value {
-            font-size: 1.2em;
-            font-weight: bold;
+            font-size: 1.02rem;
+            font-weight: 650;
+            text-align: right;
         }
 
         .metric-unit {
-            font-size: 0.8em;
-            opacity: 0.7;
-            margin-left: 5px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-left: 4px;
         }
 
         .battery-soc {
             width: 100%;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            height: 26px;
+            background: #121a28;
+            border: 1px solid var(--line);
+            border-radius: 999px;
             overflow: hidden;
             margin-top: 10px;
-            position: relative;
         }
 
         .battery-soc-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 50%, #FFC107 25%, #FF9800 75%, #f44336 100%);
-            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #24d17f 0%, #4edc90 45%, #8bcf54 70%, #ffc857 88%, #ff6d6d 100%);
+            transition: width 0.4s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000;
-            font-weight: bold;
+            color: #081018;
+            font-size: 0.82rem;
+            font-weight: 700;
         }
 
         .state-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 4px 11px;
+            min-width: 88px;
             text-transform: uppercase;
-            font-size: 0.9em;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
         }
 
-        .state-parked { background-color: #9E9E9E; }
-        .state-ready { background-color: #4CAF50; }
-        .state-driving { background-color: #2196F3; }
-        .state-charging { background-color: #FF9800; }
-        .state-standby { background-color: #607D8B; }
-        .state-connected { background-color: #4CAF50; }
-        .state-disconnected { background-color: #9E9E9E; }
-        .state-running { background-color: #2196F3; }
-        .state-succeeded { background-color: #4CAF50; }
-        .state-failed { background-color: #f44336; }
-        .state-idle { background-color: #607D8B; }
-        .state-warning { background-color: #FFC107; color: #111; }
-        .state-critical { background-color: #f44336; }
-        .state-normal { background-color: #4CAF50; }
-        .state-error { background-color: #f44336; }
-        .state-emergency { background-color: #f44336; animation: blink 1s infinite; }
+        .state-parked,
+        .state-standby,
+        .state-idle,
+        .state-disconnected {
+            background: rgba(148, 163, 184, 0.2);
+            color: #e2e8f0;
+        }
+
+        .state-ready,
+        .state-connected,
+        .state-succeeded,
+        .state-normal {
+            background: rgba(45, 216, 129, 0.2);
+            color: #70efb0;
+        }
+
+        .state-driving,
+        .state-running,
+        .state-dual_link {
+            background: rgba(63, 140, 255, 0.2);
+            color: #8eb7ff;
+        }
+
+        .state-charging,
+        .state-warning,
+        .state-can_primary {
+            background: rgba(255, 200, 87, 0.2);
+            color: #ffd780;
+        }
+
+        .state-failed,
+        .state-critical,
+        .state-error,
+        .state-emergency,
+        .state-can_only_safe {
+            background: rgba(255, 93, 115, 0.2);
+            color: #ff8b9d;
+        }
+
+        .state-emergency {
+            animation: blink 1s infinite;
+        }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
@@ -173,54 +262,49 @@
         }
 
         .can-stats .metric-value {
-            font-size: 1em;
-        }
-
-        .timestamp {
-            text-align: center;
-            margin-top: 20px;
-            opacity: 0.7;
-            font-size: 0.9em;
+            font-size: 0.98rem;
         }
 
         .temp-warning {
-            color: #FFC107;
-            font-weight: bold;
+            color: var(--warn);
+            font-weight: 700;
         }
 
         .temp-fault {
-            color: #f44336;
-            font-weight: bold;
+            color: var(--bad);
+            font-weight: 700;
             animation: blink 1s infinite;
         }
 
         .temp-normal {
-            color: #4CAF50;
+            color: var(--good);
         }
 
         .action-btn {
             width: 100%;
-            border: none;
-            border-radius: 10px;
+            border: 1px solid rgba(63, 140, 255, 0.35);
+            border-radius: 12px;
             padding: 10px 14px;
-            background: rgba(33, 150, 243, 0.9);
+            background: linear-gradient(180deg, rgba(63, 140, 255, 0.95), rgba(40, 114, 235, 0.95));
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             margin-top: 8px;
         }
 
         .action-btn:disabled {
-            background: rgba(120, 120, 120, 0.6);
+            background: rgba(120, 120, 120, 0.45);
+            border-color: rgba(200, 200, 200, 0.2);
             cursor: not-allowed;
         }
 
         .checkbox-row {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 6px;
+            gap: 7px;
             margin-top: 10px;
             font-size: 0.9em;
+            color: var(--muted);
         }
 
         .checkbox-row label {
@@ -232,24 +316,41 @@
         .log-box {
             margin-top: 10px;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(11, 16, 26, 0.85);
+            border: 1px solid var(--line);
             padding: 10px;
             max-height: 160px;
             overflow-y: auto;
-            font-family: monospace;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
             font-size: 0.8em;
             white-space: pre-wrap;
             word-break: break-word;
+            color: #bfcae1;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 0.88rem;
         }
 
         @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            body {
+                padding: 12px;
             }
 
-            h1 {
-                font-size: 2em;
+            header {
+                padding: 14px;
+            }
+
+            .title-wrap h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
         }
     </style>
@@ -257,9 +358,11 @@
 <body>
     <div class="container">
         <header>
-            <h1>⚡ EV Management Dashboard</h1>
-            <p class="app-version">az1m0v 1.0.0</p>
-            <p>
+            <div class="title-wrap">
+                <h1>⚡ EV Management Dashboard</h1>
+                <p class="app-version">az1m0v 1.0.0</p>
+            </div>
+            <p class="connection-pill">
                 <span class="status-indicator disconnected" id="statusIndicator"></span>
                 <span id="connectionStatus">Disconnected</span>
             </p>
@@ -480,6 +583,47 @@
                 </div>
             </div>
 
+            <!-- LoRaWAN (multi-sensor uplink) -->
+            <div class="card">
+                <h2>📡 LoRaWAN</h2>
+                <div class="metric">
+                    <span class="metric-label">State</span>
+                    <span class="metric-value"><span class="state-badge" id="lorawan-state">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Mode</span>
+                    <span class="metric-value"><span id="lorawan-mode">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Joined</span>
+                    <span class="metric-value"><span id="lorawan-joined">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uplinks OK</span>
+                    <span class="metric-value"><span id="lorawan-uplinks-ok">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Uplinks Failed</span>
+                    <span class="metric-value"><span id="lorawan-uplinks-fail">0</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last Uplink</span>
+                    <span class="metric-value"><span id="lorawan-last-uplink">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Last RSSI / SNR</span>
+                    <span class="metric-value"><span id="lorawan-rf">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Payload (hex preview)</span>
+                    <span class="metric-value mono" id="lorawan-payload-preview" style="font-size:0.75rem;word-break:break-all;">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Sensor snapshot (uplink)</span>
+                </div>
+                <pre class="log-box" id="lorawan-sensor-snapshot" style="max-height:14rem;overflow:auto;">No snapshot yet.</pre>
+            </div>
+
             <!-- Deployment Card -->
             <div class="card">
                 <h2>🧰 Project Deployment</h2>
@@ -504,6 +648,41 @@
                 </div>
                 <button id="deploy-button" class="action-btn" type="button">Deploy from scratch</button>
                 <div class="log-box" id="deploy-logs">No deployment logs yet.</div>
+            </div>
+
+            <!-- Bench Network Card -->
+            <div class="card">
+                <h2>🧠 Dual-Link Network</h2>
+                <div class="metric">
+                    <span class="metric-label">Operating Mode</span>
+                    <span class="metric-value"><span class="state-badge" id="bench-mode">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Arduino Link</span>
+                    <span class="metric-value"><span id="bench-arduino">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">RAK4630 Link</span>
+                    <span class="metric-value"><span id="bench-rak">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">CAN Backbone</span>
+                    <span class="metric-value"><span id="bench-can">--</span></span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">LoRa RSSI</span>
+                    <span class="metric-value">
+                        <span id="bench-rssi">--</span>
+                        <span class="metric-unit">dBm</span>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">LoRa SNR</span>
+                    <span class="metric-value">
+                        <span id="bench-snr">--</span>
+                        <span class="metric-unit">dB</span>
+                    </span>
+                </div>
             </div>
 
             <!-- Temperature Sensors Card -->
@@ -549,6 +728,67 @@
                     <span class="metric-value">
                         <span id="temp-charging-connector">--</span>
                         <span class="metric-unit">°C</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Arduino peripheral (CAN I/O coprocessor) -->
+            <div class="card" id="arduino-card">
+                <h2>🔧 Arduino peripheral (CAN)</h2>
+                <p class="muted" style="font-size:0.9em;margin-bottom:10px;">
+                    Delegates low-speed digital I/O and ADC (e.g. thermistors, relays, fan PWM).
+                    Requires MCP2515/CAN shield on the Arduino and <code>arduino_can.enabled</code> in config.
+                </p>
+                <div class="metric">
+                    <span class="metric-label">Active</span>
+                    <span class="metric-value" id="arduino-enabled">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">RX / TX frames</span>
+                    <span class="metric-value" id="arduino-frames">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">IDs (status / cmd)</span>
+                    <span class="metric-value" id="arduino-ids">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital in (hex)</span>
+                    <span class="metric-value" id="arduino-din">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Analog A0–A2 (°C)</span>
+                    <span class="metric-value" id="arduino-analog">--</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Listen only (no driven outputs)</span>
+                    <span class="metric-value">
+                        <label><input type="checkbox" id="arduino-listen-only" /> Enabled</label>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Digital out D0–D3</span>
+                    <span class="metric-value" style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <button type="button" class="btn-arduino" data-bit="0">D0 on</button>
+                        <button type="button" class="btn-arduino" data-bit="0" data-on="0">D0 off</button>
+                        <button type="button" class="btn-arduino" data-bit="1">D1 on</button>
+                        <button type="button" class="btn-arduino" data-bit="1" data-on="0">D1 off</button>
+                        <button type="button" class="btn-arduino" data-bit="2">D2 on</button>
+                        <button type="button" class="btn-arduino" data-bit="2" data-on="0">D2 off</button>
+                        <button type="button" class="btn-arduino" data-bit="3">D3 on</button>
+                        <button type="button" class="btn-arduino" data-bit="3" data-on="0">D3 off</button>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">PWM aux (0–255)</span>
+                    <span class="metric-value">
+                        <input type="number" id="arduino-pwm" min="0" max="255" value="0" style="width:4em;" />
+                        <button type="button" id="arduino-pwm-apply">Apply</button>
+                    </span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Push command</span>
+                    <span class="metric-value">
+                        <button type="button" id="arduino-flush">Send CAN command now</button>
                     </span>
                 </div>
             </div>
@@ -605,6 +845,45 @@
             connectionStatus.textContent = 'Disconnected';
             console.log('Disconnected from dashboard server');
         });
+
+        document.querySelectorAll('.btn-arduino').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const bit = parseInt(btn.getAttribute('data-bit'), 10);
+                const on = btn.getAttribute('data-on') !== '0';
+                socket.emit('control_command', {
+                    command: 'arduino_set_digital_bit',
+                    params: { bit, on },
+                });
+            });
+        });
+
+        const arduinoListenEl = document.getElementById('arduino-listen-only');
+        if (arduinoListenEl) {
+            arduinoListenEl.addEventListener('change', () => {
+                socket.emit('control_command', {
+                    command: 'arduino_set_listen_only',
+                    params: { enabled: arduinoListenEl.checked },
+                });
+            });
+        }
+
+        const arduinoPwmApply = document.getElementById('arduino-pwm-apply');
+        if (arduinoPwmApply) {
+            arduinoPwmApply.addEventListener('click', () => {
+                const v = parseInt(document.getElementById('arduino-pwm').value, 10);
+                socket.emit('control_command', {
+                    command: 'arduino_set_pwm',
+                    params: { pwm: Number.isFinite(v) ? v : 0 },
+                });
+            });
+        }
+
+        const arduinoFlush = document.getElementById('arduino-flush');
+        if (arduinoFlush) {
+            arduinoFlush.addEventListener('click', () => {
+                socket.emit('control_command', { command: 'arduino_send_command', params: {} });
+            });
+        }
 
         // Handle data updates
         socket.on('data_update', (data) => {
@@ -693,8 +972,56 @@
                 );
             }
 
+            // LoRaWAN + aggregated sensor payload
+            if (data.lorawan) {
+                const lw = data.lorawan;
+                if (!lw.enabled) {
+                    updateStateBadge('lorawan-state', lw.state || 'disabled');
+                    updateElement('lorawan-mode', 'Disabled');
+                    updateElement('lorawan-joined', '--');
+                    updateElement('lorawan-uplinks-ok', '0');
+                    updateElement('lorawan-uplinks-fail', '0');
+                    updateElement('lorawan-last-uplink', '--');
+                    updateElement('lorawan-rf', '--');
+                    updateElement('lorawan-payload-preview', '--');
+                    const snapElOff = document.getElementById('lorawan-sensor-snapshot');
+                    if (snapElOff) {
+                        snapElOff.textContent = 'LoRaWAN is disabled in configuration.';
+                    }
+                } else {
+                    updateStateBadge('lorawan-state', lw.state || '--');
+                    updateElement('lorawan-mode', lw.simulation_mode ? 'Simulation' : 'Hardware');
+                    updateElement('lorawan-joined', lw.joined ? 'Yes' : 'No');
+                    const st = lw.stats || {};
+                    updateElement('lorawan-uplinks-ok', st.uplinks_sent != null ? st.uplinks_sent : 0);
+                    updateElement('lorawan-uplinks-fail', st.uplinks_failed != null ? st.uplinks_failed : 0);
+                    updateElement(
+                        'lorawan-last-uplink',
+                        st.last_uplink_time ? formatTimestamp(st.last_uplink_time) : '--'
+                    );
+                    let rf = '--';
+                    if (st.last_rssi != null || st.last_snr != null) {
+                        rf = `${st.last_rssi != null ? st.last_rssi + ' dBm' : '--'} / ${st.last_snr != null ? st.last_snr : '--'}`;
+                    }
+                    updateElement('lorawan-rf', rf);
+                    updateElement('lorawan-payload-preview', lw.last_payload_hex_preview || '--');
+                    const snapEl = document.getElementById('lorawan-sensor-snapshot');
+                    if (snapEl) {
+                        const snap = lw.sensor_snapshot;
+                        snapEl.textContent =
+                            snap && Object.keys(snap).length
+                                ? JSON.stringify(snap, null, 2)
+                                : '(empty - waiting for sensor data)';
+                    }
+                }
+            }
+
             if (data.deployment) {
                 updateDeploymentStatus(data.deployment);
+            }
+
+            if (data.bench_network) {
+                updateBenchNetworkStatus(data.bench_network);
             }
 
             // Update temperature sensor data
@@ -745,6 +1072,43 @@
                 if (data.temperature.charging) {
                     updateTemperatureElement('temp-charging-port', data.temperature.charging.port, 60, 100);
                     updateTemperatureElement('temp-charging-connector', data.temperature.charging.connector, 60, 100);
+                }
+            }
+
+            // Arduino peripheral (CAN)
+            if (data.arduino) {
+                const a = data.arduino;
+                const active = a.configured && a.enabled;
+                updateElement('arduino-enabled', active ? 'Yes' : 'No');
+                updateElement('arduino-frames', `${a.frames_rx ?? 0} / ${a.frames_tx ?? 0}`);
+                updateElement(
+                    'arduino-ids',
+                    (a.status_can_id_hex && a.command_can_id_hex)
+                        ? `0x${a.status_can_id_hex} / 0x${a.command_can_id_hex}`
+                        : '--'
+                );
+                const din = a.digital_inputs;
+                updateElement(
+                    'arduino-din',
+                    (din !== null && din !== undefined) ? '0x' + Number(din).toString(16) : '--'
+                );
+                const ana = a.analog_c;
+                updateElement(
+                    'arduino-analog',
+                    Array.isArray(ana)
+                        ? ana.map((x) => (x === null || x === undefined ? '--' : Number(x).toFixed(2))).join(', ')
+                        : '--'
+                );
+                const lo = document.getElementById('arduino-listen-only');
+                if (lo) {
+                    const want = !!a.listen_only;
+                    if (lo.checked !== want) {
+                        lo.checked = want;
+                    }
+                }
+                const pwmEl = document.getElementById('arduino-pwm');
+                if (pwmEl && document.activeElement !== pwmEl) {
+                    pwmEl.value = String(a.pwm_aux ?? 0);
                 }
             }
 
@@ -870,6 +1234,31 @@
                     logsElement.textContent = 'No deployment logs yet.';
                 }
             }
+        }
+
+        function updateBenchNetworkStatus(status) {
+            if (!status) {
+                return;
+            }
+
+            updateStateBadge('bench-mode', status.mode || '--');
+            const links = status.links || {};
+
+            updateElement('bench-arduino', links.arduino ? (links.arduino.online ? 'Online' : 'Offline') : '--');
+            updateElement('bench-rak', links.rak4630 ? (links.rak4630.online ? 'Online' : 'Offline') : '--');
+            updateElement('bench-can', links.can ? (links.can.online ? 'Online' : 'Offline') : '--');
+            updateElement(
+                'bench-rssi',
+                links.rak4630 && links.rak4630.rssi_dbm !== undefined
+                    ? Number(links.rak4630.rssi_dbm).toFixed(1)
+                    : '--'
+            );
+            updateElement(
+                'bench-snr',
+                links.rak4630 && links.rak4630.snr_db !== undefined
+                    ? Number(links.rak4630.snr_db).toFixed(1)
+                    : '--'
+            );
         }
 
         async function fetchDeploymentStatus() {

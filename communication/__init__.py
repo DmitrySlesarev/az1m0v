@@ -4,12 +4,18 @@ from communication.telemetry import (
     TelemetrySystem,
     TelemetryData,
     TelemetryConfig,
-    TelemetryState
+    TelemetryState,
 )
+from communication.lorawan import LoRaWANManager, LoRaWANState, LoRaWANStats
+from communication.bench_mvp_bridge import BenchMVPBridge
 
 __all__: list[str] = [
     "TelemetrySystem",
     "TelemetryData",
     "TelemetryConfig",
-    "TelemetryState"
+    "TelemetryState",
+    "LoRaWANManager",
+    "LoRaWANState",
+    "LoRaWANStats",
+    "BenchMVPBridge",
 ]

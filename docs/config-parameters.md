@@ -156,6 +156,19 @@ Backward-compatible legacy block:
 - `bitrate`
 - `interface`
 
+Bench MVP extension (`bench_mvp`):
+- `enabled`
+- `simulation_mode`
+- `prefer_lorawan`
+- `heartbeat_timeout_s`
+- `lora_min_rssi_dbm`
+- `default_baudrate`
+- `read_timeout_s`
+- `arduino_port`
+- `arduino_baudrate`
+- `rak_port`
+- `rak_baudrate`
+
 ## 11) vehicle_controller
 
 Base physics and limits:
@@ -177,6 +190,15 @@ Drive behavior tuning:
 `enabled`, `server_url`, `server_port`, `api_key`, `update_interval_s`,
 `connection_timeout_s`, `retry_attempts`, `retry_delay_s`, `use_ssl`,
 `cellular_apn`, `cellular_username`, `cellular_password`, `simulation_mode`.
+
+## 12b) lorawan
+
+RAK USB LoRaWAN uplink (e.g. RAK4631 with RUI3 AT firmware): `enabled`,
+`simulation_mode`, `serial_port`, `baudrate`, `band`, `dev_eui`, `app_eui`,
+`app_key`, `application_port`, `confirmed_uplink`, `update_interval_s`,
+`max_payload_bytes`, `join_timeout_s`, `at_timeout_s`, `send_timeout_s`,
+`sensor_sources` (per-group booleans: `battery`, `motor`, `vehicle`,
+`charging`, `temperature`, `gps`, `imu`).
 
 ## 13) ui
 
