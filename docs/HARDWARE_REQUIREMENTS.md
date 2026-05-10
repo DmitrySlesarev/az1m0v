@@ -4,6 +4,12 @@
 
 This document provides a comprehensive list of all hardware components required to implement the az1m0v Electric Vehicle Management System.
 
+For iterative planning and phased procurement, see:
+
+- [EV Bench Architecture](EV_BENCH_ARCHITECTURE.md)
+- [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md)
+- [Arduino Porting Guide](ARDUINO_PORTING.md)
+
 ## Table of Contents
 
 0. [Minimal Bench Build (Low Cost)](#minimal-bench-build-low-cost)
@@ -38,6 +44,16 @@ Optional for bench bring-up:
 - GPS and camera systems can be deferred to reduce cost
 
 This minimal build keeps the system testable on real hardware while leaving advanced autonomy hardware optional.
+
+### MVP update for current bench
+
+For the specific bench setup (Raspberry Pi + RS485 CAN HAT + MCP2515 + Arduino + RAK4630), start with:
+
+- CAN bus as mandatory deterministic channel
+- LoRaWAN (RAK4630) as parallel supervisory channel
+- Fallback policy: if LoRaWAN degrades, continue operation on CAN-only profile
+
+The phased purchase plan is maintained in [EV Roadmap and Shopping List](EV_ROADMAP_AND_SHOPPING_LIST.md).
 
 ---
 

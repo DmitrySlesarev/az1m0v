@@ -6,10 +6,12 @@ from communication.telemetry import (
     TelemetryConfig,
     TelemetryState
 )
+from communication.bench_mvp_bridge import BenchMVPBridge
 
 __all__: list[str] = [
     "TelemetrySystem",
     "TelemetryData",
     "TelemetryConfig",
-    "TelemetryState"
+    "TelemetryState",
+    "BenchMVPBridge",
 ]

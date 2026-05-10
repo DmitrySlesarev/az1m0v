@@ -4,6 +4,21 @@
 
 An open-source Electric Vehicle (EV) management system providing comprehensive control and monitoring capabilities for electric vehicles.
 
+## Bench MVP and Prototype Roadmap
+
+This repository now includes an iterative hardware plan based on:
+
+- Raspberry Pi as the main module
+- RS485 CAN HAT + MCP2515 CAN chain
+- Arduino over USB 2.0
+- RAK4630 WisBlock over USB 2.0
+- Future STM32F407 integration
+
+Use these documents first if you are building from a real bench setup:
+
+- **[EV Bench Architecture](docs/EV_BENCH_ARCHITECTURE.md)** - MVP architecture and dual-link CAN + LoRaWAN strategy with fallback rules
+- **[EV Roadmap and Shopping List](docs/EV_ROADMAP_AND_SHOPPING_LIST.md)** - phase-by-phase build roadmap (bench -> real-size no trolley -> full-size) and purchase checklist
+
 ## Overview
 
 az1m0v is a complete EV management platform featuring battery management, motor control, sensor integration, CAN bus communication, and AI-powered autopilot capabilities. The system is designed with modularity and extensibility in mind, following industry best practices.
@@ -160,6 +175,7 @@ az1m0v/
 ├── communication/           # CAN bus and telemetry
 ├── ai/                      # Autopilot and AI systems
 ├── ui/                      # User interfaces
+├── firmware/arduino/        # Arduino C firmware artifacts for bench/edge control
 ├── config/                  # Configuration files
 ├── scripts/integration/     # Build and integration scripts
 └── tests/                   # Comprehensive test suite
@@ -399,6 +415,7 @@ Key configuration sections:
   - Update intervals and thresholds
 - Sensor enablement
 - CAN bus settings
+- Bench MVP bridge settings (`bench_mvp`) for Raspberry Pi + Arduino + RAK4630 serial/CAN integration
 - AI/autopilot configuration
   - Provider selection (`autonomy_provider`: `rule_based` or `alpamayo`)
   - Alpamayo adapter configuration (`alpamayo_*` keys)
@@ -410,6 +427,10 @@ Key configuration sections:
 - **[Configuration Guide](docs/configuration.md)** - Complete configuration reference
 - **[Architecture Overview](architecture.txt)** - System structure and components
 - **[Architecture Diagram](architecture.drawio)** - Visual system architecture (open in draw.io)
+- **[EV Bench Architecture](docs/EV_BENCH_ARCHITECTURE.md)** - Bench MVP design and extension path to real EV
+- **[EV Roadmap and Shopping List](docs/EV_ROADMAP_AND_SHOPPING_LIST.md)** - Iterative roadmap and phased purchase plan
+- **[Arduino Porting Guide](docs/ARDUINO_PORTING.md)** - C firmware pieces extracted from Python control logic
+- **[Arduino Flashing Manual](docs/ARDUINO_FLASHING_MANUAL.md)** - Detailed step-by-step flash workflow and troubleshooting
 
 ## Development
 
@@ -473,6 +494,24 @@ The system implements standard EV CAN protocols:
 - Temperature sensor protocol (CAN IDs 0x400-0x406)
 - Message handlers and routing
 - Support for battery, motor, charging, and temperature data
+
+### Bench MVP Bridge (Arduino + RAK4630)
+
+To run the current lab bench as an MVP, enable the `bench_mvp` section in `config/config.json`:
+
+```json
+{
+  "bench_mvp": {
+    "enabled": true,
+    "simulation_mode": false,
+    "arduino_port": "/dev/ttyACM0",
+    "rak_port": "/dev/ttyACM1",
+    "prefer_lorawan": true
+  }
+}
+```
+
+The bridge ingests one-JSON-line messages from Arduino/RAK serial links, updates runtime status, emits CAN-compatible updates, and automatically falls back to CAN-primary mode when LoRaWAN link quality drops.
 
 ## Requirements
 

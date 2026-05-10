@@ -225,6 +225,22 @@
         "update_interval_ms": {"type": "integer", "minimum": 1}
       }
     },
+    "bench_mvp": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "simulation_mode": {"type": "boolean"},
+        "prefer_lorawan": {"type": "boolean"},
+        "heartbeat_timeout_s": {"type": "number", "minimum": 0.1},
+        "lora_min_rssi_dbm": {"type": "number"},
+        "default_baudrate": {"type": "integer", "minimum": 1200},
+        "read_timeout_s": {"type": "number", "minimum": 0.001},
+        "arduino_port": {"type": "string"},
+        "arduino_baudrate": {"type": "integer", "minimum": 1200},
+        "rak_port": {"type": "string"},
+        "rak_baudrate": {"type": "integer", "minimum": 1200}
+      }
+    },
     "can_bus": {
       "type": "object",
       "required": ["channel", "bitrate", "interface"],
