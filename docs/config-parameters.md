@@ -156,6 +156,19 @@ Backward-compatible legacy block:
 - `bitrate`
 - `interface`
 
+Bench MVP extension (`bench_mvp`):
+- `enabled`
+- `simulation_mode`
+- `prefer_lorawan`
+- `heartbeat_timeout_s`
+- `lora_min_rssi_dbm`
+- `default_baudrate`
+- `read_timeout_s`
+- `arduino_port`
+- `arduino_baudrate`
+- `rak_port`
+- `rak_baudrate`
+
 ## 11) vehicle_controller
 
 Base physics and limits:

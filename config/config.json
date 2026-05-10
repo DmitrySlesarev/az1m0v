@@ -161,6 +161,19 @@
     "can_bus_enabled": true,
     "update_interval_ms": 1000
   },
+  "bench_mvp": {
+    "enabled": false,
+    "simulation_mode": true,
+    "prefer_lorawan": true,
+    "heartbeat_timeout_s": 10.0,
+    "lora_min_rssi_dbm": -120.0,
+    "default_baudrate": 115200,
+    "read_timeout_s": 0.01,
+    "arduino_port": "/dev/ttyACM0",
+    "arduino_baudrate": 115200,
+    "rak_port": "/dev/ttyACM1",
+    "rak_baudrate": 115200
+  },
   "can_bus": {
     "channel": "can0",
     "bitrate": 500000,

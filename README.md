@@ -414,6 +414,7 @@ Key configuration sections:
   - Update intervals and thresholds
 - Sensor enablement
 - CAN bus settings
+- Bench MVP bridge settings (`bench_mvp`) for Raspberry Pi + Arduino + RAK4630 serial/CAN integration
 - AI/autopilot configuration
   - Provider selection (`autonomy_provider`: `rule_based` or `alpamayo`)
   - Alpamayo adapter configuration (`alpamayo_*` keys)
@@ -490,6 +491,24 @@ The system implements standard EV CAN protocols:
 - Temperature sensor protocol (CAN IDs 0x400-0x406)
 - Message handlers and routing
 - Support for battery, motor, charging, and temperature data
+
+### Bench MVP Bridge (Arduino + RAK4630)
+
+To run the current lab bench as an MVP, enable the `bench_mvp` section in `config/config.json`:
+
+```json
+{
+  "bench_mvp": {
+    "enabled": true,
+    "simulation_mode": false,
+    "arduino_port": "/dev/ttyACM0",
+    "rak_port": "/dev/ttyACM1",
+    "prefer_lorawan": true
+  }
+}
+```
+
+The bridge ingests one-JSON-line messages from Arduino/RAK serial links, updates runtime status, emits CAN-compatible updates, and automatically falls back to CAN-primary mode when LoRaWAN link quality drops.
 
 ## Requirements
 

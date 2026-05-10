@@ -73,6 +73,7 @@ class EVDashboard:
             'autopilot': {},
             'telemetry': {},
             'safety': {},
+            'bench_network': {},
             'deployment': self.deployment_manager.get_status(),
             'system': {
                 'project_root': str(self.project_root)
@@ -688,7 +689,7 @@ class EVDashboard:
         
         Args:
             data_type: Type of data ('battery', 'motor', 'charging', 'vehicle', 'temperature',
-                       'autopilot', 'telemetry', 'safety', 'deployment', 'system')
+                       'autopilot', 'telemetry', 'safety', 'bench_network', 'deployment', 'system')
             data: Data dictionary to update
         """
         if data_type in self.latest_data:

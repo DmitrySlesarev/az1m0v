@@ -13,6 +13,7 @@ from config.settings import Settings
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
 from communication.telemetry import TelemetrySystem
+from communication.bench_mvp_bridge import BenchMVPBridge
 from core.battery_management import BatteryManagementSystem
 from core.motor_controller import VESCManager
 from core.charging_system import ChargingSystem
@@ -51,6 +52,7 @@ class EVSystem:
         self.vehicle_controller: Optional[VehicleController] = None
         self.safety_system: Optional[SafetySystem] = None
         self.telemetry: Optional[TelemetrySystem] = None
+        self.bench_mvp: Optional[BenchMVPBridge] = None
         
         # Sensors
         self.imu: Optional[IMU] = None
@@ -140,6 +142,9 @@ class EVSystem:
 
         # Initialize Telemetry System
         self._initialize_telemetry()
+
+        # Initialize bench MVP bridge (optional)
+        self._initialize_bench_mvp()
 
         # Initialize Vehicle Controller
         self._initialize_vehicle_controller()
@@ -259,6 +264,23 @@ class EVSystem:
                 self.logger.info("Telemetry System disabled")
         except Exception as e:
             self.logger.error(f"Failed to initialize telemetry system: {e}")
+
+    def _initialize_bench_mvp(self) -> None:
+        """Initialize optional bench MVP integration bridge."""
+        try:
+            bridge_config = self.config.get('bench_mvp', {})
+            if not bridge_config.get('enabled', False):
+                self.logger.info("Bench MVP bridge disabled")
+                return
+
+            self.bench_mvp = BenchMVPBridge(
+                config=bridge_config,
+                can_protocol=self.can_protocol
+            )
+            self.bench_mvp.start()
+            self.logger.info("Bench MVP bridge initialized")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize bench MVP bridge: {e}")
 
     def _initialize_vehicle_controller(self) -> None:
         """Initialize Vehicle Controller."""
@@ -448,6 +470,7 @@ class EVSystem:
                 self.dashboard.imu = self.imu
                 self.dashboard.temperature_manager = self.temperature_manager
                 self.dashboard.autopilot = self.autopilot
+                self.dashboard.bench_mvp = self.bench_mvp
                 
                 self.logger.info(f"Dashboard initialized on {dashboard_host}:{dashboard_port}")
             else:
@@ -495,6 +518,9 @@ class EVSystem:
 
     def _update_loop(self) -> None:
         """Main system update loop."""
+        # Pull bench bridge data first so dashboard can display live lab links.
+        self._update_bench_mvp()
+
         # Update BMS status
         if self.bms:
             # In a real system, this would read from actual sensors
@@ -568,6 +594,23 @@ class EVSystem:
         # Send telemetry data
         if self.telemetry and self.telemetry.is_enabled():
             self._send_telemetry_data()
+
+    def _update_bench_mvp(self) -> None:
+        """Poll optional bench bridge and push status into dashboard."""
+        if not self.bench_mvp:
+            return
+
+        try:
+            payload = self.bench_mvp.poll_once()
+            if not self.dashboard:
+                return
+
+            for section in ("battery", "motor", "charging", "vehicle", "temperature", "bench_network"):
+                section_payload = payload.get(section)
+                if section_payload:
+                    self.dashboard.update_data(section, section_payload)
+        except Exception as e:
+            self.logger.error(f"Error updating bench MVP bridge: {e}")
 
     def _update_temperature_data(self) -> None:
         """Update dashboard with temperature sensor data."""
@@ -736,6 +779,10 @@ class EVSystem:
         if self.telemetry:
             self.telemetry.disconnect()
             self.logger.info("Telemetry system disconnected")
+
+        if self.bench_mvp:
+            self.bench_mvp.stop()
+            self.logger.info("Bench MVP bridge stopped")
 
         # Stop dashboard
         if self.dashboard:
