@@ -13,6 +13,10 @@ try:
 except ImportError:
     requests = None
 
+# Skip this module when optional Playwright tooling is unavailable.
+pytest.importorskip("pytest_playwright", reason="pytest-playwright plugin is not installed")
+pytest.importorskip("playwright", reason="playwright package is not installed")
+
 
 @pytest.fixture
 def mock_can_bus():
