@@ -603,10 +603,15 @@ class EVTCPIPProtocol:
         if frame.service_id != self.SERVICE_IDS["VESC_STATUS"]:
             return None
         try:
-            values = struct.unpack("<ffff", frame.payload[:16])
+            if len(frame.payload) >= 16:
+                values = struct.unpack("<ffff", frame.payload[:16])
+                return {"rpm": values[0], "current": values[1], "voltage": values[2], "temperature": values[3]}
+            if len(frame.payload) >= 8:
+                rpm, current = struct.unpack("<ff", frame.payload[:8])
+                return {"rpm": rpm, "current": current, "voltage": 0.0, "temperature": 0.0}
         except struct.error:
             return None
-        return {"rpm": values[0], "current": values[1], "voltage": values[2], "temperature": values[3]}
+        return None
 
     def parse_temperature_data(self, frame: ITFrame) -> Optional[Dict[str, Any]]:
         service_to_type = {
