@@ -71,10 +71,14 @@ class ArduinoUARTPeripheralBridge:
 
     def _register_handler(self) -> None:
         def _on_frame(frame: ITFrame) -> None:
-            service_id = getattr(frame, "service_id", getattr(frame, "can_id", None))
+            service_id = getattr(frame, "service_id", None)
+            if not isinstance(service_id, int):
+                service_id = getattr(frame, "can_id", None)
             if service_id != self._status_id:
                 return
-            payload = getattr(frame, "payload", getattr(frame, "data", b""))
+            payload = getattr(frame, "payload", None)
+            if not isinstance(payload, (bytes, bytearray)):
+                payload = getattr(frame, "data", b"")
             parsed = parse_arduino_status_payload(payload, analog_unit=self._analog_unit)
             if not parsed:
                 return

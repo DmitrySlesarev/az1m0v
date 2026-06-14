@@ -62,18 +62,17 @@ class TestCANFrame:
                 dlc=8
             )
 
-    def test_can_frame_extended_id(self):
-        """Test CAN frame with extended ID."""
+    def test_can_frame_service_namespace(self):
+        """Test frame creation with the 16-bit application service namespace."""
         frame = CANFrame(
-            can_id=0x12345678,
+            can_id=0x1234,
             data=b'\x01\x02',
             timestamp=time.time(),
             dlc=2,
-            is_extended=True
         )
 
-        assert frame.is_extended is True
-        assert frame.can_id == 0x12345678
+        assert frame.can_id == 0x1234
+        assert frame.service_id == 0x1234
 
     def test_can_frame_remote_frame(self):
         """Test CAN frame as remote frame."""
