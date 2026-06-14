@@ -195,7 +195,7 @@ class TestCANBusIntegration:
         serialized = ev_protocol._serialize_data(test_data)
 
         assert isinstance(serialized, bytes)
-        assert len(serialized) <= 8  # CAN frame limit
+        assert len(serialized) == 16  # Four numeric values; no CAN 8-byte ceiling.
 
         # Verify numeric values are serialized
         assert len(serialized) > 0

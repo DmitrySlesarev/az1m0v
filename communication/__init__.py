@@ -8,6 +8,17 @@ from communication.telemetry import (
 )
 from communication.lorawan import LoRaWANManager, LoRaWANState, LoRaWANStats
 from communication.bench_mvp_bridge import BenchMVPBridge
+from communication.ip_uart_transport import (
+    EVTCPIPProtocol,
+    EndpointSwitch,
+    ITFrame,
+    ITMessage,
+    PacketCodec,
+    TCPIPTransportInterface,
+    TransportMode,
+    UARTEndpoint,
+    UARTFrameCodec,
+)
 
 __all__: list[str] = [
     "TelemetrySystem",
@@ -18,4 +29,13 @@ __all__: list[str] = [
     "LoRaWANState",
     "LoRaWANStats",
     "BenchMVPBridge",
+    "EVTCPIPProtocol",
+    "EndpointSwitch",
+    "ITFrame",
+    "ITMessage",
+    "PacketCodec",
+    "TCPIPTransportInterface",
+    "TransportMode",
+    "UARTEndpoint",
+    "UARTFrameCodec",
 ]
