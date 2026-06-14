@@ -39,15 +39,18 @@ class TestCANFrame:
         assert frame.dlc == 8
         assert len(frame.data) == 8
 
-    def test_can_frame_validation_invalid_dlc(self):
-        """Test CAN frame with invalid DLC."""
-        with pytest.raises(ValueError, match="DLC cannot exceed 8 bytes"):
-            CANFrame(
-                can_id=0x123,
-                data=b'\x01\x02\x03\x04',
-                timestamp=time.time(),
-                dlc=9
-            )
+    def test_can_frame_allows_non_can_payload_lengths(self):
+        """Test that the IP/UART frame facade is not limited to 8 bytes."""
+        payload = bytes(range(16))
+        frame = CANFrame(
+            can_id=0x123,
+            data=payload,
+            timestamp=time.time(),
+            dlc=len(payload)
+        )
+
+        assert frame.dlc == 16
+        assert frame.data == payload
 
     def test_can_frame_validation_data_length_mismatch(self):
         """Test CAN frame with data length mismatch."""
@@ -127,14 +130,14 @@ class TestCANBusInterface:
 
     @pytest.fixture
     def can_interface(self):
-        """Create a CANBusInterface instance for testing."""
-        return CANBusInterface("can0", 500000, "socketcan")
+        """Create a transport interface instance for testing."""
+        return CANBusInterface("raspberry-pi", 115200, "virtual")
 
     def test_can_interface_initialization(self, can_interface):
         """Test CANBusInterface initialization."""
-        assert can_interface.channel == "can0"
-        assert can_interface.bitrate == 500000
-        assert can_interface.interface == "socketcan"
+        assert can_interface.channel == "raspberry-pi"
+        assert can_interface.bitrate == 115200
+        assert can_interface.interface == "virtual"
         assert not can_interface.is_connected
         assert len(can_interface.message_handlers) == 0
         assert can_interface.stats['frames_sent'] == 0
@@ -213,8 +216,8 @@ class TestCANBusInterface:
 
         stats = can_interface.get_statistics()
 
-        assert stats['channel'] == "can0"
-        assert stats['bitrate'] == 500000
+        assert stats['channel'] == "raspberry-pi"
+        assert stats['bitrate'] == 115200
         assert stats['is_connected'] is True
         assert stats['frames_sent'] == 0
         assert stats['frames_received'] == 0
@@ -227,8 +230,8 @@ class TestEVCANProtocol:
 
     @pytest.fixture
     def can_interface(self):
-        """Create a CANBusInterface instance for testing."""
-        interface = CANBusInterface("can0", 500000)
+        """Create a transport interface instance for testing."""
+        interface = CANBusInterface("raspberry-pi", 115200, "virtual")
         interface.connect()
         return interface
 
@@ -273,7 +276,7 @@ class TestEVCANProtocol:
             # Verify the frame was created correctly
             call_args = mock_send.call_args[0][0]
             assert call_args.can_id == ev_protocol.CAN_IDS['BMS_STATUS']
-            assert call_args.dlc == 8
+            assert call_args.dlc == 16
 
     def test_send_motor_status(self, ev_protocol):
         """Test sending motor status message."""
@@ -288,7 +291,7 @@ class TestEVCANProtocol:
             # Verify the frame was created correctly
             call_args = mock_send.call_args[0][0]
             assert call_args.can_id == ev_protocol.CAN_IDS['MOTOR_STATUS']
-            assert call_args.dlc == 8
+            assert call_args.dlc == 12
 
     def test_serialize_data(self, ev_protocol):
         """Test data serialization."""
@@ -301,7 +304,7 @@ class TestEVCANProtocol:
         serialized = ev_protocol._serialize_data(data)
 
         assert isinstance(serialized, bytes)
-        assert len(serialized) <= 8  # CAN frame limit
+        assert len(serialized) == 12
 
     def test_serialize_data_mixed_types(self, ev_protocol):
         """Test serialization with mixed data types."""
@@ -315,7 +318,7 @@ class TestEVCANProtocol:
         serialized = ev_protocol._serialize_data(data)
 
         assert isinstance(serialized, bytes)
-        assert len(serialized) <= 8
+        assert len(serialized) == 12
 
     def test_send_message_failure(self, ev_protocol):
         """Test message sending failure."""
@@ -350,8 +353,8 @@ class TestCANBusInterfaceErrorHandling:
 
     @pytest.fixture
     def can_interface(self):
-        """Create a CANBusInterface instance for testing."""
-        return CANBusInterface("can0", 500000)
+        """Create a transport interface instance for testing."""
+        return CANBusInterface("raspberry-pi", 115200, "virtual")
 
     def test_send_frame_error_tracking(self, can_interface):
         """Test error tracking in frame sending."""

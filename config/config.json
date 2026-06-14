@@ -175,14 +175,55 @@
     "rak_baudrate": 115200
   },
   "can_bus": {
-    "channel": "can0",
-    "bitrate": 500000,
-    "interface": "socketcan"
+    "channel": "raspberry-pi",
+    "bitrate": 115200,
+    "interface": "udp"
+  },
+  "tcpip_uart": {
+    "endpoint_id": "raspberry-pi",
+    "mode": "udp",
+    "bind_host": "0.0.0.0",
+    "bind_port": 0,
+    "switch_host": "127.0.0.1",
+    "switch_port": 9900,
+    "recv_timeout_s": 0.0,
+    "uart_baudrate": 115200,
+    "endpoints": {
+      "engine": {
+        "port": "/dev/ttyUSB0",
+        "baudrate": 115200
+      },
+      "battery": {
+        "port": "/dev/ttyUSB1",
+        "baudrate": 115200
+      },
+      "charger": {
+        "port": "/dev/ttyUSB2",
+        "baudrate": 115200
+      },
+      "peripheral": {
+        "port": "/dev/ttyACM0",
+        "baudrate": 115200
+      }
+    }
   },
   "arduino_can": {
     "enabled": false,
     "status_can_id": 784,
     "command_can_id": 785,
+    "analog_unit": "centi_c",
+    "listen_only_default": true,
+    "default_digital_outputs": 0,
+    "default_pwm_aux": 0,
+    "default_flags": 0,
+    "resend_command_interval_s": 1.0,
+    "inject_temperatures": []
+  },
+  "arduino_uart": {
+    "enabled": false,
+    "status_service_id": 784,
+    "command_service_id": 785,
+    "destination": "peripheral",
     "analog_unit": "centi_c",
     "listen_only_default": true,
     "default_digital_outputs": 0,

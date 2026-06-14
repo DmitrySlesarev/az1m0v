@@ -246,17 +246,69 @@
       "required": ["channel", "bitrate", "interface"],
       "properties": {
         "channel": {"type": "string", "minLength": 1},
-        "bitrate": {"type": "integer", "minimum": 125000, "maximum": 1000000},
-        "interface": {"type": "string", "enum": ["socketcan", "virtual", "slcan"]}
+        "bitrate": {"type": "integer", "minimum": 1200, "maximum": 1000000},
+        "interface": {"type": "string", "enum": ["udp", "tcp", "virtual", "socketcan", "slcan"]}
+      }
+    },
+    "tcpip_uart": {
+      "type": "object",
+      "description": "Self-written UDP/TCP host transport plus UART endpoint map for the edge switch.",
+      "properties": {
+        "endpoint_id": {"type": "string", "minLength": 1},
+        "mode": {"type": "string", "enum": ["udp", "tcp", "virtual"]},
+        "bind_host": {"type": "string", "minLength": 1},
+        "bind_port": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "switch_host": {"type": "string", "minLength": 1},
+        "switch_port": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "recv_timeout_s": {"type": "number", "minimum": 0},
+        "uart_baudrate": {"type": "integer", "minimum": 1200, "maximum": 921600},
+        "endpoints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["port", "baudrate"],
+            "properties": {
+              "port": {"type": "string", "minLength": 1},
+              "baudrate": {"type": "integer", "minimum": 1200, "maximum": 921600}
+            }
+          }
+        }
       }
     },
     "arduino_can": {
       "type": "object",
-      "description": "Arduino + CAN transceiver as peripheral I/O node (see docs/ARDUINO_CAN_NODE.md)",
+      "description": "Legacy key for Arduino peripheral configuration; arduino_uart is preferred.",
       "properties": {
         "enabled": {"type": "boolean"},
         "status_can_id": {"type": "integer", "minimum": 1, "maximum": 536870911},
         "command_can_id": {"type": "integer", "minimum": 1, "maximum": 536870911},
+        "analog_unit": {"type": "string", "enum": ["centi_c", "raw"]},
+        "listen_only_default": {"type": "boolean"},
+        "default_digital_outputs": {"type": "integer", "minimum": 0, "maximum": 255},
+        "default_pwm_aux": {"type": "integer", "minimum": 0, "maximum": 255},
+        "default_flags": {"type": "integer", "minimum": 0, "maximum": 255},
+        "resend_command_interval_s": {"type": "number", "minimum": 0},
+        "inject_temperatures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["channel", "sensor_id"],
+            "properties": {
+              "channel": {"type": "integer", "minimum": 0, "maximum": 7},
+              "sensor_id": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "arduino_uart": {
+      "type": "object",
+      "description": "Arduino peripheral behind the IP-to-UART edge switch.",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "status_service_id": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "command_service_id": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "destination": {"type": "string", "minLength": 1},
         "analog_unit": {"type": "string", "enum": ["centi_c", "raw"]},
         "listen_only_default": {"type": "boolean"},
         "default_digital_outputs": {"type": "integer", "minimum": 0, "maximum": 255},

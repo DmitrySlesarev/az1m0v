@@ -34,24 +34,34 @@ if __name__ == "__main__":
     # Load configuration
     config = load_config()
     
-    # Initialize CAN bus if enabled
+    # Initialize the UDP-preferred IP/UART transport if enabled
     can_bus = None
     can_protocol = None
     
     if config.get('communication', {}).get('can_bus_enabled', False):
         try:
             can_config = config.get('can_bus', {})
-            can_channel = can_config.get('channel', 'can0')
-            can_bitrate = can_config.get('bitrate', 500000)
-            can_interface = can_config.get('interface', 'socketcan')
-            can_bus = CANBusInterface(can_channel, can_bitrate, can_interface)
+            transport_config = {**can_config, **(config.get('tcpip_uart') or {})}
+            can_channel = transport_config.get('endpoint_id', transport_config.get('channel', 'raspberry-pi'))
+            can_bitrate = transport_config.get('uart_baudrate', transport_config.get('bitrate', 115200))
+            can_interface = transport_config.get('mode', transport_config.get('interface', 'udp'))
+            can_bus = CANBusInterface(
+                can_channel,
+                can_bitrate,
+                can_interface,
+                bind_host=transport_config.get('bind_host', '0.0.0.0'),
+                bind_port=transport_config.get('bind_port', 0),
+                switch_host=transport_config.get('switch_host', '127.0.0.1'),
+                switch_port=transport_config.get('switch_port', 9900),
+                recv_timeout_s=transport_config.get('recv_timeout_s', 0.0),
+            )
             if can_bus.connect():
                 can_protocol = EVCANProtocol(can_bus)
-                logger.info("CAN bus initialized for dashboard")
+                logger.info("IP/UART transport initialized for dashboard")
             else:
-                logger.warning("CAN bus connection failed, dashboard will run without CAN")
+                logger.warning("IP/UART transport connection failed, dashboard will run without vehicle transport")
         except Exception as e:
-            logger.warning(f"Failed to initialize CAN bus: {e}")
+            logger.warning(f"Failed to initialize IP/UART transport: {e}")
     
     # Get dashboard settings from config
     dashboard_config = config.get('ui', {})

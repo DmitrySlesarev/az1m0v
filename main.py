@@ -12,7 +12,7 @@ from typing import Optional, Dict, Any, List
 from config.settings import Settings
 
 from communication.can_bus import CANBusInterface, EVCANProtocol
-from communication.arduino_can_bridge import ArduinoPeripheralBridge
+from communication.arduino_uart_bridge import ArduinoPeripheralBridge
 from communication.telemetry import TelemetrySystem
 from communication.lorawan import LoRaWANManager
 from communication.bench_mvp_bridge import BenchMVPBridge
@@ -129,14 +129,14 @@ class EVSystem:
         """Initialize system components."""
         self.logger.info("Initializing EV system components...")
 
-        # Initialize CAN bus if enabled
+        # Initialize the IP/UART transport if enabled
         if self.config.get('communication', {}).get('can_bus_enabled', False):
             self._initialize_can_bus()
 
         # Initialize Sensors early so core components can consume readings
         self._initialize_sensors()
 
-        # Arduino peripheral on CAN (optional I/O coprocessor)
+        # Arduino peripheral behind the IP-to-UART edge switch (optional I/O coprocessor)
         self._initialize_arduino_peripheral()
 
         # Initialize Battery Management System
@@ -172,36 +172,48 @@ class EVSystem:
         self.logger.info("All components initialized successfully")
 
     def _initialize_can_bus(self) -> None:
-        """Initialize CAN bus interface."""
+        """Initialize the UDP-preferred IP/UART transport interface."""
         try:
             can_config = self.config.get('can_bus', {})
-            channel = can_config.get('channel', 'can0')
-            bitrate = can_config.get('bitrate', 500000)
-            interface = can_config.get('interface', 'socketcan')
+            transport_config = {**can_config, **(self.config.get('tcpip_uart') or {})}
+            channel = transport_config.get('endpoint_id', transport_config.get('channel', 'raspberry-pi'))
+            bitrate = transport_config.get('uart_baudrate', transport_config.get('bitrate', 115200))
+            interface = transport_config.get('mode', transport_config.get('interface', 'udp'))
             
             self.can_bus = CANBusInterface(
                 channel=channel,
                 bitrate=bitrate,
-                interface=interface
+                interface=interface,
+                bind_host=transport_config.get('bind_host', '0.0.0.0'),
+                bind_port=transport_config.get('bind_port', 0),
+                switch_host=transport_config.get('switch_host', '127.0.0.1'),
+                switch_port=transport_config.get('switch_port', 9900),
+                recv_timeout_s=transport_config.get('recv_timeout_s', 0.0),
             )
 
             if self.can_bus.connect():
                 self.can_protocol = EVCANProtocol(self.can_bus)
-                self.logger.info(f"CAN bus initialized and connected on {channel}")
+                self.logger.info(
+                    "IP/UART transport initialized on %s via %s to switch %s:%s",
+                    channel,
+                    interface,
+                    transport_config.get('switch_host', '127.0.0.1'),
+                    transport_config.get('switch_port', 9900),
+                )
             else:
-                self.logger.warning("CAN bus connection failed, continuing without CAN")
+                self.logger.warning("IP/UART transport connection failed, continuing without vehicle transport")
         except Exception as e:
-            self.logger.error(f"Failed to initialize CAN bus: {e}")
+            self.logger.error(f"Failed to initialize IP/UART transport: {e}")
 
     def _initialize_arduino_peripheral(self) -> None:
-        """Optional Arduino + CAN peripheral for delegated I/O."""
+        """Optional Arduino UART peripheral for delegated I/O."""
         try:
-            cfg = self.config.get("arduino_can") or {}
+            cfg = {**(self.config.get("arduino_can") or {}), **(self.config.get("arduino_uart") or {})}
             if not cfg.get("enabled", False):
-                self.logger.info("Arduino peripheral CAN disabled in config")
+                self.logger.info("Arduino UART peripheral disabled in config")
                 return
             if not self.can_bus or not self.can_protocol:
-                self.logger.warning("Arduino peripheral enabled but CAN bus unavailable")
+                self.logger.warning("Arduino peripheral enabled but IP/UART transport unavailable")
                 return
             self.arduino_peripheral = ArduinoPeripheralBridge(
                 self.can_bus,
@@ -209,7 +221,7 @@ class EVSystem:
                 cfg,
                 temperature_manager=self.temperature_manager,
             )
-            self.logger.info("Arduino peripheral CAN bridge initialized")
+            self.logger.info("Arduino UART peripheral bridge initialized")
         except Exception as e:
             self.logger.error(f"Failed to initialize Arduino peripheral: {e}")
 
